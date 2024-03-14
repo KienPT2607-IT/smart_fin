@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:smart_fin/services/providers/user_provider.dart';
-import 'package:smart_fin/utilities/constants.dart';
-import 'package:smart_fin/models/user.dart';
+import 'package:smart_fin/data/services/providers/user_provider.dart';
+import 'package:smart_fin/utilities/constants/constants.dart';
+import 'package:smart_fin/data/models/user.dart';
 import 'package:smart_fin/utilities/utilities.dart';
-import 'package:smart_fin/screens/home_screen.dart';
+import 'package:smart_fin/screens/note_tracker_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,7 +48,7 @@ class AuthService {
             );
             navigator.pushAndRemoveUntil(
               CupertinoPageRoute(
-                builder: (context) => const HomeScreen(),
+                builder: (context) => const NoteTrackerScreen(),
               ),
               (route) => false,
             );

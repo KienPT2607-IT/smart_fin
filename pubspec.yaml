@@ -1,22 +1,31 @@
 name: smart_fin
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.2.3 <4.0.0'
+    sdk: ">=3.2.3 <4.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
-  http: ^1.2.0
-  provider: ^6.1.2
-  shared_preferences: ^2.2.2
+    cupertino_icons: ^1.0.6
+    flutter:
+        sdk: flutter
+    flutter_svg: ^2.0.10+1
+    http: ^1.2.0
+    iconly: ^1.0.1
+    provider: ^6.1.2
+    shared_preferences: ^2.2.2
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^2.0.0
+    flutter_test:
+        sdk: flutter
+    flutter_lints: ^2.0.0
 
 flutter:
-  uses-material-design: true
+    uses-material-design: true
+    assets:
+        - assets/
+        - assets/images/
+        - assets/icons/apps/
+        # - assets/icons/categories/
+        - assets/fonts/

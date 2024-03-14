@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_fin/services/apis/auth_services.dart';
-import 'package:smart_fin/utilities/account_controller.dart';
+import 'package:smart_fin/data/services/apis/auth_services.dart';
+import 'package:smart_fin/controllers/account_controller.dart';
 import 'package:smart_fin/screens/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {

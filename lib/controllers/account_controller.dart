@@ -1,4 +1,4 @@
-import 'package:smart_fin/utilities/constants.dart';
+import 'package:smart_fin/utilities/constants/constants.dart';
 
 class AccountController {
   static String? validateUsername(String? value) {

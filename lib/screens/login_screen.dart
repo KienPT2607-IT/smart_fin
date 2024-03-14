@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_fin/services/apis/auth_services.dart';
-import 'package:smart_fin/utilities/account_controller.dart';
+import 'package:smart_fin/data/services/apis/auth_services.dart';
+import 'package:smart_fin/controllers/account_controller.dart';
 import 'package:smart_fin/screens/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
