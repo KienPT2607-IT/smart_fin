@@ -3,11 +3,12 @@ import 'package:smart_fin/data/models/user.dart';
 
 class UserProvider extends ChangeNotifier {
   User _user = User(
-    id: "",
+    // id: "",
     username: "",
     email: "",
-    password: "",
+    fullName: "",
     token: "",
+    // TODO: add more newly added fields
   );
 
   User get user => _user;

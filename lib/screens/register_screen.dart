@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:smart_fin/data/services/apis/auth_services.dart';
 import 'package:smart_fin/controllers/account_controller.dart';
 import 'package:smart_fin/screens/login_screen.dart';
@@ -21,7 +22,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordCtrl = TextEditingController();
   final TextEditingController _passwordConfirmCtrl = TextEditingController();
   final TextEditingController _emailCtrl = TextEditingController();
+
   final AuthService authService = AuthService();
+  final AccountController accountController = AccountController();
 
   void registerUser() {
     if (_formKey.currentState!.validate()) {
@@ -41,7 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -62,25 +65,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   "create new account",
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                const SizedBox(height: 60),
+                const Gap(60),
+                // TODO: add full name field
                 TextFormField(
-                  controller: _usernameCtrl,
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    labelText: "username",
-                    prefixIcon: const Icon(Icons.person_outline),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                    controller: _usernameCtrl,
+                    keyboardType: TextInputType.name,
+                    decoration: InputDecoration(
+                      labelText: "username",
+                      prefixIcon: const Icon(Icons.person_outline),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  validator: (value) {
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10),
+                    validator: (value) =>
+                        accountController.validateUsername(value)),
+                const Gap(10),
                 TextFormField(
                     controller: _emailCtrl,
                     keyboardType: TextInputType.emailAddress,
@@ -95,8 +97,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     validator: (value) =>
-                        AccountController.validateEmail(value)),
-                const SizedBox(height: 10),
+                        accountController.validateEmail(value)),
+                const Gap(10),
                 TextFormField(
                   controller: _passwordCtrl,
                   keyboardType: TextInputType.visiblePassword,
@@ -124,9 +126,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   validator: (value) =>
-                      AccountController.validatePassword(value),
+                      accountController.validatePassword(value),
                 ),
-                const SizedBox(height: 10),
+                const Gap(10),
                 TextFormField(
                   controller: _passwordConfirmCtrl,
                   keyboardType: TextInputType.visiblePassword,
@@ -154,21 +156,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ),
-                  validator: (value) => AccountController.validatePassConf(
+                  validator: (value) => accountController.validatePassConf(
                       value, _passwordCtrl.text),
                 ),
-                const SizedBox(height: 20),
+                const Gap(20),
                 Column(
                   children: <Widget>[
                     ElevatedButton(
                       onPressed: registerUser,
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF563D81),
                         minimumSize: const Size.fromHeight(50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      child: const Text("Register"),
+                      child: const Text(
+                        "Register",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -176,11 +182,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const Text("Already have an account!"),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushAndRemoveUntil(
                               context,
                               CupertinoPageRoute(
                                 builder: (context) => const LoginScreen(),
                               ),
+                              (route) => false,
                             );
                           },
                           child: const Text("Login"),

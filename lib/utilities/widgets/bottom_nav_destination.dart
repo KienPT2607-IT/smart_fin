@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class NavDestination extends StatelessWidget {
+class BottomNavDestination extends StatelessWidget {
   final IconData icon;
   final IconData selectedIcon;
   final String label;
-  const NavDestination({
+  const BottomNavDestination({
     super.key,
     required this.icon,
     required this.selectedIcon,

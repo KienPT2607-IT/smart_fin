@@ -11,8 +11,10 @@ dependencies:
     flutter:
         sdk: flutter
     flutter_svg: ^2.0.10+1
+    gap: ^3.0.1
     http: ^1.2.0
     iconly: ^1.0.1
+    path: ^1.8.3
     provider: ^6.1.2
     shared_preferences: ^2.2.2
 
@@ -25,7 +27,7 @@ flutter:
     uses-material-design: true
     assets:
         - assets/
-        - assets/images/
+        - assets/images/avatars/
         - assets/icons/apps/
-        # - assets/icons/categories/
+        - assets/icons/categories/
         - assets/fonts/

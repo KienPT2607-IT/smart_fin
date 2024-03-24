@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_fin/screens/init_screen.dart';
+import 'package:smart_fin/data/services/providers/spending_jars_provider.dart';
 import 'package:smart_fin/screens/login_screen.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
+import 'package:smart_fin/screens/note_tracker_screen.dart';
 import 'package:smart_fin/utilities/themes/theme.dart';
 
 void main() {
@@ -12,14 +13,24 @@ void main() {
         ChangeNotifierProvider(
           create: (_) => UserProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => SpendingJarsProvider(),
+        )
       ],
       child: const MainApp(),
     ),
   );
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  // AuthService authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +39,7 @@ class MainApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      // home: const LoginScreen(),
-      home: const InitScreen(),
+      home: const LoginScreen(),
     );
   }
 }

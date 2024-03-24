@@ -1,7 +1,7 @@
 import 'package:smart_fin/utilities/constants/constants.dart';
 
 class AccountController {
-  static String? validateUsername(String? value) {
+  String? validateUsername(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Please enter a username";
     }
@@ -14,7 +14,7 @@ class AccountController {
     return null;
   }
 
-  static String? validateEmail(String? value) {
+  String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter an email address";
     }
@@ -24,7 +24,7 @@ class AccountController {
     return null;
   }
 
-  static String? validatePassword(String? value) {
+  String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter a password";
     }
@@ -32,16 +32,33 @@ class AccountController {
       return "Password must be between 8 and 16 characters";
     }
     if (!RegExp(Constant.passwordRegex).hasMatch(value)) {
-      return "Password must have 1 uppercase letter, 1 digit, and 1 special character";
+      return "Password must have an uppercase letter, digit, and special character";
     }
     return null;
   }
 
-  static String? validatePassConf(String? value, String password) {
+  String? validatePassConf(String? value, String password) {
     if (value == null || value.isEmpty) {
       return "Please confirm the password";
     } else if (value != password) {
       return "Passwords do not match";
+    }
+    return null;
+  }
+
+  String? validateFullName(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your full name";
+    }
+    return null;
+  }
+
+  String? validatePhoneNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your phone number";
+    }
+    if (!RegExp(Constant.phoneRegex).hasMatch(value)) {
+      return "Phone number must be 10 digits long and start with 0";
     }
     return null;
   }

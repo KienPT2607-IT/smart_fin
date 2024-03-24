@@ -26,6 +26,9 @@ void httpErrorHandle({
     case 400:
       showCustomSnackBar(context, jsonDecode(response.body)["message"]);
       break;
+    case 404:
+    // TODO: handle the case when the server returns a 404 status code
+      break;
     case 500:
       showCustomSnackBar(context, jsonDecode(response.body)["error"]);
       break;

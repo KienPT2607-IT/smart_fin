@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_fin/data/services/apis/auth_services.dart';
 import 'package:smart_fin/controllers/account_controller.dart';
+import 'package:smart_fin/data/services/apis/spending_jar_services.dart';
+import 'package:smart_fin/screens/init_screen.dart';
 import 'package:smart_fin/screens/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -12,14 +14,29 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey();
+  late GlobalKey<FormState> _formKey;
 
-  bool _obscurePassword = true;
-  final FocusNode _passwordFocusNode = FocusNode();
-  final TextEditingController _usernameCtrl = TextEditingController();
-  final TextEditingController _passwordCtrl = TextEditingController();
+  late FocusNode _passwordFocusNode;
+  late TextEditingController _usernameCtrl;
+  late TextEditingController _passwordCtrl;
+  late bool _obscurePassword;
 
-  final AuthService authService = AuthService();
+  late AccountController accountController;
+  late AuthService authService;
+  late SpendingJarService spendingJarService;
+
+  @override
+  void initState() {
+    super.initState();
+    _formKey = GlobalKey();
+    _passwordFocusNode = FocusNode();
+    _usernameCtrl = TextEditingController();
+    _passwordCtrl = TextEditingController();
+    _obscurePassword = true;
+    accountController = AccountController();
+    authService = AuthService();
+    spendingJarService = SpendingJarService();
+  }
 
   void loginUser() {
     if (_formKey.currentState!.validate()) {
@@ -27,6 +44,13 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         username: _usernameCtrl.text,
         password: _passwordCtrl.text,
+      );
+      spendingJarService.getJars(context: context);
+      Navigator.of(context).pushAndRemoveUntil(
+        CupertinoPageRoute(
+          builder: (context) => const InitScreen(),
+        ),
+        (route) => false,
       );
     }
   }
@@ -70,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   validator: (value) =>
-                      AccountController.validateUsername(value),
+                      accountController.validateUsername(value),
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -100,9 +124,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  validator: (value) {
-                    return null;
-                  },
+                  validator: (value) =>
+                      accountController.validatePassword(value),
                 ),
                 const SizedBox(height: 20),
                 Column(
@@ -110,12 +133,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     ElevatedButton(
                       onPressed: loginUser,
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF563D81),
                         minimumSize: const Size.fromHeight(50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      child: const Text("Login"),
+                      child: const Text(
+                        "Login",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -123,11 +150,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         const Text("Don't have an account?"),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushAndRemoveUntil(
                               context,
                               CupertinoPageRoute(
                                 builder: (context) => const RegisterScreen(),
                               ),
+                              (route) => false,
                             );
                           },
                           child: const Text("Register"),

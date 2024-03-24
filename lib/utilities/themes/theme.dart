@@ -16,16 +16,18 @@ class AppTheme {
     colorScheme: ColorScheme.fromSeed(
       seedColor: Colors.deepPurple,
       brightness: Brightness.dark,
+      background: Colors.grey[300],
     ),
   );
 
   static final lightTheme = ThemeData.light(useMaterial3: true).copyWith(
-    // primaryColor: Colors.white,
+    primaryColor: Colors.white,
     // textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
     // primaryTextTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
     colorScheme: ColorScheme.fromSeed(
       seedColor: Colors.deepPurple,
       brightness: Brightness.light,
+      background: Colors.white,
     ),
   );
 
