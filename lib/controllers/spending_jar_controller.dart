@@ -14,7 +14,7 @@ class SpendingJarController {
     return null;
   }
 
-  String? validateCurrentAmount(String? value) {
+  String? validateBalance(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Please enter an amount";
     }

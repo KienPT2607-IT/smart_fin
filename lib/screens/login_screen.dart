@@ -23,7 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   late AccountController accountController;
   late AuthService authService;
-  late SpendingJarService spendingJarService;
 
   @override
   void initState() {
@@ -35,7 +34,6 @@ class _LoginScreenState extends State<LoginScreen> {
     _obscurePassword = true;
     accountController = AccountController();
     authService = AuthService();
-    spendingJarService = SpendingJarService();
   }
 
   void loginUser() {
@@ -44,13 +42,6 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         username: _usernameCtrl.text,
         password: _passwordCtrl.text,
-      );
-      spendingJarService.getJars(context: context);
-      Navigator.of(context).pushAndRemoveUntil(
-        CupertinoPageRoute(
-          builder: (context) => const InitScreen(),
-        ),
-        (route) => false,
       );
     }
   }

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
-import 'package:smart_fin/data/models/spending_jar.dart';
 import 'package:smart_fin/utilities/widgets/bottom_sheet/bottom_sheet.dart';
 import 'package:smart_fin/utilities/widgets/spending_jar_card.dart';
 
 class ExpenseSection extends StatefulWidget {
-  List<SpendingJarCard> spendingJarList;
-  Function(String value) onSelected;
-  ExpenseSection({
+  final List<SpendingJarCard> spendingJarList;
+  final Function(String value) onSelected;
+  const ExpenseSection({
     super.key,
     required this.spendingJarList,
     required this.onSelected,
@@ -26,7 +24,12 @@ class _ExpenseSectionState extends State<ExpenseSection> {
   void initState() {
     super.initState();
 
-    selectedCardIndex = 0;
+    selectedCardIndex = -1;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override

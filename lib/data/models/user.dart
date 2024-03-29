@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:smart_fin/data/models/spending_jar.dart';
 
 class User {
-  // String id;
   String username;
   String email;
   String token;
@@ -13,9 +12,7 @@ class User {
   String? nickname;
   String? profileImage;
   String? dob;
-  List<SpendingJar>? spendingJars;
   User({
-    // required this.id,
     required this.username,
     required this.email,
     required this.fullName,

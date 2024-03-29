@@ -1,6 +1,8 @@
+import 'dart:io';
+
 class Constant {
   Constant._();
-  static const String baseUrlPath = "http://localhost:3000";
+  static final String baseUrlPath = Platform.isAndroid ? "http://10.0.2.2:3000" : "http://localhost:3000";
   static const String emailRegex =
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
   static const String passwordRegex =

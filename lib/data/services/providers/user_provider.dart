@@ -22,4 +22,8 @@ class UserProvider extends ChangeNotifier {
     _user = user;
     notifyListeners();
   }
+
+  void updateInfor(){
+    notifyListeners();
+  }
 }

@@ -17,16 +17,24 @@ class SpendingJarsProvider extends ChangeNotifier {
   }
 
   void removeSpendingJar(String id) {
-    _spendingJarList.removeWhere((element) => element.id == id);
+    _spendingJarList.removeWhere((jar) => jar.id == id);
     notifyListeners();
   }
 
   void updateSpendingJar(SpendingJar updatedJar) {
-    var index =
-        _spendingJarList.indexWhere((element) => element.id == updatedJar.id);
+    var index = _spendingJarList.indexWhere((jar) => jar.id == updatedJar.id);
 
     if (index != -1) {
       _spendingJarList[index] = updatedJar;
+      notifyListeners();
+    }
+  }
+
+  void updateBalance({required String id, required double amount}) {
+    var index = _spendingJarList.indexWhere((jar) => jar.id == id);
+
+    if (index != -1) {
+      _spendingJarList[index].balance -= amount;
       notifyListeners();
     }
   }

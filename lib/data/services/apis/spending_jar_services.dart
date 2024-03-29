@@ -10,97 +10,90 @@ import 'package:smart_fin/utilities/constants/constants.dart';
 import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
 
 class SpendingJarService {
-  static const String _baseUrl = "${Constant.baseUrlPath}/spending_jars";
+  static final String _baseUrl = "${Constant.baseUrlPath}/spending_jars";
 
   void createNewJar({
     required BuildContext context,
     required String name,
-    required double currentAmount,
+    required double balance,
     required String icon,
     required int color,
   }) {
-    final String token =
-        Provider.of<UserProvider>(context, listen: false).user.token;
-    var spendingJarProvider =
-        Provider.of<SpendingJarsProvider>(context, listen: false);
-    Future<http.Response> res = http.post(
-      Uri.parse("$_baseUrl/create"),
-      body: jsonEncode({
-        "name": name,
-        "current_amount": currentAmount,
-        "icon": icon,
-        "color": color,
-      }),
-      headers: <String, String>{
-        "Content-type": "application/json; charset=utf-8",
-        "x-auth-token": token,
-      },
-    );
-
-    res.then((res) {
-      httpErrorHandle(
-        response: res,
-        context: context,
-        onSuccess: () {
-          spendingJarProvider.addSpendingJar(
-            SpendingJar(
-              id: jsonDecode(res.body)["id"],
-              name: name,
-              currentAmount: currentAmount,
-              icon: icon,
-              color: color,
-            ),
-          );
+    try {
+      final String token =
+          Provider.of<UserProvider>(context, listen: false).user.token;
+      Future<http.Response> res = http.post(
+        Uri.parse("$_baseUrl/create"),
+        body: jsonEncode({
+          "name": name,
+          "balance": balance,
+          "icon": icon,
+          "color": color,
+        }),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
         },
       );
-    });
+
+      var spendingJarProvider =
+          Provider.of<SpendingJarsProvider>(context, listen: false);
+      res.then((res) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            spendingJarProvider.addSpendingJar(
+              SpendingJar(
+                id: jsonDecode(res.body)["id"],
+                name: name,
+                balance: balance,
+                icon: icon,
+                color: color,
+              ),
+            );
+          },
+        );
+      });
+    } on Exception catch (e) {
+      showCustomSnackBar(context, e.toString());
+    }
   }
 
   void getJars({required BuildContext context}) {
-    final String token =
-        Provider.of<UserProvider>(context, listen: false).user.token;
-    var spendingJarProvider =
-        Provider.of<SpendingJarsProvider>(context, listen: false);
-
-    Future<http.Response> res = http.get(
-      Uri.parse("$_baseUrl/"),
-      headers: <String, String>{
-        "Content-type": "application/json; charset=utf-8",
-        "x-auth-token": token,
-      },
-    );
-
-    res.then((res) {
-      httpErrorHandle(
-        response: res,
-        context: context,
-        onSuccess: () {
-          List<SpendingJar> jars = [];
-          jsonDecode(res.body)["data"].forEach((jar) {
-            print(jar);
-            // SpendingJar x = SpendingJar(
-            //   // id: jar["id"],
-            //   // name: jar["name"],
-            //   currentAmount: double.parse(jar["current_amount"]),
-            //   // icon: jar["icon"],
-            //   // // color: jar["color"] as int,
-            //   // color: 4293943954,
-            // );
-            // print("${x.currentAmount} ---- ${x.currentAmount.runtimeType}");
-            var x = jar["current_amount"] as double;
-            print(x.runtimeType);
-            // jars.add(SpendingJar(
-            //   id: jar["id"],
-            //   // name: jar["name"],
-            //   // currentAmount: double.parse(jar["current_amount"]),
-            //   // icon: jar["icon"],
-            //   // // color: jar["color"] as int,
-            //   // color: 4293943954,
-            // ));
-          });
-          spendingJarProvider.setSpendingJars(jars);
+    try {
+      final String token =
+          Provider.of<UserProvider>(context, listen: false).user.token;
+      Future<http.Response> res = http.get(
+        Uri.parse("$_baseUrl/"),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
         },
       );
-    });
+      var spendingJarProvider =
+          Provider.of<SpendingJarsProvider>(context, listen: false);
+      res.then((res) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            List<SpendingJar> jars = [];
+            jsonDecode(res.body)["data"].forEach((jar) {
+              jars.add(SpendingJar(
+                id: jar["id"],
+                name: jar["name"],
+                balance: jar["balance"].toDouble(),
+                icon: jar["icon"],
+                color: jar["color"],
+              ));
+            });
+            spendingJarProvider.setSpendingJars(jars);
+          },
+        );
+      });
+    } on Exception catch (e) {
+      showCustomSnackBar(context, e.toString());
+    }
   }
 }

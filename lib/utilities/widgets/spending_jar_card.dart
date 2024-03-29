@@ -12,7 +12,6 @@ class SpendingJarCard extends StatelessWidget {
     return Container(
       height: 75,
       width: 150,
-      // constraints: const BoxConstraints.tightFor(height: 75, width: 150),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -37,7 +36,7 @@ class SpendingJarCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Text(
-                    spendingJar.name!,
+                    spendingJar.name,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontSize: 16,
@@ -46,7 +45,7 @@ class SpendingJarCard extends StatelessWidget {
                   ),
                   const Gap(10),
                   Text(
-                    spendingJar.currentAmount.toString(),
+                    spendingJar.balance.toString(),
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontSize: 14,
@@ -58,8 +57,8 @@ class SpendingJarCard extends StatelessWidget {
             ),
             const Gap(10),
             SvgPicture.asset(
-              spendingJar.icon!,
-              color: Color(spendingJar.color!),
+              spendingJar.icon,
+              color: Color(spendingJar.color),
             ),
           ],
         ),

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_fin/data/models/user.dart';
+import 'package:smart_fin/data/services/apis/spending_jar_services.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
 import 'package:smart_fin/utilities/widgets/bottom_nav_destination.dart';
 import 'package:smart_fin/screens/history_screen.dart';
@@ -23,15 +24,22 @@ class _InitScreenState extends State<InitScreen> {
 
   late final List<Widget> _destinationViews;
   late User _user;
+  late SpendingJarService _spendingJarService;
+
   @override
   void initState() {
     super.initState();
 
     _selectedIndex = 0;
     _selectedSegment = 0;
+    _spendingJarService = SpendingJarService();
     _destinationViews = [
       const NoteTrackerScreen(),
-      const HistoryScreen(),
+      HistoryScreen(
+        onSelected: (value) => setState(() {
+          _selectedIndex = value;
+        }),
+      ),
       const StatisticsScreen(),
       const ProfileScreen(),
     ];
@@ -41,6 +49,7 @@ class _InitScreenState extends State<InitScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _user = Provider.of<UserProvider>(context).user;
+    _spendingJarService.getJars(context: context);
   }
 
   @override
@@ -71,18 +80,13 @@ class _InitScreenState extends State<InitScreen> {
           centerTitle: false,
           backgroundColor: Colors.white,
           actions: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: CupertinoSlidingSegmentedControl(
-                children: const {
-                  0: Icon(IconlyLight.add_user),
-                  1: Icon(IconlyLight.message),
-                },
-                groupValue: _selectedSegment,
-                onValueChanged: (newValue) => setState(() {
-                  _selectedSegment = newValue!;
-                }),
-              ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(IconlyLight.add_user),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(IconlyLight.message),
             ),
           ],
         ),

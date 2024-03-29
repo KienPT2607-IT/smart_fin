@@ -21,12 +21,12 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
   late SpendingJarsProvider spendingJars;
 
   late GlobalKey<FormState> _formKey;
-  late TextEditingController _jarNameCtrl, _currentAmountCtrl;
+  late TextEditingController _jarNameCtrl, _balanceCtrl;
 
   late SpendingJarController _spendingJarController;
   late SpendingJarService _spendingJarService;
   late String icon, jarNameDemo;
-  late double currentAmount;
+  late double balance;
   late int color, currentIconIndex, currentColorIndex;
 
   @override
@@ -35,7 +35,7 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
 
     _formKey = GlobalKey();
     _jarNameCtrl = TextEditingController();
-    _currentAmountCtrl = TextEditingController();
+    _balanceCtrl = TextEditingController();
     _spendingJarController = SpendingJarController();
     _spendingJarService = SpendingJarService();
 
@@ -45,7 +45,7 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
     currentIconIndex = 0;
     currentColorIndex = 0;
     jarNameDemo = "Jar name";
-    currentAmount = 0;
+    balance = 0;
   }
 
   @override
@@ -59,19 +59,10 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
       _spendingJarService.createNewJar(
         context: context,
         name: _jarNameCtrl.text,
-        currentAmount: currentAmount,
+        balance: balance,
         icon: icon,
         color: color,
       );
-      // spendingJars.addSpendingJar(
-      //   SpendingJar(
-      //     id: "",
-      //     name: _jarNameCtrl.text,
-      //     currentAmount: currentAmount,
-      //     icon: icon,
-      //     color: color,
-      //   ),
-      // );
       Navigator.pop(context);
       Navigator.pop(context);
     }
@@ -104,7 +95,7 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
                         spendingJar: SpendingJar(
                           id: "",
                           name: jarNameDemo,
-                          currentAmount: currentAmount,
+                          balance: balance,
                           icon: icon,
                           color: color,
                         ),
@@ -132,11 +123,11 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
                     ),
                     const Gap(10),
                     TextFormField(
-                      controller: _currentAmountCtrl,
+                      controller: _balanceCtrl,
                       keyboardType:
                           const TextInputType.numberWithOptions(decimal: true),
                       decoration: InputDecoration(
-                        labelText: "Current amount",
+                        labelText: "Current balance",
                         // TODO: download and add to assets
                         prefixIcon: const Icon(IconlyLight.wallet),
                         border: OutlineInputBorder(
@@ -148,13 +139,13 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
                       ),
                       onChanged: (value) => setState(() {
                         if (",".allMatches(value).length <= 1) {
-                          currentAmount = (value.isEmpty)
+                          balance = (value.isEmpty)
                               ? 0
                               : double.parse(value.replaceAll(",", "."));
                         }
                       }),
                       validator: (value) =>
-                          _spendingJarController.validateCurrentAmount(value),
+                          _spendingJarController.validateBalance(value),
                     ),
                     const Gap(10),
                     Container(
