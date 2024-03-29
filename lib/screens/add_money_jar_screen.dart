@@ -3,28 +3,28 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_fin/controllers/spending_jar_controller.dart';
-import 'package:smart_fin/data/models/spending_jar.dart';
-import 'package:smart_fin/data/services/apis/spending_jar_services.dart';
-import 'package:smart_fin/data/services/providers/spending_jars_provider.dart';
+import 'package:smart_fin/controllers/money_jar_controller.dart';
+import 'package:smart_fin/data/models/money_jar.dart';
+import 'package:smart_fin/data/services/apis/money_jar_services.dart';
+import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
 import 'package:smart_fin/utilities/constants/constants.dart';
-import 'package:smart_fin/utilities/widgets/spending_jar_card.dart';
+import 'package:smart_fin/utilities/widgets/money_jar_card.dart';
 
-class AddSpendingJarScreen extends StatefulWidget {
-  const AddSpendingJarScreen({super.key});
+class AddMoneyJarScreen extends StatefulWidget {
+  const AddMoneyJarScreen({super.key});
 
   @override
-  State<AddSpendingJarScreen> createState() => _AddSpendingJarScreenState();
+  State<AddMoneyJarScreen> createState() => _AddMoneyJarScreenState();
 }
 
-class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
-  late SpendingJarsProvider spendingJars;
+class _AddMoneyJarScreenState extends State<AddMoneyJarScreen> {
+  late MoneyJarProvider _moneyJarProvider;
 
   late GlobalKey<FormState> _formKey;
   late TextEditingController _jarNameCtrl, _balanceCtrl;
 
-  late SpendingJarController _spendingJarController;
-  late SpendingJarService _spendingJarService;
+  late MoneyJarController _moneyJarController;
+  late MoneyJarService _moneyJarService;
   late String icon, jarNameDemo;
   late double balance;
   late int color, currentIconIndex, currentColorIndex;
@@ -36,8 +36,8 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
     _formKey = GlobalKey();
     _jarNameCtrl = TextEditingController();
     _balanceCtrl = TextEditingController();
-    _spendingJarController = SpendingJarController();
-    _spendingJarService = SpendingJarService();
+    _moneyJarController = MoneyJarController();
+    _moneyJarService = MoneyJarService();
 
     icon = Constant.categoryIcons[0];
     color = Constant.colors[0];
@@ -51,12 +51,12 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    spendingJars = Provider.of<SpendingJarsProvider>(context, listen: false);
+    _moneyJarProvider = Provider.of<MoneyJarProvider>(context, listen: false);
   }
 
-  void _processCreateSpendingJar() {
+  void _processCreateMoneyJar() {
     if (_formKey.currentState!.validate()) {
-      _spendingJarService.createNewJar(
+      _moneyJarService.createNewJar(
         context: context,
         name: _jarNameCtrl.text,
         balance: balance,
@@ -75,7 +75,7 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: const Text("Add Spending Jar"),
+          title: const Text("Add money Jar"),
         ),
         backgroundColor: Colors.white,
         body: SafeArea(
@@ -91,8 +91,8 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
                         color: Colors.grey[100],
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: SpendingJarCard(
-                        spendingJar: SpendingJar(
+                      child: MoneyJarCard(
+                        moneyJar: MoneyJar(
                           id: "",
                           name: jarNameDemo,
                           balance: balance,
@@ -119,7 +119,7 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
                         jarNameDemo = value;
                       }),
                       validator: (value) =>
-                          _spendingJarController.validateJarName(value),
+                          _moneyJarController.validateJarName(value),
                     ),
                     const Gap(10),
                     TextFormField(
@@ -145,7 +145,7 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
                         }
                       }),
                       validator: (value) =>
-                          _spendingJarController.validateBalance(value),
+                          _moneyJarController.validateBalance(value),
                     ),
                     const Gap(10),
                     Container(
@@ -226,7 +226,7 @@ class _AddSpendingJarScreenState extends State<AddSpendingJarScreen> {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () => _processCreateSpendingJar(),
+                      onPressed: () => _processCreateMoneyJar(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF563D81),
                         minimumSize: const Size.fromHeight(50),

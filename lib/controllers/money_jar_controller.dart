@@ -1,6 +1,6 @@
 import 'package:smart_fin/utilities/constants/constants.dart';
 
-class SpendingJarController {
+class MoneyJarController {
   String? validateJarName(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Please enter a jar name";

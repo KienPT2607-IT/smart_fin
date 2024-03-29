@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
-import 'package:smart_fin/screens/add_spending_jar_screen.dart';
+import 'package:smart_fin/screens/add_money_jar_screen.dart';
 
 void showCustomBottomSheet(BuildContext context, List cards) {
-  
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -41,7 +40,7 @@ void showCustomBottomSheet(BuildContext context, List cards) {
                   icon: const Icon(IconlyLight.close_square),
                 ),
                 const Text(
-                  "Spending Jars",
+                  "Money Jars",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -65,7 +64,7 @@ void showCustomBottomSheet(BuildContext context, List cards) {
                   IconButton(
                     onPressed: () => Navigator.of(context).push(
                       CupertinoPageRoute(
-                        builder: (context) => const AddSpendingJarScreen(),
+                        builder: (context) => const AddMoneyJarScreen(),
                       ),
                     ),
                     icon: SvgPicture.asset("assets/icons/apps/add.svg"),

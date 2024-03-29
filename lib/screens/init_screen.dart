@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_fin/data/models/user.dart';
-import 'package:smart_fin/data/services/apis/spending_jar_services.dart';
+import 'package:smart_fin/data/services/apis/money_jar_services.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
 import 'package:smart_fin/utilities/widgets/bottom_nav_destination.dart';
 import 'package:smart_fin/screens/history_screen.dart';
@@ -24,7 +24,7 @@ class _InitScreenState extends State<InitScreen> {
 
   late final List<Widget> _destinationViews;
   late User _user;
-  late SpendingJarService _spendingJarService;
+  late MoneyJarService _moneyJarService;
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _InitScreenState extends State<InitScreen> {
 
     _selectedIndex = 0;
     _selectedSegment = 0;
-    _spendingJarService = SpendingJarService();
+    _moneyJarService = MoneyJarService();
     _destinationViews = [
       const NoteTrackerScreen(),
       HistoryScreen(
@@ -49,7 +49,7 @@ class _InitScreenState extends State<InitScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _user = Provider.of<UserProvider>(context).user;
-    _spendingJarService.getJars(context: context);
+    _moneyJarService.getJars(context: context);
   }
 
   @override

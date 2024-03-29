@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:smart_fin/data/models/spending_jar.dart';
+import 'package:smart_fin/data/models/money_jar.dart';
 
-class SpendingJarCard extends StatelessWidget {
-  final SpendingJar spendingJar;
-  const SpendingJarCard({super.key, required this.spendingJar});
+class MoneyJarCard extends StatelessWidget {
+  final MoneyJar moneyJar;
+  const MoneyJarCard({super.key, required this.moneyJar});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class SpendingJarCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Text(
-                    spendingJar.name,
+                    moneyJar.name,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontSize: 16,
@@ -45,7 +45,7 @@ class SpendingJarCard extends StatelessWidget {
                   ),
                   const Gap(10),
                   Text(
-                    spendingJar.balance.toString(),
+                    moneyJar.balance.toString(),
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontSize: 14,
@@ -57,8 +57,8 @@ class SpendingJarCard extends StatelessWidget {
             ),
             const Gap(10),
             SvgPicture.asset(
-              spendingJar.icon,
-              color: Color(spendingJar.color),
+              moneyJar.icon,
+              color: Color(moneyJar.color),
             ),
           ],
         ),

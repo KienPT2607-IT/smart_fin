@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:smart_fin/data/models/spending_jar.dart';
-import 'package:smart_fin/data/services/providers/spending_jars_provider.dart';
+import 'package:smart_fin/data/models/money_jar.dart';
+import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
 import 'package:smart_fin/utilities/constants/constants.dart';
 import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
 
-class SpendingJarService {
-  static final String _baseUrl = "${Constant.baseUrlPath}/spending_jars";
+class MoneyJarService {
+  static final String _baseUrl = "${Constant.baseUrlPath}/money_jars";
 
   void createNewJar({
     required BuildContext context,
@@ -36,15 +36,15 @@ class SpendingJarService {
         },
       );
 
-      var spendingJarProvider =
-          Provider.of<SpendingJarsProvider>(context, listen: false);
+      var moneyJarProvider =
+          Provider.of<MoneyJarProvider>(context, listen: false);
       res.then((res) {
         httpErrorHandle(
           response: res,
           context: context,
           onSuccess: () {
-            spendingJarProvider.addSpendingJar(
-              SpendingJar(
+            moneyJarProvider.addJar(
+              MoneyJar(
                 id: jsonDecode(res.body)["id"],
                 name: name,
                 balance: balance,
@@ -71,16 +71,16 @@ class SpendingJarService {
           "x-auth-token": token,
         },
       );
-      var spendingJarProvider =
-          Provider.of<SpendingJarsProvider>(context, listen: false);
+      var moneyJarProvider =
+          Provider.of<MoneyJarProvider>(context, listen: false);
       res.then((res) {
         httpErrorHandle(
           response: res,
           context: context,
           onSuccess: () {
-            List<SpendingJar> jars = [];
+            List<MoneyJar> jars = [];
             jsonDecode(res.body)["data"].forEach((jar) {
-              jars.add(SpendingJar(
+              jars.add(MoneyJar(
                 id: jar["id"],
                 name: jar["name"],
                 balance: jar["balance"].toDouble(),
@@ -88,7 +88,7 @@ class SpendingJarService {
                 color: jar["color"],
               ));
             });
-            spendingJarProvider.setSpendingJars(jars);
+            moneyJarProvider.setJars(jars);
           },
         );
       });

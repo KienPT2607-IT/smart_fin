@@ -12,7 +12,7 @@ class ExpenseNoteService {
 
   void createExpenseNote({
     required BuildContext context,
-    required String spendingJarId,
+    required String moneyJarId,
     required double amount,
     required DateTime date,
     required String note,
@@ -23,7 +23,7 @@ class ExpenseNoteService {
       Future<http.Response> res = http.post(
         Uri.parse("$_baseUrl/create"),
         body: jsonEncode({
-          "spending_jar": spendingJarId,
+          "money_jar": moneyJarId,
           "amount": amount,
           "create_at": date.toIso8601String(),
           "note": note,
@@ -38,7 +38,7 @@ class ExpenseNoteService {
             response: value,
             onSuccess: () {
               showCustomSnackBar(context, "Expense note saved!");
-              //TODO: update the used spending jar balance
+              //TODO: update the used money jar balance
             },
           ));
     } catch (e) {

@@ -6,7 +6,7 @@ class Expense {
   DateTime createAt;
   String note;
   String image;
-  String spendingJar;
+  String moneyJar;
   double jarBalance;
   String category;
 
@@ -16,7 +16,7 @@ class Expense {
     required this.createAt,
     required this.note,
     required this.image,
-    required this.spendingJar,
+    required this.moneyJar,
     required this.jarBalance,
     required this.category,
   });
@@ -29,7 +29,7 @@ class Expense {
         createAt: DateTime.parse(json["create_at"]),
         note: json["note"] ?? "",
         image: json["image"] ?? "",
-        spendingJar: json["spending_jar"] ?? "",
+        moneyJar: json["money_jar"] ?? "",
         jarBalance: json["jar_balance"] ?? 0.0,
         category: json["category"] ?? "",
       );
@@ -41,7 +41,7 @@ class Expense {
         "create_at": createAt.toIso8601String(),
         "note": note,
         "image": image,
-        "spending_jar": spendingJar,
+        "money_jar": moneyJar,
         "category": category,
       };
 }

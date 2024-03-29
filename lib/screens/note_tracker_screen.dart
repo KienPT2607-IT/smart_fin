@@ -4,12 +4,12 @@ import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
 import 'package:smart_fin/controllers/note_tracker_controller.dart';
 import 'package:smart_fin/data/services/apis/expense_note_services.dart';
-import 'package:smart_fin/data/services/providers/spending_jars_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
 import 'package:smart_fin/screens/components/note_tracker_screen/Income_section.dart';
 import 'package:smart_fin/screens/components/note_tracker_screen/expense_section.dart';
 import 'package:smart_fin/screens/components/note_tracker_screen/loan_section.dart';
-import 'package:smart_fin/utilities/widgets/spending_jar_card.dart';
+import 'package:smart_fin/utilities/widgets/money_jar_card.dart';
 import 'package:smart_fin/utilities/customs/custom_date_picker.dart';
 
 class NoteTrackerScreen extends StatefulWidget {
@@ -20,9 +20,9 @@ class NoteTrackerScreen extends StatefulWidget {
 }
 
 class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
-  late List<SpendingJarCard> _spendingJarCardList;
+  late List<MoneyJarCard> _moneyJarCardList;
   late int _selectedNoteType;
-  //TODO: rename this, this is id of the spending jar, loan or income
+  //TODO: rename this, this is id of the money jar, loan or income
   late String _Id;
 
   late GlobalKey<FormState> _formKey;
@@ -32,7 +32,7 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
   late DateTime date;
   late NoteTrackerController _noteTrackerController;
   late ExpenseNoteService _expenseNoteService;
-  late SpendingJarsProvider _spendingJarsProvider;
+  late MoneyJarProvider _moneyJarsProvider;
 
   @override
   void initState() {
@@ -54,13 +54,11 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
   @override
   didChangeDependencies() {
     super.didChangeDependencies();
-    _spendingJarsProvider =
-        Provider.of<SpendingJarsProvider>(context, listen: true);
-    _spendingJarCardList =
-        Provider.of<SpendingJarsProvider>(context, listen: true)
-            .spendingJarList
-            .map((spendingJar) => SpendingJarCard(spendingJar: spendingJar))
-            .toList();
+    _moneyJarsProvider = Provider.of<MoneyJarProvider>(context, listen: true);
+    _moneyJarCardList = Provider.of<MoneyJarProvider>(context, listen: true)
+        .moneyJarList
+        .map((moneyJar) => MoneyJarCard(moneyJar: moneyJar))
+        .toList();
   }
 
   void _saveNote() {
@@ -69,12 +67,12 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
         _expenseNoteService.createExpenseNote(
           context: context,
           amount: double.parse(_moneyAmountCtrl.text.replaceAll(",", ".")),
-          spendingJarId: _Id,
+          moneyJarId: _Id,
           date: date,
           note: _noteCtrl.text,
         );
 
-        _spendingJarsProvider.updateBalance(
+        _moneyJarsProvider.updateBalance(
           id: _Id,
           amount: double.parse(_moneyAmountCtrl.text.replaceAll(",", ".")),
         );
@@ -85,7 +83,7 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
       }
       _resetForm();
     } else {
-      // TODO: Craete a custom snackbar to require user to select a spending jar, loaner or income source
+      // TODO: Craete a custom snackbar to require user to select a money jar, loaner or income source
     }
   }
 
@@ -140,7 +138,7 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
                       height: 155,
                       child: (_selectedNoteType == 0)
                           ? ExpenseSection(
-                              spendingJarList: _spendingJarCardList,
+                              moneyJarList: _moneyJarCardList,
                               onSelected: (value) {
                                 setState(() {
                                   _Id = value;

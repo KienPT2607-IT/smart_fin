@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:smart_fin/data/models/spending_jar.dart';
-
 class User {
   String username;
   String email;

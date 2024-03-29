@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_fin/data/services/apis/auth_services.dart';
 import 'package:smart_fin/controllers/account_controller.dart';
-import 'package:smart_fin/data/services/apis/spending_jar_services.dart';
+import 'package:smart_fin/data/services/apis/money_jar_services.dart';
 import 'package:smart_fin/screens/init_screen.dart';
 import 'package:smart_fin/screens/register_screen.dart';
 

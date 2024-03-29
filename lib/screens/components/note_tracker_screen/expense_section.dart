@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
 import 'package:smart_fin/utilities/widgets/bottom_sheet/bottom_sheet.dart';
-import 'package:smart_fin/utilities/widgets/spending_jar_card.dart';
+import 'package:smart_fin/utilities/widgets/money_jar_card.dart';
 
 class ExpenseSection extends StatefulWidget {
-  final List<SpendingJarCard> spendingJarList;
+  final List<MoneyJarCard> moneyJarList;
   final Function(String value) onSelected;
   const ExpenseSection({
     super.key,
-    required this.spendingJarList,
+    required this.moneyJarList,
     required this.onSelected,
   });
 
@@ -42,7 +42,7 @@ class _ExpenseSectionState extends State<ExpenseSection> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                "Spending Jars",
+                "Money Jars",
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
@@ -50,7 +50,7 @@ class _ExpenseSectionState extends State<ExpenseSection> {
               ),
               IconButton(
                 onPressed: () {
-                  showCustomBottomSheet(context, widget.spendingJarList);
+                  showCustomBottomSheet(context, widget.moneyJarList);
                 },
                 icon: const Icon(IconlyLight.category),
               ),
@@ -60,12 +60,11 @@ class _ExpenseSectionState extends State<ExpenseSection> {
             child: ListView.separated(
               // padding: const EdgeInsets.symmetric(horizontal: 10),
               scrollDirection: Axis.horizontal,
-              itemCount: widget.spendingJarList.length,
+              itemCount: widget.moneyJarList.length,
               separatorBuilder: (context, index) => const Gap(10),
               itemBuilder: (context, index) => GestureDetector(
                 onTap: () {
-                  widget.onSelected(
-                      widget.spendingJarList[index].spendingJar.id!);
+                  widget.onSelected(widget.moneyJarList[index].moneyJar.id!);
                   setState(() {
                     selectedCardIndex = index;
                   });
@@ -81,7 +80,7 @@ class _ExpenseSectionState extends State<ExpenseSection> {
                             )
                           : null,
                     ),
-                    child: widget.spendingJarList[index]),
+                    child: widget.moneyJarList[index]),
               ),
             ),
           ),

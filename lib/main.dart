@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_fin/data/services/providers/spending_jars_provider.dart';
+import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
 import 'package:smart_fin/screens/login_screen.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
-import 'package:smart_fin/screens/note_tracker_screen.dart';
 import 'package:smart_fin/utilities/themes/theme.dart';
 
 void main() {
@@ -14,7 +13,7 @@ void main() {
           create: (_) => UserProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => SpendingJarsProvider(),
+          create: (_) => MoneyJarProvider(),
         )
       ],
       child: const MainApp(),
