@@ -46,7 +46,9 @@ class ExpenseNoteService {
     }
   }
 
-  void getExpenseNotes() {}
+  void getExpenseNotes({
+    required BuildContext context,
+  }) {}
 
   void updateExpenseNote() {}
 

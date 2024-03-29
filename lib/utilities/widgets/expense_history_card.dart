@@ -89,22 +89,15 @@ class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
               color: Colors.grey.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Row(
+            child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: const Icon(
-                    IconlyLight.wallet,
-                    size: 16,
-                  ),
+                Icon(
+                  IconlyLight.wallet,
+                  size: 16,
                 ),
-                const Gap(10),
-                const Flexible(
+                Gap(10),
+                Flexible(
                   child: Text(
                     "widget.expense.date 123123131 ",
                     overflow: TextOverflow.ellipsis,
