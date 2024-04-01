@@ -13,8 +13,8 @@ class UserProvider extends ChangeNotifier {
 
   User get user => _user;
 
-  void setUser(String user) {
-    _user = User.fromRawJson(user);
+  void setUser(String userRawJson) {
+    _user = User.fromRawJson(userRawJson);
     notifyListeners();
   }
 

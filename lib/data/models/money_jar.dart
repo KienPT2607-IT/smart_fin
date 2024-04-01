@@ -16,7 +16,7 @@ class MoneyJar {
   });
 
   factory MoneyJar.fromRawJson(String str) =>
-      MoneyJar.fromJson(json.decode(str));
+      MoneyJar.fromJson(jsonDecode(str));
 
   factory MoneyJar.fromJson(Map<String, dynamic> json) => MoneyJar(
         id: json['id'],
@@ -26,7 +26,7 @@ class MoneyJar {
         color: json['color'],
       );
 
-  String toRawJson() => json.encode(toJson());
+  String toRawJson() => jsonEncode(toJson());
 
   Map<String, dynamic> toJson() => {
         'id': id,

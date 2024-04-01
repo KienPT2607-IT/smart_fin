@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_fin/data/services/providers/expense_provider.dart';
 import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
 import 'package:smart_fin/screens/login_screen.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
@@ -14,7 +15,10 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (_) => MoneyJarProvider(),
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ExpenseProvider(),
+        ),
       ],
       child: const MainApp(),
     ),

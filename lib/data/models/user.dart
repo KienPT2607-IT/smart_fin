@@ -17,7 +17,7 @@ class User {
     required this.token,
   });
 
-  factory User.fromRawJson(String str) => User.fromJson(json.decode(str));
+  factory User.fromRawJson(String str) => User.fromJson(jsonDecode(str));
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         // id: json["id"] ?? "",
@@ -27,7 +27,7 @@ class User {
         token: json["token"] ?? "",
       );
 
-  String toRawJson() => json.encode(toJson());
+  String toRawJson() => jsonEncode(toJson());
 
   Map<String, dynamic> toJson() => {
         // "id": id,

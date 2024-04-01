@@ -36,14 +36,13 @@ class MoneyJarService {
         },
       );
 
-      var moneyJarProvider =
-          Provider.of<MoneyJarProvider>(context, listen: false);
+      var jarProvider = Provider.of<MoneyJarProvider>(context, listen: false);
       res.then((res) {
         httpErrorHandle(
           response: res,
           context: context,
           onSuccess: () {
-            moneyJarProvider.addJar(
+            jarProvider.addJar(
               MoneyJar(
                 id: jsonDecode(res.body)["id"],
                 name: name,
@@ -71,24 +70,13 @@ class MoneyJarService {
           "x-auth-token": token,
         },
       );
-      var moneyJarProvider =
-          Provider.of<MoneyJarProvider>(context, listen: false);
+      var jarProvider = Provider.of<MoneyJarProvider>(context, listen: false);
       res.then((res) {
         httpErrorHandle(
           response: res,
           context: context,
           onSuccess: () {
-            List<MoneyJar> jars = [];
-            jsonDecode(res.body)["data"].forEach((jar) {
-              jars.add(MoneyJar(
-                id: jar["id"],
-                name: jar["name"],
-                balance: jar["balance"].toDouble(),
-                icon: jar["icon"],
-                color: jar["color"],
-              ));
-            });
-            moneyJarProvider.setJars(jars);
+            jarProvider.setJars(res.body);
           },
         );
       });

@@ -3,9 +3,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
+import 'package:smart_fin/screens/add_friend_screen.dart';
 import 'package:smart_fin/screens/add_money_jar_screen.dart';
 
-void showCustomBottomSheet(BuildContext context, List cards) {
+String _getBottomSheetTitle(int sectionType) {
+  if (sectionType == 0) {
+    return "Money Jars";
+  }
+  if (sectionType == 1) {
+    return "Friends";
+  }
+  if (sectionType == 2) {
+    return "Income Sources";
+  }
+  return "";
+}
+
+void _getInputScreen(BuildContext context, int sectionType) {
+  if (sectionType == 0) {
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => const AddMoneyJarScreen(),
+      ),
+    );
+  }
+  if (sectionType == 1) {
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => const AddFriendScreen(),
+      ),
+    );
+  }
+}
+
+void showCustomBottomSheet(BuildContext context, int sectionType, List cards) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -24,54 +55,36 @@ void showCustomBottomSheet(BuildContext context, List cards) {
           Container(
             height: 5,
             width: 50,
-            margin: const EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.symmetric(vertical: 10),
             decoration: BoxDecoration(
               color: Colors.grey,
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(IconlyLight.close_square),
-                ),
-                const Text(
-                  "Money Jars",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(IconlyLight.filter),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            color: Colors.grey[100],
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text("Jars"),
-                  IconButton(
-                    onPressed: () => Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) => const AddMoneyJarScreen(),
-                      ),
-                    ),
-                    icon: SvgPicture.asset("assets/icons/apps/add.svg"),
-                  ),
-                ],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(IconlyLight.close_square),
               ),
-            ),
+              Text(
+                _getBottomSheetTitle(sectionType),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              IconButton(
+                onPressed: () => _getInputScreen(context, sectionType),
+                icon: SvgPicture.asset("assets/icons/apps/add.svg"),
+              ),
+            ],
+          ),
+          const Divider(
+            thickness: 1,
+            indent: 10,
+            endIndent: 10,
           ),
           const Gap(10),
           Expanded(

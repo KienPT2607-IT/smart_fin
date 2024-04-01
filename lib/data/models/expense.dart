@@ -21,7 +21,7 @@ class Expense {
     required this.category,
   });
 
-  factory Expense.fromRawJson(String str) => Expense.fromJson(json.decode(str));
+  factory Expense.fromRawJson(String str) => Expense.fromJson(jsonDecode(str));
 
   factory Expense.fromJson(Map<String, dynamic> json) => Expense(
         id: json["id"] ?? "",
@@ -34,7 +34,7 @@ class Expense {
         category: json["category"] ?? "",
       );
 
-  String toRawJson() => json.encode(toJson());
+  String toRawJson() => jsonEncode(toJson());
   Map<String, dynamic> toJson() => {
         "id": id,
         "amount": amount,

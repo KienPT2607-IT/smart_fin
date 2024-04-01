@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_fin/data/models/user.dart';
+import 'package:smart_fin/data/services/apis/expense_note_services.dart';
 import 'package:smart_fin/data/services/apis/money_jar_services.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
-import 'package:smart_fin/utilities/widgets/bottom_nav_destination.dart';
 import 'package:smart_fin/screens/history_screen.dart';
+import 'package:smart_fin/utilities/widgets/bottom_nav_destination.dart';
 import 'package:smart_fin/screens/note_tracker_screen.dart';
 import 'package:smart_fin/screens/profile_screen.dart';
 import 'package:smart_fin/screens/statistics_screen.dart';
@@ -19,20 +19,17 @@ class InitScreen extends StatefulWidget {
 }
 
 class _InitScreenState extends State<InitScreen> {
-  late int _selectedIndex;
-  late int _selectedSegment;
-
+  int _selectedIndex = 0;
+  late bool _isDataFetched;
   late final List<Widget> _destinationViews;
   late User _user;
-  late MoneyJarService _moneyJarService;
-
+  final MoneyJarService _moneyJarService = MoneyJarService();
+  final ExpenseNoteService _expNoteService = ExpenseNoteService();
   @override
   void initState() {
     super.initState();
 
-    _selectedIndex = 0;
-    _selectedSegment = 0;
-    _moneyJarService = MoneyJarService();
+    _isDataFetched = false;
     _destinationViews = [
       const NoteTrackerScreen(),
       HistoryScreen(
@@ -48,8 +45,13 @@ class _InitScreenState extends State<InitScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _user = Provider.of<UserProvider>(context).user;
-    _moneyJarService.getJars(context: context);
+    if (!_isDataFetched) {
+      _user = Provider.of<UserProvider>(context).user;
+      _moneyJarService.getJars(context: context);
+      _expNoteService.getExpenseNotes(context: context);
+
+      _isDataFetched = true;
+    }
   }
 
   @override

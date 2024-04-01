@@ -9,6 +9,7 @@ import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
 import 'package:smart_fin/screens/components/note_tracker_screen/Income_section.dart';
 import 'package:smart_fin/screens/components/note_tracker_screen/expense_section.dart';
 import 'package:smart_fin/screens/components/note_tracker_screen/loan_section.dart';
+import 'package:smart_fin/utilities/widgets/friend_card.dart';
 import 'package:smart_fin/utilities/widgets/money_jar_card.dart';
 import 'package:smart_fin/utilities/customs/custom_date_picker.dart';
 
@@ -20,33 +21,33 @@ class NoteTrackerScreen extends StatefulWidget {
 }
 
 class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
-  late List<MoneyJarCard> _moneyJarCardList;
   late int _selectedNoteType;
-  //TODO: rename this, this is id of the money jar, loan or income
-  late String _Id;
+  //TODO: give this a meaingful name, this is id of the money jar or income source
+  late String _id;
 
+  late List<MoneyJarCard> _moneyJarCardList;
+  late List<FriendCard> _friendCardList;
   late GlobalKey<FormState> _formKey;
-  late TextEditingController _moneyAmountCtrl;
+  late TextEditingController _amountCtrl;
   late TextEditingController _noteCtrl;
   late TextEditingController _dobCtrl;
   late DateTime date;
   late NoteTrackerController _noteTrackerController;
-  late ExpenseNoteService _expenseNoteService;
-  late MoneyJarProvider _moneyJarsProvider;
+  late ExpenseNoteService _expNoteService;
 
   @override
   void initState() {
     super.initState();
 
     _formKey = GlobalKey();
-    _moneyAmountCtrl = TextEditingController();
+    _amountCtrl = TextEditingController();
     _noteCtrl = TextEditingController();
     _dobCtrl = TextEditingController();
     _dobCtrl.text = DateTime.now().toString().split(" ")[0];
     _noteTrackerController = NoteTrackerController();
-    _expenseNoteService = ExpenseNoteService();
+    _expNoteService = ExpenseNoteService();
 
-    _Id = "";
+    _id = "";
     _selectedNoteType = 0;
     date = DateTime.now();
   }
@@ -54,27 +55,26 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
   @override
   didChangeDependencies() {
     super.didChangeDependencies();
-    _moneyJarsProvider = Provider.of<MoneyJarProvider>(context, listen: true);
+
     _moneyJarCardList = Provider.of<MoneyJarProvider>(context, listen: true)
         .moneyJarList
         .map((moneyJar) => MoneyJarCard(moneyJar: moneyJar))
         .toList();
+
+    _friendCardList = [];
   }
 
+  void _getNoteSection(int selectedIndex) {}
+
   void _saveNote() {
-    if (_formKey.currentState!.validate() && _Id.isNotEmpty) {
+    if (_formKey.currentState!.validate() && _id.isNotEmpty) {
       if (_selectedNoteType == 0) {
-        _expenseNoteService.createExpenseNote(
+        _expNoteService.createExpenseNote(
           context: context,
-          amount: double.parse(_moneyAmountCtrl.text.replaceAll(",", ".")),
-          moneyJarId: _Id,
+          amount: double.parse(_amountCtrl.text.replaceAll(",", ".")),
+          jarId: _id,
           date: date,
           note: _noteCtrl.text,
-        );
-
-        _moneyJarsProvider.updateBalance(
-          id: _Id,
-          amount: double.parse(_moneyAmountCtrl.text.replaceAll(",", ".")),
         );
       } else if (_selectedNoteType == 1) {
         // TODO: Create a loan note
@@ -88,7 +88,7 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
   }
 
   void _resetForm() {
-    _moneyAmountCtrl.clear();
+    _amountCtrl.clear();
     _noteCtrl.clear();
     date = DateTime.now();
     _dobCtrl.text = date.toString().split(" ")[0];
@@ -138,15 +138,17 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
                       height: 155,
                       child: (_selectedNoteType == 0)
                           ? ExpenseSection(
+                              sectionType: _selectedNoteType,
                               moneyJarList: _moneyJarCardList,
                               onSelected: (value) {
                                 setState(() {
-                                  _Id = value;
-                                  print(_Id);
+                                  _id = value;
                                 });
                               })
                           : (_selectedNoteType == 1)
                               ? LoanSection(
+                                  sectionType: _selectedNoteType,
+                                  friendCardList: _friendCardList,
                                   onSelected: (value) {
                                     setState(() {});
                                   },
@@ -161,7 +163,7 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
                 ),
                 const Gap(10),
                 TextFormField(
-                  controller: _moneyAmountCtrl,
+                  controller: _amountCtrl,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
@@ -175,9 +177,8 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  validator: (value) => _noteTrackerController.validateAmount(
-                    value,
-                  ),
+                  validator: (value) =>
+                      _noteTrackerController.validateAmount(value),
                 ),
                 const Gap(10),
                 TextFormField(

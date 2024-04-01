@@ -2,66 +2,41 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
+import 'package:provider/provider.dart';
 import 'package:smart_fin/data/models/expense.dart';
+import 'package:smart_fin/data/models/money_jar.dart';
+import 'package:smart_fin/data/services/providers/expense_provider.dart';
 import 'package:smart_fin/utilities/widgets/expense_history_card.dart';
 
 class HistoryScreen extends StatefulWidget {
-  Function(int destination) onSelected;
+  final Function(int destination) onSelected;
 
-  HistoryScreen({super.key, required this.onSelected});
+  const HistoryScreen({super.key, required this.onSelected});
 
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  late int _selectedSegment;
+  int _selectedSegment = 0;
+  late bool _isDataFetched;
 
-  // List<String> items = List<String>.generate(10000, (i) => 'Item $i');
-  List<ExpenseHistoryCard> items = [
-    ExpenseHistoryCard(
-      expense: Expense(
-        id: "1",
-        amount: 200,
-        jarBalance: 800,
-        moneyJar: "2",
-        image: "Jar 2",
-        note: "Note 2",
-        createAt: DateTime.now(),
-        category: 'Fuel',
-      ),
-    ),
-    ExpenseHistoryCard(
-      expense: Expense(
-        id: "2",
-        amount: 200,
-        jarBalance: 800,
-        moneyJar: "2",
-        image: "Jar 2",
-        note: "Note 2",
-        createAt: DateTime.now(),
-        category: 'Food',
-      ),
-    ),
-    ExpenseHistoryCard(
-      expense: Expense(
-        id: "3",
-        amount: 300,
-        jarBalance: 500,
-        moneyJar: "3",
-        image: "Jar 3",
-        note: "Note 3",
-        createAt: DateTime.now(),
-        category: 'Transport',
-      ),
-    ),
-  ];
-
+  late List<ExpenseHistoryCard> _expHistoryCardList;
   @override
   void initState() {
     super.initState();
+    _isDataFetched = false;
+  }
 
-    _selectedSegment = 0;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isDataFetched) {
+      _expHistoryCardList = Provider.of<ExpenseProvider>(context, listen: true)
+          .expenseList
+          .map((expense) => ExpenseHistoryCard(expense: expense))
+          .toList();
+    }
   }
 
   @override
@@ -109,8 +84,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       const Expanded(
                         child: Text(
                           "Views statistics",
-                          // TODO: Style this text
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ),
                       const Icon(
@@ -127,12 +101,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
         const Gap(10),
         Expanded(
           child: ListView.builder(
-            itemCount: items.length,
+            itemCount: _selectedSegment == 0
+                ? _expHistoryCardList.length
+                : (_selectedSegment == 1)
+                    ? _expHistoryCardList.length
+                    : _expHistoryCardList.length,
             itemBuilder: (context, index) {
-              return items[index];
+              if (_selectedSegment == 0) {
+                return _expHistoryCardList[index];
+              } else if (_selectedSegment == 1) {
+                return _expHistoryCardList[index];
+              } else {
+                return _expHistoryCardList[index];
+              }
             },
           ),
-        )
+        ),
       ],
     );
   }
