@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,8 +10,8 @@ void showCustomSnackBar(BuildContext context, String text) {
 }
 
 void httpErrorHandle({
-  required http.Response response,
   required BuildContext context,
+  required http.Response response,
   required VoidCallback onSuccess,
 }) {
   switch (response.statusCode) {
@@ -24,13 +22,13 @@ void httpErrorHandle({
       onSuccess();
       break;
     case 400:
-      showCustomSnackBar(context, jsonDecode(response.body)["message"]);
+      showCustomSnackBar(context, response.body);
       break;
     case 404:
-      showCustomSnackBar(context, jsonDecode(response.body)["message"]);
+      // showCustomSnackBar(context, "No content found!");
       break;
     case 500:
-      showCustomSnackBar(context, jsonDecode(response.body)["error"]);
+      showCustomSnackBar(context, "Server error!");
       break;
     default:
       showCustomSnackBar(context, response.body);

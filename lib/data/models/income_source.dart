@@ -1,29 +1,24 @@
 import 'dart:convert';
 
-class MoneyJar {
+class IncomeSource {
   String id;
   String name;
-  double balance;
   String icon;
   int color;
 
-  MoneyJar({
+  IncomeSource({
     required this.id,
     required this.name,
-    required this.balance,
     required this.icon,
     required this.color,
   });
 
-  factory MoneyJar.fromRawJson(String str) =>
-      MoneyJar.fromJson(jsonDecode(str));
+  factory IncomeSource.fromRawJson(String str) =>
+      IncomeSource.fromJson(jsonDecode(str));
 
-  factory MoneyJar.fromJson(Map<String, dynamic> json) => MoneyJar(
+  factory IncomeSource.fromJson(Map<String, dynamic> json) => IncomeSource(
         id: json['id'],
         name: json['name'],
-        balance: json["balance"] is int
-            ? (json["balance"] as int).toDouble()
-            : json["balance"],
         icon: json['icon'],
         color: json['color'],
       );
@@ -33,7 +28,6 @@ class MoneyJar {
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
-        'balance': balance,
         'icon': icon,
         'color': color,
       };

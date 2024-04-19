@@ -14,7 +14,6 @@ class BottomNavDestination extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NavigationDestination(
-      // tooltip: "Home",
       selectedIcon: Icon(
         selectedIcon,
         color: Theme.of(context).colorScheme.primary,

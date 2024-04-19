@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_fin/data/models/user.dart';
 import 'package:smart_fin/data/services/apis/expense_note_services.dart';
+import 'package:smart_fin/data/services/apis/friend_services.dart';
+import 'package:smart_fin/data/services/apis/income_note_services.dart';
+import 'package:smart_fin/data/services/apis/income_source_services.dart';
+import 'package:smart_fin/data/services/apis/loan_note_services.dart';
 import 'package:smart_fin/data/services/apis/money_jar_services.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
 import 'package:smart_fin/screens/history_screen.dart';
-import 'package:smart_fin/utilities/widgets/bottom_nav_destination.dart';
+import 'package:smart_fin/utilities/widgets/customs/bottom_nav_destination.dart';
 import 'package:smart_fin/screens/note_tracker_screen.dart';
 import 'package:smart_fin/screens/profile_screen.dart';
 import 'package:smart_fin/screens/statistics_screen.dart';
@@ -19,22 +24,33 @@ class InitScreen extends StatefulWidget {
 }
 
 class _InitScreenState extends State<InitScreen> {
-  int _selectedIndex = 0;
   late bool _isDataFetched;
-  late final List<Widget> _destinationViews;
+  late int _selectedScreen;
   late User _user;
-  final MoneyJarService _moneyJarService = MoneyJarService();
-  final ExpenseNoteService _expNoteService = ExpenseNoteService();
+  late final List<Widget> _destinationViews;
+  late final MoneyJarService _moneyJarService;
+  late final ExpenseNoteService _expNoteService;
+  late final FriendService _friendService;
+  late final LoanNoteService _loanNoteService;
+  late final IncomeNoteService _incomeNoteService;
+  late final IncomeSourceService _incomeSourceService;
   @override
   void initState() {
     super.initState();
 
+    _selectedScreen = 0;
+    _moneyJarService = MoneyJarService();
+    _expNoteService = ExpenseNoteService();
+    _friendService = FriendService();
+    _loanNoteService = LoanNoteService();
+    _incomeNoteService = IncomeNoteService();
+    _incomeSourceService = IncomeSourceService();
     _isDataFetched = false;
     _destinationViews = [
       const NoteTrackerScreen(),
       HistoryScreen(
         onSelected: (value) => setState(() {
-          _selectedIndex = value;
+          _selectedScreen = value;
         }),
       ),
       const StatisticsScreen(),
@@ -48,8 +64,11 @@ class _InitScreenState extends State<InitScreen> {
     if (!_isDataFetched) {
       _user = Provider.of<UserProvider>(context).user;
       _moneyJarService.getJars(context: context);
-      _expNoteService.getExpenseNotes(context: context);
-
+      _expNoteService.getNotes(context: context);
+      _friendService.getFriends(context: context);
+      _loanNoteService.getNotes(context: context);
+      _incomeSourceService.getSources(context: context);
+      _incomeNoteService.getNotes(context: context);
       _isDataFetched = true;
     }
   }
@@ -57,54 +76,44 @@ class _InitScreenState extends State<InitScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus) {
-          currentFocus.unfocus();
-        }
-      },
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
           leading: Padding(
             padding: const EdgeInsets.only(left: 10),
             child: GestureDetector(
               child: const CircleAvatar(
-                backgroundImage: AssetImage(
-                  "assets/images/avatars/2.jpg",
-                ),
+                backgroundImage: AssetImage("assets/images/avatars/2.jpg"),
               ),
               onTap: () => setState(() {
-                _selectedIndex = 3;
+                _selectedScreen = 3;
               }),
             ),
           ),
           title: Text(_user.fullName),
           centerTitle: false,
-          backgroundColor: Colors.white,
           actions: [
             IconButton(
               onPressed: () {},
-              icon: const Icon(IconlyLight.add_user),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(IconlyLight.message),
+              // TODO: Turn this into setting function
+              icon: SvgPicture.asset("assets/icons/app/search.svg"),
             ),
           ],
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SafeArea(
-          child: _destinationViews[_selectedIndex],
+          child: _destinationViews[_selectedScreen],
         ),
         bottomNavigationBar: NavigationBar(
-          selectedIndex: _selectedIndex,
+          selectedIndex: _selectedScreen,
           onDestinationSelected: (index) {
             setState(() {
-              _selectedIndex = index;
+              _selectedScreen = index;
             });
           },
           indicatorColor: Colors.transparent,
-          backgroundColor: Colors.white,
+          // backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Colors.white60,
           destinations: const [
             BottomNavDestination(
               icon: IconlyLight.edit,

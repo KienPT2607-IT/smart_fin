@@ -164,13 +164,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: <Widget>[
                     ElevatedButton(
                       onPressed: registerUser,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF563D81),
-                        minimumSize: const Size.fromHeight(50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
                       child: const Text(
                         "Register",
                         style: TextStyle(color: Colors.white),

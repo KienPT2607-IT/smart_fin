@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
 import 'package:smart_fin/utilities/widgets/bottom_sheet/bottom_sheet.dart';
-import 'package:smart_fin/utilities/widgets/money_jar_card.dart';
+import 'package:smart_fin/utilities/widgets/cards/money_jar_card.dart';
 
 class ExpenseSection extends StatefulWidget {
   final int sectionType;
-  final List<MoneyJarCard> moneyJarList;
-  final Function(String value) onSelected;
+  final List<MoneyJarCard> jarCardList;
+  final Function(String value) onJarSelected;
   const ExpenseSection({
     super.key,
     required this.sectionType,
-    required this.moneyJarList,
-    required this.onSelected,
+    required this.jarCardList,
+    required this.onJarSelected,
   });
 
   @override
@@ -20,13 +20,13 @@ class ExpenseSection extends StatefulWidget {
 }
 
 class _ExpenseSectionState extends State<ExpenseSection> {
-  late int selectedCardIndex;
+  late int _selectedJar;
 
   @override
   void initState() {
     super.initState();
 
-    selectedCardIndex = -1;
+    _selectedJar = -1;
   }
 
   @override
@@ -40,12 +40,21 @@ class _ExpenseSectionState extends State<ExpenseSection> {
               "Money Jars",
               style: TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w400,
               ),
             ),
             IconButton(
               onPressed: () {
-                showCustomBottomSheet(context, widget.sectionType, widget.moneyJarList);
+                showCustomBottomSheet(
+                  context,
+                  widget.sectionType,
+                  widget.jarCardList,
+                  (index) {
+                    setState(() {
+                      _selectedJar = index;
+                    });
+                  },
+                );
               },
               icon: const Icon(IconlyLight.category),
             ),
@@ -53,29 +62,28 @@ class _ExpenseSectionState extends State<ExpenseSection> {
         ),
         Expanded(
           child: ListView.separated(
-            // padding: const EdgeInsets.symmetric(horizontal: 10),
             scrollDirection: Axis.horizontal,
-            itemCount: widget.moneyJarList.length,
+            itemCount: widget.jarCardList.length,
             separatorBuilder: (context, index) => const Gap(10),
             itemBuilder: (context, index) => GestureDetector(
               onTap: () {
-                widget.onSelected(widget.moneyJarList[index].moneyJar.id);
+                widget.onJarSelected(widget.jarCardList[index].moneyJar.id);
                 setState(() {
-                  selectedCardIndex = index;
+                  _selectedJar = index;
                 });
               },
               child: Container(
                   margin: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    border: selectedCardIndex == index
+                    border: _selectedJar == index
                         ? Border.all(
                             color: const Color(0xFF21CE99),
                             width: 1.2,
                           )
                         : null,
                   ),
-                  child: widget.moneyJarList[index]),
+                  child: widget.jarCardList[index]),
             ),
           ),
         ),

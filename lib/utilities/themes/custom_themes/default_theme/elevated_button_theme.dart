@@ -6,16 +6,14 @@ class CustomElevatedButtonTheme {
   static ElevatedButtonThemeData lightElevatedButtonTheme =
       ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      elevation: 0,
-      foregroundColor: Colors.white,
-      backgroundColor: Colors.blue,
+      elevation: 0, //Shadow
+      foregroundColor: Colors.white, //Color of icon or text
+      backgroundColor: const Color(0xFF314cb6),
       disabledForegroundColor: Colors.grey,
       disabledBackgroundColor: Colors.grey,
-      side: const BorderSide(color: Colors.blue),
-      padding: const EdgeInsets.symmetric(vertical: 18),
+      minimumSize: const Size.fromHeight(50),
       textStyle: const TextStyle(
         fontSize: 16,
-        color: Colors.white,
         fontWeight: FontWeight.w600,
       ),
       shape: RoundedRectangleBorder(

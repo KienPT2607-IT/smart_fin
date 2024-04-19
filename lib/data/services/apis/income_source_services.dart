@@ -1,21 +1,20 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_fin/data/models/money_jar.dart';
-import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
+import 'package:smart_fin/data/models/income_source.dart';
+import 'package:smart_fin/data/services/providers/income_source_provider.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
 import 'package:smart_fin/utilities/constants/constants.dart';
+import 'package:http/http.dart' as http;
 import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
 
-class MoneyJarService {
-  static final String _baseUrl = "${Constant.baseUrlPath}/money_jars";
+class IncomeSourceService {
+  static final String _baseUrl = "${Constant.baseUrlPath}/income_sources";
 
-  void createNewJar({
+  void createNewSource({
     required BuildContext context,
     required String name,
-    required double balance,
     required String icon,
     required int color,
   }) {
@@ -26,7 +25,6 @@ class MoneyJarService {
         Uri.parse("$_baseUrl/create"),
         body: jsonEncode({
           "name": name,
-          "balance": balance,
           "icon": icon,
           "color": color,
         }),
@@ -36,28 +34,26 @@ class MoneyJarService {
         },
       );
 
-      var jarProvider = Provider.of<MoneyJarProvider>(context, listen: false);
-      res.then((res) {
-        httpErrorHandle(
-          response: res,
-          context: context,
-          onSuccess: () {
-            jarProvider.addJar(MoneyJar(
-              id: jsonDecode(res.body)["id"],
-              name: name,
-              balance: balance,
-              icon: icon,
-              color: color,
-            ));
-          },
-        );
-      });
+      var sourceProvider =
+          Provider.of<IncomeSourceProvider>(context, listen: false);
+      res.then((res) => httpErrorHandle(
+            response: res,
+            context: context,
+            onSuccess: () {
+              sourceProvider.addSource(IncomeSource(
+                id: jsonDecode(res.body)["id"],
+                name: name,
+                icon: icon,
+                color: color,
+              ));
+            },
+          ));
     } on Exception catch (e) {
       showCustomSnackBar(context, e.toString());
     }
   }
 
-  void getJars({required BuildContext context}) {
+  void getSources({required BuildContext context}) {
     try {
       final String token =
           Provider.of<UserProvider>(context, listen: false).getToken();
@@ -68,17 +64,15 @@ class MoneyJarService {
           "x-auth-token": token,
         },
       );
-      var jarProvider = Provider.of<MoneyJarProvider>(context, listen: false);
-      res.then((res) {
-        httpErrorHandle(
-          response: res,
-          context: context,
-          onSuccess: () {
-            jarProvider.setJars(res.body);
-          },
-        );
-      });
-    } on Exception catch (e) {
+
+      var sourceProvider =
+          Provider.of<IncomeSourceProvider>(context, listen: false);
+      res.then((res) => httpErrorHandle(
+            response: res,
+            context: context,
+            onSuccess: () => sourceProvider.setSources(res.body),
+          ));
+    } catch (e) {
       showCustomSnackBar(context, e.toString());
     }
   }

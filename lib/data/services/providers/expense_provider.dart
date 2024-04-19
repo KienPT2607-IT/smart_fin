@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:smart_fin/data/models/expense.dart';
 
 class ExpenseProvider extends ChangeNotifier {
@@ -12,26 +12,10 @@ class ExpenseProvider extends ChangeNotifier {
 
   List<Expense> get expenseList => _expenseList;
 
-  void setExpenses(String expensesRawJson) {
-    List expenseList = jsonDecode(expensesRawJson)["data"];
-    for (var expense in expenseList) {
-      _expenseList.insert(
-        0,
-        Expense(
-          id: expense["id"],
-          amount: expense["amount"] is int
-              ? (expense["amount"] as int).toDouble()
-              : expense["amount"],
-          createAt: DateTime.parse(expense["create_at"]),
-          note: expense["note"] ?? "",
-          image: expense["image"] ?? "",
-          moneyJar: expense["money_jar"],
-          jarBalance: expense["jar_balance"] is int
-              ? (expense["jar_balance"] as int).toDouble()
-              : expense["jar_balance"],
-          category: expense["category"] ?? "",
-        ),
-      );
+  void setExpenses(String rawJson) {
+    List jsonList = jsonDecode(rawJson)["data"];
+    for (var json in jsonList) {
+      _expenseList.add(Expense.fromJson(json));
     }
     notifyListeners();
   }
@@ -47,12 +31,28 @@ class ExpenseProvider extends ChangeNotifier {
   }
 
   void updateExpense(Expense updatedExpense) {
-    var index =
+    int index =
         _expenseList.indexWhere((expense) => expense.id == updatedExpense.id);
 
     if (index != -1) {
       _expenseList[index] = updatedExpense;
       notifyListeners();
     }
+  }
+
+  double getTotalExpenseByJarId(String moneyJarId) {
+    double total = 0;
+    for (var each in _expenseList) {
+      if (each.moneyJar == moneyJarId) total += each.amount;
+    }
+    return total;
+  }
+
+  double getTotalExpense() {
+    double total = 0;
+    for (var each in _expenseList) {
+      total += each.amount;
+    }
+    return total;
   }
 }

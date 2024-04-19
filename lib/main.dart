@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_fin/data/services/providers/expense_provider.dart';
+import 'package:smart_fin/data/services/providers/friend_provider.dart';
+import 'package:smart_fin/data/services/providers/income_provider.dart';
+import 'package:smart_fin/data/services/providers/income_source_provider.dart';
+import 'package:smart_fin/data/services/providers/loan_provider.dart';
 import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
 import 'package:smart_fin/screens/login_screen.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
@@ -14,10 +18,22 @@ void main() {
           create: (_) => UserProvider(),
         ),
         ChangeNotifierProvider(
+          create: (_) => FriendProvider(),
+        ),
+        ChangeNotifierProvider(
           create: (_) => MoneyJarProvider(),
         ),
         ChangeNotifierProvider(
           create: (_) => ExpenseProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => LoanProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => IncomeProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => IncomeSourceProvider(),
         ),
       ],
       child: const MainApp(),
@@ -41,7 +57,7 @@ class _MainAppState extends State<MainApp> {
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system,
       theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
+      // darkTheme: AppTheme.darkTheme,
       home: const LoginScreen(),
     );
   }

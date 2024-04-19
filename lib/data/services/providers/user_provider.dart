@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:smart_fin/data/models/user.dart';
 
 class UserProvider extends ChangeNotifier {
   User _user = User(
-    // id: "",
     username: "",
     email: "",
     fullName: "",
@@ -12,6 +11,10 @@ class UserProvider extends ChangeNotifier {
   );
 
   User get user => _user;
+
+  String getToken() {
+    return _user.token;
+  }
 
   void setUser(String userRawJson) {
     _user = User.fromRawJson(userRawJson);
@@ -23,7 +26,8 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateInfor(){
+  void updateInfor() {
+    // TODO: Implement when profile sreen implemented
     notifyListeners();
   }
 }

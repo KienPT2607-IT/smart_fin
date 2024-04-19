@@ -24,8 +24,8 @@ class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _jar = Provider.of<MoneyJarProvider>(context, listen: false)
-        .getJar(widget.expense.moneyJar);
+    _jar =
+        Provider.of<MoneyJarProvider>(context).getJar(widget.expense.moneyJar);
   }
 
   @override
@@ -35,7 +35,7 @@ class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
         builder: (context) => const ExpenseDetailScreen(),
       )),
       child: Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: const BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -68,16 +68,31 @@ class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
                       ),
                     ),
                     const Gap(10),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      child: Text(
-                        _jar.name,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                    Column(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Text(
+                            _jar.name,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Text(
+                            widget.expense.note,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:smart_fin/data/models/money_jar.dart';
+import 'package:smart_fin/data/models/income_source.dart';
 
-class MoneyJarCard extends StatelessWidget {
-  final MoneyJar moneyJar;
-  const MoneyJarCard({super.key, required this.moneyJar});
+class IncomeSourceCard extends StatelessWidget {
+  final IncomeSource incomeSource;
+  const IncomeSourceCard({super.key, required this.incomeSource});
 
   @override
   Widget build(BuildContext context) {
@@ -15,12 +15,12 @@ class MoneyJarCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: const Offset(1, 1),
+            color: Color(0xFFD5D5D7),
+            spreadRadius: 0,
+            blurRadius: 4,
+            offset: Offset(0, 1),
           ),
         ],
       ),
@@ -33,23 +33,14 @@ class MoneyJarCard extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                // mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Text(
-                    moneyJar.name,
+                    incomeSource.name,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Gap(10),
-                  Text(
-                    moneyJar.balance.toString(),
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      // fontWeight: FontWeight.,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -57,8 +48,8 @@ class MoneyJarCard extends StatelessWidget {
             ),
             const Gap(10),
             SvgPicture.asset(
-              moneyJar.icon,
-              color: Color(moneyJar.color),
+              incomeSource.icon,
+              color: Color(incomeSource.color),
             ),
           ],
         ),

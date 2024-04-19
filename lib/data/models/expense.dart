@@ -5,7 +5,6 @@ class Expense {
   double amount;
   DateTime createAt;
   String note;
-  String image;
   String moneyJar;
   double jarBalance;
   String category;
@@ -15,7 +14,6 @@ class Expense {
     required this.amount,
     required this.createAt,
     required this.note,
-    required this.image,
     required this.moneyJar,
     required this.jarBalance,
     required this.category,
@@ -25,12 +23,15 @@ class Expense {
 
   factory Expense.fromJson(Map<String, dynamic> json) => Expense(
         id: json["id"] ?? "",
-        amount: json["amount"] ?? 0.0,
+        amount: json["amount"] is int
+            ? (json["amount"] as int).toDouble()
+            : json["amount"],
         createAt: DateTime.parse(json["create_at"]),
         note: json["note"] ?? "",
-        image: json["image"] ?? "",
         moneyJar: json["money_jar"] ?? "",
-        jarBalance: json["jar_balance"] ?? 0.0,
+        jarBalance: json["jar_balance"] is int
+            ? (json["jar_balance"] as int).toDouble()
+            : json["jar_balance"],
         category: json["category"] ?? "",
       );
 
@@ -40,7 +41,6 @@ class Expense {
         "amount": amount,
         "create_at": createAt.toIso8601String(),
         "note": note,
-        "image": image,
         "money_jar": moneyJar,
         "category": category,
       };

@@ -12,7 +12,10 @@ class CustomAppBarTheme {
     iconTheme: IconThemeData(color: Colors.black, size: 24),
     actionsIconTheme: IconThemeData(color: Colors.black, size: 24),
     titleTextStyle: TextStyle(
-        color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+      color: Colors.black,
+      fontSize: 22,
+      fontWeight: FontWeight.w400,
+    ),
   );
 
   static const AppBarTheme darkAppbarTheme = AppBarTheme(

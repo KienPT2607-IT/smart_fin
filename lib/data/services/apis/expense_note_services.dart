@@ -13,7 +13,7 @@ import 'package:http/http.dart' as http;
 class ExpenseNoteService {
   static final String _baseUrl = "${Constant.baseUrlPath}/expenses";
 
-  void createExpenseNote({
+  void createNote({
     required BuildContext context,
     required String jarId,
     required double amount,
@@ -37,29 +37,28 @@ class ExpenseNoteService {
         },
       );
 
-      MoneyJarProvider jarProvider =
-          Provider.of<MoneyJarProvider>(context, listen: false);
-      ExpenseProvider expProvider =
-          Provider.of<ExpenseProvider>(context, listen: false);
       res.then((res) => httpErrorHandle(
             context: context,
             response: res,
             onSuccess: () {
+              var jarProvider =
+                  Provider.of<MoneyJarProvider>(context, listen: false);
+              var expProvider =
+                  Provider.of<ExpenseProvider>(context, listen: false);
               jarProvider.updateBalance(
                 id: jarId,
                 amount: amount,
+                isIncreased: true,
               );
               expProvider.addExpense(Expense(
                 id: jsonDecode(res.body)["id"],
                 amount: amount,
                 createAt: date,
                 note: note,
-                image: "",
                 moneyJar: jarId,
                 jarBalance: jarProvider.getBalance(jarId),
                 category: "",
               ));
-              showCustomSnackBar(context, "Expense note saved!");
             },
           ));
     } catch (e) {
@@ -67,12 +66,12 @@ class ExpenseNoteService {
     }
   }
 
-  void getExpenseNotes({
+  void getNotes({
     required BuildContext context,
   }) {
     try {
       String token =
-          Provider.of<UserProvider>(context, listen: false).user.token;
+          Provider.of<UserProvider>(context, listen: false).getToken();
       Future<http.Response> res = http.get(
         Uri.parse("$_baseUrl/"),
         headers: <String, String>{
@@ -95,9 +94,9 @@ class ExpenseNoteService {
     }
   }
 
-  void updateExpenseNote() {}
+  void updateNote() {}
 
-  void changeExpenseCategory() {}
+  void changeNoteCategory() {}
 
-  void deleteExpenseNote() {}
+  void deleteENote() {}
 }

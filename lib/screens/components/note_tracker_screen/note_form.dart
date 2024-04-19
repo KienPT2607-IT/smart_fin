@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
-import 'package:smart_fin/screens/components/note_tracker_screen/Income_section.dart';
+import 'package:smart_fin/screens/components/note_tracker_screen/income_section.dart';
 import 'package:smart_fin/screens/components/note_tracker_screen/expense_section.dart';
 import 'package:smart_fin/screens/components/note_tracker_screen/loan_section.dart';
 

@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -123,17 +123,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: <Widget>[
                     ElevatedButton(
                       onPressed: loginUser,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF563D81),
-                        minimumSize: const Size.fromHeight(50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      style: Theme.of(context).elevatedButtonTheme.style,
+                      child: const Text("Login"),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

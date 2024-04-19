@@ -2,54 +2,59 @@ import 'dart:convert';
 
 class Loan {
   String id;
-  String lenderId;
-  String borrowerId;
+  String participantId;
+  String participantName;
   double amount;
   String note;
   bool isRepaid;
-  String creatorRole; //Lender/Borrower
-  String creatorId;
+  bool isCreatorLender;
   DateTime createAt;
+  String moneyJar;
+  double jarBalance;
 
   Loan({
     required this.id,
-    required this.lenderId,
-    required this.borrowerId,
+    required this.participantId,
+    required this.participantName,
     required this.amount,
     required this.note,
     required this.isRepaid,
-    required this.creatorRole,
-    required this.creatorId,
+    required this.isCreatorLender,
     required this.createAt,
+    required this.moneyJar,
+    required this.jarBalance,
   });
 
   factory Loan.fromRawJson(String str) => Loan.fromJson(jsonDecode(str));
 
   factory Loan.fromJson(Map<String, dynamic> json) => Loan(
         id: json["id"],
-        lenderId: json["lender_id"],
-        borrowerId: json["borrower_id"],
+        participantId: json["participant_id"],
+        participantName: json["participant_name"],
         amount: json["amount"] is int
             ? (json["amount"] as int).toDouble()
             : json["amount"],
-        note: json["note"],
+        note: json["note"] ?? "",
         isRepaid: json["is_repaid"],
-        creatorRole: json["creator_role"],
-        creatorId: json["creator_id"],
-        createAt: json["create_at"],
+        isCreatorLender: json["is_creator_lender"],
+        createAt: DateTime.parse(json["create_at"]),
+        moneyJar: json["money_jar"],
+        jarBalance: json["jar_balance"] is int
+            ? (json["jar_balance"] as int).toDouble()
+            : json["jar_balance"],
       );
 
   String toRawJson() => jsonEncode(toJson());
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "lender_id": lenderId,
-    "borrower_id": borrowerId,
-    "amount": amount,
-    "note": note,
-    "is_repaid": isRepaid,
-    "creator_role": creatorRole,
-    "creator_id": creatorId,
-    "create_at": createAt.toIso8601String(),
-  };
+        "id": id,
+        "participant_id": participantId,
+        "participant_name": participantName,
+        "amount": amount,
+        "note": note,
+        "is_repaid": isRepaid,
+        "is_creator_lender": isCreatorLender,
+        "create_at": createAt.toIso8601String(),
+        "money_jar": moneyJar,
+      };
 }

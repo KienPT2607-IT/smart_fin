@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
 import 'package:smart_fin/screens/add_friend_screen.dart';
+import 'package:smart_fin/screens/add_income_source_screen.dart';
 import 'package:smart_fin/screens/add_money_jar_screen.dart';
 
 String _getBottomSheetTitle(int sectionType) {
@@ -26,17 +27,24 @@ void _getInputScreen(BuildContext context, int sectionType) {
         builder: (context) => const AddMoneyJarScreen(),
       ),
     );
-  }
-  if (sectionType == 1) {
+  } else if (sectionType == 1) {
     Navigator.of(context).push(
       CupertinoPageRoute(
         builder: (context) => const AddFriendScreen(),
       ),
     );
+  } else if (sectionType == 2) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => const AddIncomeSourceScreen(),
+      ),
+    );
   }
 }
 
-void showCustomBottomSheet(BuildContext context, int sectionType, List cards) {
+void showCustomBottomSheet(BuildContext context, int sectionType, List cards,
+    Function onItemSelected) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -77,7 +85,7 @@ void showCustomBottomSheet(BuildContext context, int sectionType, List cards) {
               ),
               IconButton(
                 onPressed: () => _getInputScreen(context, sectionType),
-                icon: SvgPicture.asset("assets/icons/apps/add.svg"),
+                icon: SvgPicture.asset("assets/icons/app/add.svg"),
               ),
             ],
           ),
@@ -92,9 +100,15 @@ void showCustomBottomSheet(BuildContext context, int sectionType, List cards) {
               itemCount: cards.length,
               separatorBuilder: (context, index) => const Gap(10),
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: cards[index],
+                return GestureDetector(
+                  onTap: () {
+                    onItemSelected(index);
+                    Navigator.of(context).pop();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: cards[index],
+                  ),
                 );
               },
             ),
