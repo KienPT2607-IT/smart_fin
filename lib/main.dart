@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_fin/data/services/providers/category_provider.dart';
 import 'package:smart_fin/data/services/providers/expense_provider.dart';
 import 'package:smart_fin/data/services/providers/friend_provider.dart';
 import 'package:smart_fin/data/services/providers/income_provider.dart';
@@ -34,6 +35,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (_) => IncomeSourceProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CategoryProvider(),
         ),
       ],
       child: const MainApp(),

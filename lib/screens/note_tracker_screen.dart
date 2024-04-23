@@ -137,7 +137,7 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
 
   void _saveExpenseNote() {
     if (_jarId.isNotEmpty) {
-      _expNoteService.createNote(
+      _expNoteService.createExpense(
         context: context,
         amount: double.parse(_amountCtrl.text.replaceAll(",", ".")),
         jarId: _jarId,
@@ -155,7 +155,7 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
     int participant =
         _friendList.indexWhere((friend) => friend.id == _participantId);
     if (_jarId.isNotEmpty && participant >= 0) {
-      _loanNoteService.createNote(
+      _loanNoteService.createLoan(
         context: context,
         participantId: _participantId,
         participantName: _friendList[participant].name,

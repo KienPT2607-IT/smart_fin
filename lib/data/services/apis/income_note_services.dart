@@ -8,6 +8,7 @@ import 'package:smart_fin/data/services/providers/user_provider.dart';
 import 'package:smart_fin/utilities/constants/constants.dart';
 import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
 import 'package:http/http.dart' as http;
+import 'package:smart_fin/utilities/customs/http_response_handler.dart';
 
 class IncomeNoteService {
   static final _baseUrl = "${Constant.baseUrlPath}/incomes";
@@ -39,7 +40,7 @@ class IncomeNoteService {
       );
 
       res.then(
-        (res) => httpErrorHandle(
+        (res) => httpResponseHandler(
           context: context,
           response: res,
           onSuccess: () {
@@ -48,7 +49,7 @@ class IncomeNoteService {
             var jarProvider =
                 Provider.of<MoneyJarProvider>(context, listen: false);
             jarProvider.updateBalance(
-              id: moneyJar,
+              jarId: moneyJar,
               amount: amount,
               isIncreased: true,
             );
@@ -82,7 +83,7 @@ class IncomeNoteService {
         },
       );
       res.then(
-        (res) => httpErrorHandle(
+        (res) => httpResponseHandler(
           context: context,
           response: res,
           onSuccess: () {
@@ -97,4 +98,3 @@ class IncomeNoteService {
     }
   }
 }
-

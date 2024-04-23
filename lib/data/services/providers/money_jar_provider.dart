@@ -12,10 +12,14 @@ class MoneyJarProvider extends ChangeNotifier {
 
   List<MoneyJar> get moneyJarList => _moneyJarList;
 
-  void setJars(String jarsRawJson) {
-    List jarJsonList = jsonDecode(jarsRawJson)["data"];
+  void setJars(String rawJson) {
+    List jarJsonList = jsonDecode(rawJson)["data"];
     for (var json in jarJsonList) {
-      _moneyJarList.add(MoneyJar.fromJson(json));
+      if (json["status"]) {
+        _moneyJarList.add(MoneyJar.fromJson(json));
+      } else {
+        _moneyJarList.insert(_moneyJarList.length - 1, MoneyJar.fromJson(json));
+      }
     }
     notifyListeners();
   }
@@ -39,9 +43,12 @@ class MoneyJarProvider extends ChangeNotifier {
     }
   }
 
-  void updateBalance(
-      {required String id, required double amount, required bool isIncreased}) {
-    var index = _moneyJarList.indexWhere((jar) => jar.id == id);
+  void updateBalance({
+    required String jarId,
+    required double amount,
+    required bool isIncreased,
+  }) {
+    var index = _moneyJarList.indexWhere((jar) => jar.id == jarId);
 
     if (index != -1) {
       if (isIncreased) {
@@ -63,16 +70,8 @@ class MoneyJarProvider extends ChangeNotifier {
     return (index != -1) ? _moneyJarList[index].name : "";
   }
 
-  MoneyJar getJar(String jarId) {
+  MoneyJar getJarById(String jarId) {
     int index = _moneyJarList.indexWhere((jar) => jar.id == jarId);
-    return (index != -1)
-        ? _moneyJarList[index]
-        : MoneyJar(
-            id: "",
-            name: "No name",
-            balance: 0,
-            icon: "assets/icons/app/document_error.svg",
-            color: 0xffe5e5e5,
-          );
+    return _moneyJarList[index];
   }
 }

@@ -8,6 +8,7 @@ import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
 import 'package:smart_fin/utilities/constants/constants.dart';
 import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
+import 'package:smart_fin/utilities/customs/http_response_handler.dart';
 
 class MoneyJarService {
   static final String _baseUrl = "${Constant.baseUrlPath}/money_jars";
@@ -36,18 +37,20 @@ class MoneyJarService {
         },
       );
 
-      var jarProvider = Provider.of<MoneyJarProvider>(context, listen: false);
       res.then((res) {
-        httpErrorHandle(
+        httpResponseHandler(
           response: res,
           context: context,
           onSuccess: () {
+            var jarProvider =
+                Provider.of<MoneyJarProvider>(context, listen: false);
             jarProvider.addJar(MoneyJar(
               id: jsonDecode(res.body)["id"],
               name: name,
               balance: balance,
               icon: icon,
               color: color,
+              status: true,
             ));
           },
         );
@@ -70,7 +73,7 @@ class MoneyJarService {
       );
       var jarProvider = Provider.of<MoneyJarProvider>(context, listen: false);
       res.then((res) {
-        httpErrorHandle(
+        httpResponseHandler(
           response: res,
           context: context,
           onSuccess: () {

@@ -5,17 +5,15 @@ class CustomOutlinedButtonTheme {
 
   static final lightOutlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
-      elevation: 0,
-      foregroundColor: Colors.black,
-      side: const BorderSide(color: Colors.blue, width: 2),
-      textStyle: const TextStyle(
-        fontSize: 16,
-        color: Colors.black,
-        fontWeight: FontWeight.w600,
+      foregroundColor: Colors.red,
+      side: const BorderSide(
+        color: Colors.red,
+        width: 1.5,
       ),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
       ),
+      minimumSize: const Size.fromHeight(50),
     ),
   );
 

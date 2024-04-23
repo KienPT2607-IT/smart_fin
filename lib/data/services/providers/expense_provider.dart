@@ -25,17 +25,24 @@ class ExpenseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeExpense(String id) {
+  void removeExpenseById(String id) {
     _expenseList.removeWhere((expense) => expense.id == id);
     notifyListeners();
   }
 
-  void updateExpense(Expense updatedExpense) {
-    int index =
-        _expenseList.indexWhere((expense) => expense.id == updatedExpense.id);
+  void updateExpenseNote(String expenseId, String newNote) {
+    int index = _expenseList.indexWhere((each) => each.id == expenseId);
 
     if (index != -1) {
-      _expenseList[index] = updatedExpense;
+      _expenseList[index].note = newNote;
+      notifyListeners();
+    }
+  }
+
+  void updateExpenseCategory(String expenseId, String categoryId) {
+    int index = _expenseList.indexWhere((expense) => expense.id == expenseId);
+    if (index != -1) {
+      _expenseList[index].category = categoryId;
       notifyListeners();
     }
   }
@@ -43,7 +50,9 @@ class ExpenseProvider extends ChangeNotifier {
   double getTotalExpenseByJarId(String moneyJarId) {
     double total = 0;
     for (var each in _expenseList) {
-      if (each.moneyJar == moneyJarId) total += each.amount;
+      if (each.moneyJar == moneyJarId) {
+        total += each.amount;
+      }
     }
     return total;
   }
@@ -54,5 +63,10 @@ class ExpenseProvider extends ChangeNotifier {
       total += each.amount;
     }
     return total;
+  }
+
+  Expense getExpenseById(String expenseId) {
+    int index = _expenseList.indexWhere((each) => each.id == expenseId);
+    return _expenseList[index];
   }
 }

@@ -32,8 +32,8 @@ class _LoanHistoryCardState extends State<LoanHistoryCard> {
     super.didChangeDependencies();
 
     if (!isDataFetch) {
-      _jar =
-          Provider.of<MoneyJarProvider>(context).getJar(widget.loan.moneyJar);
+      _jar = Provider.of<MoneyJarProvider>(context)
+          .getJarById(widget.loan.moneyJar);
       isDataFetch = true;
     }
   }
@@ -53,19 +53,25 @@ class _LoanHistoryCardState extends State<LoanHistoryCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(
+      onTap: () => Navigator.of(context)
+          .push(
         CupertinoPageRoute(
-          builder: (context) => const LoanDetailScreen(),
+          builder: (context) => LoanDetailScreen(
+            loanId: widget.loan.id,
+          ),
         ),
-      ),
+      )
+          .then((value) {
+        setState(() {});
+      }),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              //TODO: add this color to theme
-              color:
-                  widget.loan.isRepaid ? const Color(0xff21CE99) : Colors.grey,
+              color: widget.loan.isRepaid
+                  ? Theme.of(context).colorScheme.secondary
+                  : Colors.grey,
               width: 0.5,
             ),
           ),
@@ -132,7 +138,7 @@ class _LoanHistoryCardState extends State<LoanHistoryCard> {
                         fontSize: 14,
                         color: widget.loan.isCreatorLender
                             ? Colors.black
-                            : const Color(0xff21CE99),
+                            : Theme.of(context).colorScheme.secondary,
                       ),
                     ),
                     Text(
@@ -146,34 +152,6 @@ class _LoanHistoryCardState extends State<LoanHistoryCard> {
                 ),
               ],
             ),
-            // const Gap(5),
-            // Container(
-            //   constraints: BoxConstraints(
-            //     maxWidth: MediaQuery.of(context).size.width * 0.8,
-            //   ),
-            //   padding: const EdgeInsets.all(5),
-            //   decoration: BoxDecoration(
-            //     color: Colors.grey.withOpacity(0.1),
-            //     borderRadius: BorderRadius.circular(10),
-            //   ),
-            //   child: const Row(
-            //     mainAxisSize: MainAxisSize.min,
-            //     children: <Widget>[
-            //       Icon(IconlyLight.wallet, size: 16),
-            //       Gap(10),
-            //       Flexible(
-            //         child: Text(
-            //           "This is the category card",
-            //           overflow: TextOverflow.ellipsis,
-            //           style: TextStyle(
-            //             fontWeight: FontWeight.w400,
-            //             fontSize: 14,
-            //           ),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
           ],
         ),
       ),

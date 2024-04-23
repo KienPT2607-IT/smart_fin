@@ -2,12 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_fin/data/models/expense.dart';
 import 'package:smart_fin/data/models/money_jar.dart';
+import 'package:smart_fin/data/services/apis/expense_note_services.dart';
+import 'package:smart_fin/data/services/providers/category_provider.dart';
 import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
 import 'package:smart_fin/screens/expense_detail_screen.dart';
+import 'package:smart_fin/utilities/widgets/bottom_sheet/category_bottom_sheet.dart';
+import 'package:smart_fin/utilities/widgets/cards/category_card.dart';
 
 class ExpenseHistoryCard extends StatefulWidget {
   final Expense expense;
@@ -18,22 +21,61 @@ class ExpenseHistoryCard extends StatefulWidget {
 }
 
 class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
+  late bool _isDataFetched;
   late MoneyJar _jar;
+  late CategoryCard _categoryCard;
+  late ExpenseNoteService _expenseNoteService;
+
+  @override
+  void initState() {
+    super.initState();
+    _isDataFetched = false;
+    _expenseNoteService = ExpenseNoteService();
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _jar =
-        Provider.of<MoneyJarProvider>(context).getJar(widget.expense.moneyJar);
+    if (!_isDataFetched) {
+      _jar = Provider.of<MoneyJarProvider>(context)
+          .getJarById(widget.expense.moneyJar);
+      _categoryCard = CategoryCard(Provider.of<CategoryProvider>(context)
+          .getCategoryById(widget.expense.category));
+      _isDataFetched = true;
+    }
+  }
+
+  void _updateExpenseCategory(CategoryCard card) {
+    _expenseNoteService.updateCategory(
+      context: context,
+      expenseId: widget.expense.id,
+      categoryId: card.category.id,
+    );
+    setState(() {
+      _categoryCard = card;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-        builder: (context) => const ExpenseDetailScreen(),
-      )),
+      onTap: () => Navigator.of(context)
+          .push(
+        CupertinoPageRoute(
+          builder: (context) => ExpenseDetailScreen(
+            expenseId: widget.expense.id,
+            onCategoryCardChange: (value) => setState(() {
+              _categoryCard = value;
+            }),
+          ),
+        ),
+      )
+          .then((value) {
+        if (mounted) {
+          setState(() {});
+        }
+      }),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: const BoxDecoration(
@@ -58,7 +100,6 @@ class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
                         color: Colors.white,
                         border: Border.all(
                           color: Color(_jar.color),
-                          width: 0.5,
                         ),
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -118,35 +159,12 @@ class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
               ],
             ),
             const Gap(5),
-            Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.8,
+            GestureDetector(
+              onTap: () => showCategoryBottomSheet(
+                context: context,
+                onItemSelected: (value) => _updateExpenseCategory(value),
               ),
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Icon(
-                    IconlyLight.wallet,
-                    size: 16,
-                  ),
-                  Gap(10),
-                  Flexible(
-                    child: Text(
-                      "This is the category card",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              child: _categoryCard,
             ),
           ],
         ),

@@ -18,6 +18,15 @@ class TotalIncomeBySourceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 5),
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            //TODO: add this color to theme
+            color: Colors.grey,
+            width: 0.5,
+          ),
+        ),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[

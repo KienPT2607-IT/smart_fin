@@ -34,13 +34,23 @@ class LoanProvider extends ChangeNotifier {
     }
   }
 
-  void update(Loan updatedLoan) {
-    int index = _loanList.indexWhere((loan) => loan.id == updatedLoan.id);
+  void updateLoanNote(String loanId, String newNote) {
+    int index = _loanList.indexWhere((loan) => loan.id == loanId);
 
     if (index != -1) {
-      _loanList[index] = updatedLoan;
+      _loanList[index].note = newNote;
+      notifyListeners();
     }
-    notifyListeners();
+  }
+
+  void updateRepaidStatus(String loanId) {
+    int index = _loanList.indexWhere((loan) => loan.id == loanId);
+
+    if (index != -1) {
+      _loanList[index].isRepaid = !_loanList[index].isRepaid;
+      print(_loanList[index].isRepaid);
+      notifyListeners();
+    }
   }
 
   double getLendTotal() {
@@ -61,5 +71,30 @@ class LoanProvider extends ChangeNotifier {
       }
     }
     return total;
+  }
+
+  double getLendTotalByJar(String jarId) {
+    double total = 0;
+    for (var each in _loanList) {
+      if (each.moneyJar == jarId && each.isCreatorLender) {
+        total += each.amount;
+      }
+    }
+    return total;
+  }
+
+  double getBorrowTotalByJar(String jarId) {
+    double total = 0;
+    for (var each in _loanList) {
+      if (each.moneyJar == jarId && !each.isCreatorLender) {
+        total += each.amount;
+      }
+    }
+    return total;
+  }
+
+  Loan getLoanById(String loanId) {
+    int index = _loanList.indexWhere((each) => each.id == loanId);
+    return _loanList[index];
   }
 }

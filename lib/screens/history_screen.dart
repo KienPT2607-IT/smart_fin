@@ -37,21 +37,50 @@ class _HistoryScreenState extends State<HistoryScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_isDataFetched) {
-      _expHistoryCardList = Provider.of<ExpenseProvider>(context, listen: true)
+      _expHistoryCardList = Provider.of<ExpenseProvider>(context, listen: false)
           .expenseList
           .map((expense) => ExpenseHistoryCard(expense: expense))
           .toList();
-      _loanHistoryCardList = Provider.of<LoanProvider>(context, listen: true)
+      _loanHistoryCardList = Provider.of<LoanProvider>(context, listen: false)
           .loanList
           .map((loan) => LoanHistoryCard(loan: loan))
           .toList();
       _incomeHistoryCardList =
-          Provider.of<IncomeProvider>(context, listen: true)
+          Provider.of<IncomeProvider>(context, listen: false)
               .incomeList
               .map((income) => IncomeHistoryCard(income: income))
               .toList();
+      _isDataFetched = true;
     }
   }
+
+  ListView _showHistory() {
+    switch (_selectedSegment) {
+      case 0:
+        return _showExpenseHistory();
+      case 1:
+        return _showLoanHistory();
+      case 2:
+        return _showIncomeHistory();
+      default:
+        return ListView();
+    }
+  }
+
+  ListView _showExpenseHistory() => ListView.builder(
+        itemCount: _expHistoryCardList.length,
+        itemBuilder: (context, index) => _expHistoryCardList[index],
+      );
+
+  ListView _showLoanHistory() => ListView.builder(
+        itemCount: _loanHistoryCardList.length,
+        itemBuilder: (context, index) => _loanHistoryCardList[index],
+      );
+
+  ListView _showIncomeHistory() => ListView.builder(
+        itemCount: _incomeHistoryCardList.length,
+        itemBuilder: (context, index) => _incomeHistoryCardList[index],
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -108,23 +137,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         ),
         const Gap(10),
         Expanded(
-          // TODO: Consider turn those into helper method
-          child: ListView.builder(
-            itemCount: _selectedSegment == 0
-                ? _expHistoryCardList.length
-                : (_selectedSegment == 1)
-                    ? _loanHistoryCardList.length
-                    : _incomeHistoryCardList.length,
-            itemBuilder: (context, index) {
-              if (_selectedSegment == 0) {
-                return _expHistoryCardList[index];
-              } else if (_selectedSegment == 1) {
-                return _loanHistoryCardList[index];
-              } else {
-                return _incomeHistoryCardList[index];
-              }
-            },
-          ),
+          child: _showHistory(),
         ),
       ],
     );

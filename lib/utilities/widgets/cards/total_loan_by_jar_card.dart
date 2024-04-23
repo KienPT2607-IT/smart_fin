@@ -3,11 +3,11 @@ import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
 import 'package:smart_fin/data/models/money_jar.dart';
 
-class TotalExpenseByJarCard extends StatelessWidget {
+class TotalLoanByJarCard extends StatelessWidget {
   final MoneyJar moneyJar;
   final double percentage;
   final double total;
-  const TotalExpenseByJarCard({
+  const TotalLoanByJarCard({
     super.key,
     required this.moneyJar,
     required this.percentage,

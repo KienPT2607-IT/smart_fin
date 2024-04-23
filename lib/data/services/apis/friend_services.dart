@@ -8,6 +8,7 @@ import 'package:smart_fin/data/services/providers/user_provider.dart';
 import 'package:smart_fin/utilities/constants/constants.dart';
 import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
 import 'package:http/http.dart' as http;
+import 'package:smart_fin/utilities/customs/http_response_handler.dart';
 
 class FriendService {
   static final String _baseUrl = "${Constant.baseUrlPath}/friends";
@@ -32,7 +33,7 @@ class FriendService {
             "email": email,
           }));
       var friendProvider = Provider.of<FriendProvider>(context, listen: false);
-      res.then((res) => httpErrorHandle(
+      res.then((res) => httpResponseHandler(
             context: context,
             response: res,
             onSuccess: () {
@@ -53,13 +54,15 @@ class FriendService {
     required BuildContext context,
   }) {
     String token = Provider.of<UserProvider>(context, listen: false).getToken();
-    var res = http.get(Uri.parse("$_baseUrl/"),
-        headers: {
-          "Content-type": "application/json; charset=utf-8",
-          "x-auth-token": token,
-        },);
+    var res = http.get(
+      Uri.parse("$_baseUrl/"),
+      headers: {
+        "Content-type": "application/json; charset=utf-8",
+        "x-auth-token": token,
+      },
+    );
     var friendProvider = Provider.of<FriendProvider>(context, listen: false);
-    res.then((res) => httpErrorHandle(
+    res.then((res) => httpResponseHandler(
           context: context,
           response: res,
           onSuccess: () {

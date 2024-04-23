@@ -16,6 +16,7 @@ dependencies:
     gap: ^3.0.1
     http: ^1.2.0
     iconly: ^1.0.1
+    intl: ^0.18.1
     path: ^1.8.3
     provider: ^6.1.2
     shared_preferences: ^2.2.2
@@ -32,4 +33,7 @@ flutter:
         - assets/images/avatars/
         - assets/icons/app/
         - assets/icons/categories/
+        - assets/icons/default/light/
+        - assets/icons/default/regular/
+        - assets/icons/default/bold/
         - assets/fonts/

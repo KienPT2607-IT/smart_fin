@@ -47,6 +47,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Add friend"),
+          centerTitle: true,
         ),
         body: SafeArea(
           child: Padding(

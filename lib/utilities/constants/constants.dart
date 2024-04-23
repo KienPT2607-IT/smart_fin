@@ -2,13 +2,32 @@ import 'dart:io';
 
 class Constant {
   Constant._();
-  static final String baseUrlPath = Platform.isAndroid ? "http://10.0.2.2:3000" : "http://localhost:3000";
+  static final String baseUrlPath =
+      Platform.isAndroid ? "http://10.0.2.2:3000" : "http://localhost:3000";
   static const String emailRegex =
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
   static const String passwordRegex =
       r'^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).*$';
   static const String phoneRegex = r'^0\d{9}$';
   static const String nameRegex = r'^[a-zA-Z ]+$';
+
+  static const String _baseSystemIconAssetPath = "assets/icons/default";
+  static const Map<String, String> defaultLightIcons = {
+    "tag": "$_baseSystemIconAssetPath/light/tags.svg",
+    "edit": "$_baseSystemIconAssetPath/light/pen-fancy.svg",
+    "repaid": "$_baseSystemIconAssetPath/light/expense.svg",
+  };
+
+  static const Map<String, String> defaultRegularIcons = {
+    "tag": "$_baseSystemIconAssetPath/regular/tags.svg",
+    "uncheck": "$_baseSystemIconAssetPath/regular/uncheck-circle.svg",
+    "check": "$_baseSystemIconAssetPath/regular/check-circle.svg",
+  };
+
+  static const Map<String, String> defaultBoldIcons = {
+    "tag": "$_baseSystemIconAssetPath/bold/tags.svg",
+    "uncheck": "$_baseSystemIconAssetPath/bold/uncheck.svg",
+  };
 
   static const List<String> categoryIcons = [
     "assets/icons/categories/bolt.svg",
@@ -44,6 +63,8 @@ class Constant {
     "assets/icons/categories/wallet.svg",
     "assets/icons/categories/work.svg",
   ];
+
+  static int defaultNonePropertyColor = 0xff999999;
 
   static List<int> colors = [
     0xFFF06292,

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:smart_fin/data/models/income_source.dart';
+import 'package:smart_fin/utilities/constants/constants.dart';
 
 class IncomeSourceProvider extends ChangeNotifier {
   late List<IncomeSource> _incomeSourceList;
@@ -46,7 +47,7 @@ class IncomeSourceProvider extends ChangeNotifier {
             id: "",
             name: "No name",
             icon: "assets/icons/app/document_error.svg",
-            color: 0xffe5e5e5,
+            color: Constant.defaultNonePropertyColor,
           );
   }
 }

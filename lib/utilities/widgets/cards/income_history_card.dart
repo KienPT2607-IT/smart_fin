@@ -33,8 +33,8 @@ class _IncomeHistoryCardState extends State<IncomeHistoryCard> {
     if (!_isDataFetch) {
       _source = Provider.of<IncomeSourceProvider>(context)
           .getSource(widget.income.incomeSource);
-      _jar =
-          Provider.of<MoneyJarProvider>(context).getJar(widget.income.moneyJar);
+      _jar = Provider.of<MoneyJarProvider>(context)
+          .getJarById(widget.income.moneyJar);
       _isDataFetch = true;
     }
   }
@@ -110,10 +110,10 @@ class _IncomeHistoryCardState extends State<IncomeHistoryCard> {
                   children: <Widget>[
                     Text(
                       "+${widget.income.amount}",
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
-                        color: Color(0xff21CE99),
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     ),
                     Text(

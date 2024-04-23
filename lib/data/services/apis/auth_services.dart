@@ -9,6 +9,7 @@ import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smart_fin/utilities/customs/http_response_handler.dart';
 
 class AuthService {
   static final String _baseUrl = "${Constant.baseUrlPath}/users";
@@ -35,7 +36,7 @@ class AuthService {
       );
 
       res.then((res) {
-        httpErrorHandle(
+        httpResponseHandler(
           response: res,
           context: context,
           onSuccess: () {
@@ -86,7 +87,7 @@ class AuthService {
         },
       );
       res.then((res) {
-        httpErrorHandle(
+        httpResponseHandler(
           response: res,
           context: context,
           onSuccess: () {
@@ -126,7 +127,7 @@ class AuthService {
       var userProvider = Provider.of<UserProvider>(context, listen: false);
       final NavigatorState navigator = Navigator.of(context);
       res.then((res) {
-        httpErrorHandle(
+        httpResponseHandler(
           response: res,
           context: context,
           onSuccess: () async {

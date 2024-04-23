@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
     authService = AuthService();
   }
 
-  void loginUser() {
+  void _loginUser() {
     if (_formKey.currentState!.validate()) {
       authService.login(
         context: context,
@@ -122,8 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Column(
                   children: <Widget>[
                     ElevatedButton(
-                      onPressed: loginUser,
-                      style: Theme.of(context).elevatedButtonTheme.style,
+                      onPressed: _loginUser,
                       child: const Text("Login"),
                     ),
                     Row(

@@ -1,70 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
+import 'package:provider/provider.dart';
+import 'package:smart_fin/data/services/providers/category_provider.dart';
 import 'package:smart_fin/screens/add_expense_category_screen.dart';
-import 'package:smart_fin/screens/add_friend_screen.dart';
-import 'package:smart_fin/screens/add_income_source_screen.dart';
-import 'package:smart_fin/screens/add_money_jar_screen.dart';
+import 'package:smart_fin/utilities/widgets/cards/category_card.dart';
 
-String _getBottomSheetTitle(int sectionType) {
-  switch (sectionType) {
-    case 0:
-      return "Money Jars";
-    case 1:
-      return "Friends";
-    case 2:
-      return "Income Sources";
-    case 3:
-      return "Categories";
-    default:
-      return "";
-  }
-}
+void _getInputScreen(BuildContext context) => Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => const AddExpenseCategoryScreen(),
+      ),
+    );
 
-void _getInputScreen(BuildContext context, int sectionType) {
-  switch (sectionType) {
-    case 0:
-      Navigator.of(context).push(
-        CupertinoPageRoute(
-          builder: (context) => const AddMoneyJarScreen(),
-        ),
-      );
-      break;
-    case 1:
-      Navigator.of(context).push(
-        CupertinoPageRoute(
-          builder: (context) => const AddFriendScreen(),
-        ),
-      );
-      break;
-    case 2:
-      Navigator.push(
-        context,
-        CupertinoPageRoute(
-          builder: (context) => const AddIncomeSourceScreen(),
-        ),
-      );
-      break;
-    case 3:
-      Navigator.push(
-        context,
-        CupertinoPageRoute(
-          builder: (context) => const AddExpenseCategoryScreen(),
-        ),
-      );
-      break;
-    default:
-      break;
-  }
-}
-
-void showCustomBottomSheet(BuildContext context, int sectionType, List cards,
-    Function onItemSelected) {
+void showCategoryBottomSheet({
+  required BuildContext context,
+  required Function(CategoryCard) onItemSelected,
+}) {
+  String title = "Categories";
+  var categoryCardList = Provider.of<CategoryProvider>(context, listen: false)
+      .categoryList
+      .map((each) => CategoryCard(each))
+      .toList();
   showModalBottomSheet(
     context: context,
-    isScrollControlled: true,
     builder: (context) => Container(
       height: MediaQuery.of(context).size.height - 100,
       width: MediaQuery.of(context).size.width,
@@ -94,14 +55,14 @@ void showCustomBottomSheet(BuildContext context, int sectionType, List cards,
                 icon: const Icon(IconlyLight.close_square),
               ),
               Text(
-                _getBottomSheetTitle(sectionType),
+                title,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               IconButton(
-                onPressed: () => _getInputScreen(context, sectionType),
+                onPressed: () => _getInputScreen(context),
                 icon: SvgPicture.asset("assets/icons/app/add.svg"),
               ),
             ],
@@ -114,17 +75,17 @@ void showCustomBottomSheet(BuildContext context, int sectionType, List cards,
           const Gap(10),
           Expanded(
             child: ListView.separated(
-              itemCount: cards.length,
+              itemCount: categoryCardList.length,
               separatorBuilder: (context, index) => const Gap(10),
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    onItemSelected(index);
+                    onItemSelected(categoryCardList[index]);
                     Navigator.of(context).pop();
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: cards[index],
+                    child: categoryCardList[index],
                   ),
                 );
               },

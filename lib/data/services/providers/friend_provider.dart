@@ -21,7 +21,7 @@ class FriendProvider extends ChangeNotifier {
     }
   }
 
-  Friend getFriend(String id) {
+  Friend getFriendById(String id) {
     int index = _friendList.indexWhere((friend) => friend.id == id);
     return (index != -1)
         ? _friendList[index]

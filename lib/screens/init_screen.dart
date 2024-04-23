@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_fin/data/models/user.dart';
+import 'package:smart_fin/data/services/apis/category_services.dart';
 import 'package:smart_fin/data/services/apis/expense_note_services.dart';
 import 'package:smart_fin/data/services/apis/friend_services.dart';
 import 'package:smart_fin/data/services/apis/income_note_services.dart';
@@ -34,6 +35,8 @@ class _InitScreenState extends State<InitScreen> {
   late final LoanNoteService _loanNoteService;
   late final IncomeNoteService _incomeNoteService;
   late final IncomeSourceService _incomeSourceService;
+  late final CategoryService _categoryService;
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +48,8 @@ class _InitScreenState extends State<InitScreen> {
     _loanNoteService = LoanNoteService();
     _incomeNoteService = IncomeNoteService();
     _incomeSourceService = IncomeSourceService();
+    _categoryService = CategoryService();
+
     _isDataFetched = false;
     _destinationViews = [
       const NoteTrackerScreen(),
@@ -64,11 +69,12 @@ class _InitScreenState extends State<InitScreen> {
     if (!_isDataFetched) {
       _user = Provider.of<UserProvider>(context).user;
       _moneyJarService.getJars(context: context);
-      _expNoteService.getNotes(context: context);
+      _expNoteService.getExpenses(context: context);
       _friendService.getFriends(context: context);
-      _loanNoteService.getNotes(context: context);
+      _loanNoteService.getLoans(context: context);
       _incomeSourceService.getSources(context: context);
       _incomeNoteService.getNotes(context: context);
+      _categoryService.getCategories(context: context);
       _isDataFetched = true;
     }
   }
@@ -112,7 +118,6 @@ class _InitScreenState extends State<InitScreen> {
             });
           },
           indicatorColor: Colors.transparent,
-          // backgroundColor: Theme.of(context).colorScheme.background,
           backgroundColor: Colors.white60,
           destinations: const [
             BottomNavDestination(

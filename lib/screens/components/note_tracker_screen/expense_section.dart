@@ -78,7 +78,7 @@ class _ExpenseSectionState extends State<ExpenseSection> {
                     borderRadius: BorderRadius.circular(10),
                     border: _selectedJar == index
                         ? Border.all(
-                            color: const Color(0xFF21CE99),
+                            color: Theme.of(context).colorScheme.secondary,
                             width: 1.2,
                           )
                         : null,

@@ -57,7 +57,8 @@ class _AddIncomeSourceScreenState extends State<AddIncomeSourceScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Add Income Source"),
+          title: const Text("Add income source"),
+          centerTitle: true,
         ),
         body: SafeArea(
           child: SingleChildScrollView(
