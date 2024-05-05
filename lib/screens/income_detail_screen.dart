@@ -4,52 +4,54 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_fin/data/models/friend.dart';
-import 'package:smart_fin/data/models/loan.dart';
+import 'package:smart_fin/data/models/income.dart';
+import 'package:smart_fin/data/models/income_source.dart';
 import 'package:smart_fin/data/models/money_jar.dart';
-import 'package:smart_fin/data/services/apis/loan_note_services.dart';
-import 'package:smart_fin/data/services/providers/friend_provider.dart';
-import 'package:smart_fin/data/services/providers/loan_provider.dart';
+import 'package:smart_fin/data/services/apis/income_note_services.dart';
+import 'package:smart_fin/data/services/providers/income_provider.dart';
+import 'package:smart_fin/data/services/providers/income_source_provider.dart';
 import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
 import 'package:smart_fin/screens/init_screen.dart';
 import 'package:smart_fin/utilities/constants/constants.dart';
 import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
 import 'package:smart_fin/utilities/widgets/customs/custom_divider.dart';
 
-class LoanDetailScreen extends StatefulWidget {
-  final String loanId;
-  const LoanDetailScreen({super.key, required this.loanId});
+class IncomeDetailScreen extends StatefulWidget {
+  final String incomeId;
+  const IncomeDetailScreen({super.key, required this.incomeId});
 
   @override
-  State<LoanDetailScreen> createState() => _LoanDetailScreenState();
+  State<IncomeDetailScreen> createState() => _IncomeDetailScreenState();
 }
 
-class _LoanDetailScreenState extends State<LoanDetailScreen> {
-  late Loan _loan;
-  late Friend _friend;
+class _IncomeDetailScreenState extends State<IncomeDetailScreen> {
+  late Income _income;
+  late IncomeSource _incomeSource;
   late MoneyJar _moneyJar;
-  late bool _isDataFetched;
-
+  late IncomeNoteService _incomeNoteService;
   late TextEditingController _noteCtrl;
-  late LoanNoteService _loanNoteService;
+
+  late bool _isDataFetched;
 
   @override
   void initState() {
     super.initState();
-    _isDataFetched = false;
+    _incomeNoteService = IncomeNoteService();
     _noteCtrl = TextEditingController();
-    _loanNoteService = LoanNoteService();
+    _isDataFetched = false;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_isDataFetched) {
-      _loan = Provider.of<LoanProvider>(context).getLoanById(widget.loanId);
-      _friend = Provider.of<FriendProvider>(context, listen: false)
-          .getFriendById(_loan.participantId);
+      _income = Provider.of<IncomeProvider>(context, listen: false)
+          .getIncomeById(widget.incomeId);
       _moneyJar = Provider.of<MoneyJarProvider>(context, listen: false)
-          .getJarById(_loan.moneyJar);
+          .getJarById(_income.moneyJar);
+      _incomeSource = Provider.of<IncomeSourceProvider>(context, listen: false)
+          .getSourceById(_income.incomeSource);
+      _noteCtrl.text = _income.note;
       _isDataFetched = true;
     }
   }
@@ -58,7 +60,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Loan detail"),
+        title: const Text("Income detail"),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -67,7 +69,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
             children: [
               const Gap(32),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -85,9 +87,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         decoration: BoxDecoration(
-                          color: (_loan.isRepaid)
-                              ? Theme.of(context).colorScheme.secondary
-                              : const Color(0XFFFFA400),
+                          color: Theme.of(context).colorScheme.secondary,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(16),
                             topRight: Radius.circular(16),
@@ -97,17 +97,15 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SvgPicture.asset(
-                              (_loan.isRepaid)
-                                  ? Constant.defaultRegularIcons["check"]!
-                                  : Constant.defaultRegularIcons["uncheck"]!,
+                              Constant.defaultRegularIcons["check"]!,
                               color: Colors.white,
                               width: 16,
                             ),
                             const Gap(10),
-                            Center(
+                            const Center(
                               child: Text(
-                                (_loan.isCreatorLender) ? "Lend" : "Borrow",
-                                style: const TextStyle(
+                                "Income",
+                                style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color: Colors.white,
                                   fontSize: 14,
@@ -118,7 +116,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(8),
                         child: Column(
                           children: [
                             Padding(
@@ -127,15 +125,13 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                                 children: [
                                   Text(
                                     DateFormat("dd/MM/yyyy HH:mm")
-                                        .format(_loan.createAt),
+                                        .format(_income.createAt),
                                     style: const TextStyle(
                                       fontWeight: FontWeight.w300,
                                     ),
                                   ),
                                   Text(
-                                    (_loan.isCreatorLender)
-                                        ? "-${_loan.amount}"
-                                        : "+${_loan.amount}",
+                                    "+${_income.amount}",
                                     style: const TextStyle(
                                       fontSize: 32,
                                       fontWeight: FontWeight.w600,
@@ -154,7 +150,11 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                                 children: [
                                   _customTitle("FROM"),
                                   const Gap(10),
-                                  _showParticipantInfor(_loan.isCreatorLender),
+                                  _customCard(
+                                    _incomeSource.name,
+                                    _incomeSource.icon,
+                                    _incomeSource.color,
+                                  ),
                                 ],
                               ),
                             ),
@@ -168,7 +168,11 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                                 children: [
                                   _customTitle("TO"),
                                   const Gap(10),
-                                  _showParticipantInfor(!_loan.isCreatorLender),
+                                  _customCard(
+                                    _moneyJar.name,
+                                    _moneyJar.icon,
+                                    _moneyJar.color,
+                                  ),
                                 ],
                               ),
                             ),
@@ -183,7 +187,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                                   _customTitle("NOTE"),
                                   const Gap(10),
                                   Flexible(
-                                    child: Text(_loan.note),
+                                    child: Text(_income.note),
                                   ),
                                 ],
                               ),
@@ -223,35 +227,11 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () => _showEditStatusConfirmDialog(),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              width: 0.5,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                                Constant.defaultLightIcons["repaid"]!),
-                            const Gap(20),
-                            const Text("Edit repaid status"),
-                          ],
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
-              const Gap(10),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                // height: 50,
                 child: Row(
                   children: [
                     Expanded(
@@ -277,6 +257,95 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
     );
   }
 
+  void _deleteIncome() async {
+    bool result = await _incomeNoteService.deleteIncome(
+      context: context,
+      incomeId: widget.incomeId,
+    );
+    if (mounted && result) {
+      showCustomSnackBar(
+          context, "Income removed!", Constant.contentTypes["success"]!);
+      Navigator.of(context).pop();
+      Navigator.of(context).pushAndRemoveUntil(
+          CupertinoPageRoute(
+            builder: (context) => const InitScreen(
+              startScreen: 1,
+              isFirstInit: false,
+            ),
+          ),
+          (route) => false);
+    }
+  }
+
+  void _showDeleteConfirmDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Delete confirmation"),
+          content: const Text("Are you sure to delete this income note!"),
+          actions: <Widget>[
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text("Cancel"),
+                  ),
+                ),
+                const Gap(10),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => _deleteIncome(),
+                    child: const Text('Delete'),
+                  ),
+                ),
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void _updateExpenseNote() {
+    _incomeNoteService.updateNote(
+      context: context,
+      incomeId: widget.incomeId,
+      note: _noteCtrl.text,
+    );
+    Navigator.of(context).pop();
+  }
+
+  void _showEditNoteDialog() {
+    _noteCtrl.text = _income.note;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Edit note"),
+          content: TextFormField(
+            autofocus: true,
+            minLines: 1,
+            maxLines: 4,
+            // initialValue: _expense.note,
+            controller: _noteCtrl,
+            decoration: const InputDecoration(hintText: "Note"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('Save'),
+              onPressed: () => _updateExpenseNote(),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   SizedBox _customTitle(String title) {
     return SizedBox(
@@ -291,11 +360,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
     );
   }
 
-  Container _customJarCard(
-    String name,
-    int color,
-    String icon,
-  ) {
+  Container _customCard(String name, String icon, int color) {
     return Container(
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width * 0.8,
@@ -337,150 +402,4 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
       ),
     );
   }
-
-  Widget _showParticipantInfor(bool isLender) {
-    if (isLender) {
-      return _customJarCard(_moneyJar.name, _moneyJar.color, _moneyJar.icon);
-    }
-    return Column(
-      children: [
-        Text(_friend.name),
-        (_friend.phoneNumber.isEmpty) ? Container() : Text(_friend.phoneNumber),
-        (_friend.email.isEmpty) ? Container() : Text(_friend.email),
-      ],
-    );
-  }
-
-  void _updateLoanNote() {
-    _loanNoteService.updateNote(
-      context: context,
-      loanId: widget.loanId,
-      note: _noteCtrl.text,
-    );
-    showCustomSnackBar(context, "Note updated", Constant.contentTypes["success"]!);
-    Navigator.of(context).pop();
-  }
-
-  void _showEditNoteDialog() {
-    _noteCtrl.text = _loan.note;
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Edit note"),
-          content: TextFormField(
-            autofocus: true,
-            minLines: 1,
-            maxLines: 4,
-            // initialValue: _expense.note,
-            controller: _noteCtrl,
-            decoration: const InputDecoration(hintText: "Note"),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: const Text('Save'),
-              onPressed: () => _updateLoanNote(),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _changeRepaidStatus() {
-    _loanNoteService.updateRepaidStatus(
-        context: context, loanId: widget.loanId);
-    showCustomSnackBar(context, "Repaid changed", Constant.contentTypes["success"]!);
-    Navigator.pop(context);
-  }
-
-  void _showEditStatusConfirmDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Repaid changed"),
-          content: const Text("Are you sure to remark this loan note!"),
-          actions: <Widget>[
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text("Cancel"),
-                  ),
-                ),
-                const Gap(10),
-                Expanded(
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.orange,
-                      side: const BorderSide(
-                        color: Colors.orange,
-                      ),
-                    ),
-                    onPressed: () => _changeRepaidStatus(),
-                    child: const Text('Remark'),
-                  ),
-                ),
-              ],
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  void _deleteLoan() async {
-    bool result = await _loanNoteService.deleteLoan(
-        context: context, loanId: widget.loanId);
-    if (mounted && result) {
-      showCustomSnackBar(context, "Loan removed!", Constant.contentTypes["success"]!);
-      Navigator.of(context).pop();
-      Navigator.of(context).pushAndRemoveUntil(
-          CupertinoPageRoute(
-            builder: (context) => const InitScreen(
-              startScreen: 1,
-              isFirstInit: false,
-            ),
-          ),
-          (route) => false);
-    }
-  }
-
-  void _showDeleteConfirmDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Delete confirmation"),
-          content: const Text("Are you sure to delete this loan!"),
-          actions: <Widget>[
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text("Cancel"),
-                  ),
-                ),
-                const Gap(10),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => _deleteLoan(),
-                    child: const Text('Delete'),
-                  ),
-                ),
-              ],
-            )
-          ],
-        );
-      },
-    );
-  }
-
 }

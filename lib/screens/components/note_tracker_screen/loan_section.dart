@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
 import 'package:smart_fin/data/models/friend.dart';
+import 'package:smart_fin/utilities/widgets/cards/friend_infor_card.dart';
 import 'package:smart_fin/utilities/widgets/customs/custom_avatar_chip.dart';
 import 'package:smart_fin/utilities/widgets/bottom_sheet/bottom_sheet.dart';
 import 'package:smart_fin/utilities/widgets/cards/money_jar_card.dart';
@@ -12,7 +13,7 @@ class LoanSection extends StatefulWidget {
   final List<MoneyJarCard> moneyJarList;
 
   final Function onJarSelected;
-  final Function onFriendSelected;
+  final Function(String, bool) onFriendSelected;
   const LoanSection({
     super.key,
     required this.sectionType,
@@ -33,16 +34,15 @@ class _LoanSectionState extends State<LoanSection> {
   late String friendName;
   late String _lenderName;
 
-  late List<CustomAvatarChip> customAvatarChip;
+  late List<FriendInforCard> friendInforList;
   @override
   void initState() {
     super.initState();
 
     _selectedFriend = -1;
     _selectedJar = -1;
-    customAvatarChip = widget.friendList
-        .map((e) => CustomAvatarChip(avatar: e.name, name: e.name))
-        .toList();
+    friendInforList =
+        widget.friendList.map((each) => FriendInforCard(friend: each)).toList();
 
     friendName = "";
     _lenderName = "_";
@@ -110,7 +110,7 @@ class _LoanSectionState extends State<LoanSection> {
                     showCustomBottomSheet(
                       context,
                       widget.sectionType,
-                      customAvatarChip,
+                      friendInforList,
                       (index) {
                         widget.onFriendSelected(
                           "_",

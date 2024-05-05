@@ -20,13 +20,17 @@ class LoanProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeAll() {
+    _loanList = [];
+  }
+
   void addLoan(Loan loan) {
     _loanList.insert(0, loan);
     notifyListeners();
   }
 
-  void removeLoan(String id) {
-    int index = _loanList.indexWhere((loan) => loan.id == id);
+  void removeLoan(String loanId) {
+    int index = _loanList.indexWhere((loan) => loan.id == loanId);
 
     if (index != -1) {
       _loanList.removeAt(index);
@@ -48,7 +52,6 @@ class LoanProvider extends ChangeNotifier {
 
     if (index != -1) {
       _loanList[index].isRepaid = !_loanList[index].isRepaid;
-      print(_loanList[index].isRepaid);
       notifyListeners();
     }
   }

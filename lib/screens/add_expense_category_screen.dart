@@ -49,7 +49,7 @@ class _AddExpenseCategoryScreenState extends State<AddExpenseCategoryScreen> {
         color: color,
       );
       if (mounted) {
-        showCustomSnackBar(context, "New category created!");
+        showCustomSnackBar(context, "New category created!", Constant.contentTypes["success"]!);
         Navigator.pop(context);
         Navigator.pop(context);
       }

@@ -6,6 +6,7 @@ import 'package:smart_fin/controllers/income_source_controller.dart';
 import 'package:smart_fin/data/models/income_source.dart';
 import 'package:smart_fin/data/services/apis/income_source_services.dart';
 import 'package:smart_fin/utilities/constants/constants.dart';
+import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
 import 'package:smart_fin/utilities/widgets/cards/income_source_card.dart';
 
 class AddIncomeSourceScreen extends StatefulWidget {
@@ -40,14 +41,23 @@ class _AddIncomeSourceScreenState extends State<AddIncomeSourceScreen> {
     currentColorIndex = 0;
   }
 
-  _processCreateIncomeSource() {
+  _processCreateIncomeSource() async {
     if (_formKey.currentState!.validate()) {
-      _incomeSourceService.createNewSource(
+      bool result = await _incomeSourceService.createNewSource(
         context: context,
         name: _sourceNameCtrl.text,
         icon: Constant.categoryIcons[currentIconIndex],
         color: Constant.colors[currentColorIndex],
       );
+      if (mounted && result) {
+        showCustomSnackBar(
+          context,
+          "New income source added!",
+          Constant.contentTypes["success"]!,
+        );
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+      }
     }
   }
 

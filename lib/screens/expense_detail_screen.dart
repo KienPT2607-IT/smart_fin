@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -9,6 +10,7 @@ import 'package:smart_fin/data/services/apis/expense_note_services.dart';
 import 'package:smart_fin/data/services/providers/category_provider.dart';
 import 'package:smart_fin/data/services/providers/expense_provider.dart';
 import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
+import 'package:smart_fin/screens/init_screen.dart';
 import 'package:smart_fin/utilities/constants/constants.dart';
 import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
 import 'package:smart_fin/utilities/widgets/bottom_sheet/category_bottom_sheet.dart';
@@ -58,6 +60,220 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
     }
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Expense detail"),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const Gap(32),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0xFFD5D5D7),
+                        blurRadius: 16,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.secondary,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              Constant.defaultRegularIcons["check"]!,
+                              color: Colors.white,
+                              width: 16,
+                            ),
+                            const Gap(10),
+                            const Center(
+                              child: Text(
+                                "Expense",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    DateFormat("dd/MM/yyyy HH:mm")
+                                        .format(_expense.createAt),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${_expense.amount}",
+                                    style: const TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const CustomDivider(),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 8,
+                              ),
+                              child: Row(
+                                children: [
+                                  _customTitle("FROM"),
+                                  const Gap(10),
+                                  _customJarCard(),
+                                ],
+                              ),
+                            ),
+                            const CustomDivider(),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 8,
+                              ),
+                              child: Row(
+                                children: [
+                                  _customTitle("NOTE"),
+                                  const Gap(10),
+                                  Flexible(
+                                    child: Text(_expense.note),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Gap(16),
+              Container(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: () => showCategoryBottomSheet(
+                        context: context,
+                        onCategorySelected: (value) => {
+                          _updateExpenseCategory(value),
+                          widget.onCategoryCardChange(value),
+                        },
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              width: 0.5,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                    Constant.defaultLightIcons["tag"]!),
+                                const Gap(20),
+                                const Text("Edit category"),
+                              ],
+                            ),
+                            _categoryCard,
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => _showEditNoteDialog(),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              width: 0.5,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                                Constant.defaultLightIcons["edit"]!),
+                            const Gap(20),
+                            const Text("Edit note"),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Gap(10),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text("Back"),
+                      ),
+                    ),
+                    const Gap(32),
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => _showDeleteConfirmDialog(),
+                        child: const Text("Remove"),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _updateExpenseCategory(CategoryCard selectedCard) {
     _expenseNoteService.updateCategory(
       context: context,
@@ -75,15 +291,26 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
       expenseId: _expense.id,
       note: _noteCtrl.text,
     );
-    showCustomSnackBar(context, "New note updated");
+    // showCustomSnackBar(context, "New note updated");
     Navigator.of(context).pop();
   }
 
-  void _deleteExpense() {
-    _expenseNoteService.deleteExpense(context: context, expenseId: _expense.id);
-    showCustomSnackBar(context, "Expense removed!");
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
+  void _deleteExpense() async {
+    await _expenseNoteService.deleteExpense(
+        context: context, expenseId: _expense.id);
+    if (mounted) {
+      showCustomSnackBar(
+          context, "Expense removed!", Constant.contentTypes["success"]!);
+      Navigator.of(context).pop();
+      Navigator.of(context).pushAndRemoveUntil(
+          CupertinoPageRoute(
+            builder: (context) => const InitScreen(
+              startScreen: 1,
+              isFirstInit: false,
+            ),
+          ),
+          (route) => false);
+    }
   }
 
   SizedBox _customTitle(String title) {
@@ -178,7 +405,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
       builder: (context) {
         return AlertDialog(
           title: const Text("Delete confirmation"),
-          content: const Text("Are you sure to delete this expense!"),
+          content: const Text("Are you sure to delete this expense note!"),
           actions: <Widget>[
             Row(
               children: [
@@ -200,212 +427,6 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
           ],
         );
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Expense detail"),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const Gap(32),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0xFFD5D5D7),
-                        blurRadius: 16,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondary,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(16),
-                            topRight: Radius.circular(16),
-                          ),
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text(
-                              "Expense",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    DateFormat("dd/MM/yyyy HH:mm")
-                                        .format(_expense.createAt),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                  Text(
-                                    "${_expense.amount}",
-                                    style: const TextStyle(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const CustomDivider(),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 12,
-                                horizontal: 8,
-                              ),
-                              child: Row(
-                                children: [
-                                  _customTitle("FROM"),
-                                  const Gap(10),
-                                  _customJarCard(),
-                                ],
-                              ),
-                            ),
-                            const CustomDivider(),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 12,
-                                horizontal: 8,
-                              ),
-                              child: Row(
-                                children: [
-                                  _customTitle("NOTE"),
-                                  const Gap(10),
-                                  Flexible(
-                                    child: Text(_expense.note),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const Gap(16),
-              Container(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GestureDetector(
-                      onTap: () => showCategoryBottomSheet(
-                        context: context,
-                        onItemSelected: (value) => {
-                          _updateExpenseCategory(value),
-                          widget.onCategoryCardChange(value),
-                        },
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              width: 0.5,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                SvgPicture.asset(
-                                    Constant.defaultLightIcons["tag"]!),
-                                const Gap(20),
-                                const Text("Category"),
-                              ],
-                            ),
-                            _categoryCard,
-                          ],
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => _showEditNoteDialog(),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              width: 0.5,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                                Constant.defaultLightIcons["edit"]!),
-                            const Gap(20),
-                            const Text("Edit note"),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Gap(10),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                // height: 50,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text("Back"),
-                      ),
-                    ),
-                    const Gap(32),
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => _showDeleteConfirmDialog(),
-                        child: const Text("Remove"),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

@@ -20,6 +20,10 @@ class CategoryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeAll() {
+    _categoryList = [];
+  }
+
   void addCategory(category.Category category) {
     _categoryList.add(category);
     notifyListeners();

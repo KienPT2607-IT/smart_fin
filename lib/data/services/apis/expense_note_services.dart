@@ -14,17 +14,17 @@ import 'package:smart_fin/utilities/customs/http_response_handler.dart';
 class ExpenseNoteService {
   static final String _baseUrl = "${Constant.baseUrlPath}/expenses";
 
-  void createExpense({
+  Future<void> createExpense({
     required BuildContext context,
     required String jarId,
     required double amount,
     required DateTime date,
     required String note,
-  }) {
+  }) async {
     try {
       String token =
           Provider.of<UserProvider>(context, listen: false).getToken();
-      var res = http.post(
+      var res = await http.post(
         Uri.parse("$_baseUrl/create"),
         body: jsonEncode({
           "money_jar": jarId,
@@ -38,50 +38,54 @@ class ExpenseNoteService {
         },
       );
 
-      res.then((res) => httpResponseHandler(
-            context: context,
-            response: res,
-            onSuccess: () {
-              var jarProvider =
-                  Provider.of<MoneyJarProvider>(context, listen: false);
-              var expProvider =
-                  Provider.of<ExpenseProvider>(context, listen: false);
-              jarProvider.updateBalance(
-                jarId: jarId,
-                amount: amount,
-                isIncreased: true,
-              );
-              expProvider.addExpense(Expense(
-                id: jsonDecode(res.body)["id"],
-                amount: amount,
-                createAt: date,
-                note: note,
-                moneyJar: jarId,
-                jarBalance: jarProvider.getBalance(jarId),
-                category: "",
-              ));
-            },
-          ));
+      if (context.mounted) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {
+            var jarProvider =
+                Provider.of<MoneyJarProvider>(context, listen: false);
+            var expProvider =
+                Provider.of<ExpenseProvider>(context, listen: false);
+            jarProvider.updateBalance(
+              jarId: jarId,
+              amount: amount,
+              isIncreased: false,
+            );
+            expProvider.addExpense(Expense(
+              id: jsonDecode(res.body)["id"],
+              amount: amount,
+              createAt: date,
+              note: note,
+              moneyJar: jarId,
+              jarBalance: jarProvider.getBalance(jarId),
+              category: "",
+            ));
+          },
+        );
+      }
     } catch (e) {
-      showCustomSnackBar(context, e.toString());
+      if (context.mounted) {
+        showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      }
     }
   }
 
-  void getExpenses({
+  Future<void> getExpenses({
     required BuildContext context,
-  }) {
+  }) async {
     try {
       String token =
           Provider.of<UserProvider>(context, listen: false).getToken();
-      var res = http.get(
+      var res = await http.get(
         Uri.parse("$_baseUrl/"),
         headers: <String, String>{
           "Content-type": "application/json; charset=utf-8",
           "x-auth-token": token,
         },
       );
-      res.then(
-        (res) => httpResponseHandler(
+      if (context.mounted) {
+        httpResponseHandler(
           context: context,
           response: res,
           onSuccess: () {
@@ -89,10 +93,12 @@ class ExpenseNoteService {
                 Provider.of<ExpenseProvider>(context, listen: false);
             expProvider.setExpenses(res.body);
           },
-        ),
-      );
+        );
+      }
     } catch (e) {
-      showCustomSnackBar(context, e.toString());
+      if (context.mounted) {
+        showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      }
     }
   }
 
@@ -126,7 +132,7 @@ class ExpenseNoteService {
         );
       });
     } catch (e) {
-      showCustomSnackBar(context, e.toString());
+      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
@@ -160,25 +166,25 @@ class ExpenseNoteService {
         );
       });
     } catch (e) {
-      showCustomSnackBar(context, e.toString());
+      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
-  void deleteExpense({
+  Future<void> deleteExpense({
     required BuildContext context,
     required String expenseId,
-  }) {
+  }) async {
     try {
       String token =
           Provider.of<UserProvider>(context, listen: false).getToken();
-      var res = http.delete(
+      var res = await http.delete(
         Uri.parse("$_baseUrl/delete/$expenseId"),
         headers: <String, String>{
           "Content-type": "application/json; charset=utf-8",
           "x-auth-token": token,
         },
       );
-      res.then((res) {
+      if (context.mounted) {
         httpResponseHandler(
           context: context,
           response: res,
@@ -197,9 +203,11 @@ class ExpenseNoteService {
             expenseProvider.removeExpenseById(expenseId);
           },
         );
-      });
+      }
     } catch (e) {
-      showCustomSnackBar(context, e.toString());
+      if (context.mounted) {
+        showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      }
     }
   }
 }

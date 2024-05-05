@@ -8,18 +8,11 @@ import 'package:smart_fin/data/services/providers/category_provider.dart';
 import 'package:smart_fin/screens/add_expense_category_screen.dart';
 import 'package:smart_fin/utilities/widgets/cards/category_card.dart';
 
-void _getInputScreen(BuildContext context) => Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => const AddExpenseCategoryScreen(),
-      ),
-    );
-
 void showCategoryBottomSheet({
   required BuildContext context,
-  required Function(CategoryCard) onItemSelected,
+  required Function(CategoryCard) onCategorySelected,
 }) {
-  String title = "Categories";
+  const String title = "Categories";
   var categoryCardList = Provider.of<CategoryProvider>(context, listen: false)
       .categoryList
       .map((each) => CategoryCard(each))
@@ -54,9 +47,9 @@ void showCategoryBottomSheet({
                 onPressed: () => Navigator.pop(context),
                 icon: const Icon(IconlyLight.close_square),
               ),
-              Text(
+              const Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -80,7 +73,7 @@ void showCategoryBottomSheet({
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    onItemSelected(categoryCardList[index]);
+                    onCategorySelected(categoryCardList[index]);
                     Navigator.of(context).pop();
                   },
                   child: Padding(
@@ -96,3 +89,10 @@ void showCategoryBottomSheet({
     ),
   );
 }
+
+void _getInputScreen(BuildContext context) => Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => const AddExpenseCategoryScreen(),
+      ),
+    );

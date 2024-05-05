@@ -21,6 +21,10 @@ class IncomeSourceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeAll() {
+    _incomeSourceList = [];
+  }
+
   void addSource(IncomeSource source) {
     _incomeSourceList.add(source);
     notifyListeners();
@@ -34,20 +38,13 @@ class IncomeSourceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String getName(String id) {
-    int index = _incomeSourceList.indexWhere((source) => source.id == id);
-    return (index != -1) ? _incomeSourceList[index].name : "";
+  String getSourceNameById(String sourceId) {
+    int index = _incomeSourceList.indexWhere((source) => source.id == sourceId);
+    return _incomeSourceList[index].name;
   }
 
-  IncomeSource getSource(String id) {
-    int index = _incomeSourceList.indexWhere((source) => source.id == id);
-    return (index != -1)
-        ? _incomeSourceList[index]
-        : IncomeSource(
-            id: "",
-            name: "No name",
-            icon: "assets/icons/app/document_error.svg",
-            color: Constant.defaultNonePropertyColor,
-          );
+  IncomeSource getSourceById(String sourceId) {
+    int index = _incomeSourceList.indexWhere((source) => source.id == sourceId);
+    return _incomeSourceList[index];
   }
 }

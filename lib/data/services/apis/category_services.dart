@@ -51,7 +51,7 @@ class CategoryService {
         );
       });
     } on Exception catch (e) {
-      showCustomSnackBar(context, e.toString());
+      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
@@ -77,7 +77,7 @@ class CategoryService {
         );
       });
     } catch (e) {
-      showCustomSnackBar(context, e.toString());
+      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 }

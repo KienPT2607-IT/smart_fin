@@ -60,8 +60,8 @@ class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context)
-          .push(
+      onTap: () => Navigator.push(
+        context,
         CupertinoPageRoute(
           builder: (context) => ExpenseDetailScreen(
             expenseId: widget.expense.id,
@@ -70,12 +70,7 @@ class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
             }),
           ),
         ),
-      )
-          .then((value) {
-        if (mounted) {
-          setState(() {});
-        }
-      }),
+      ),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: const BoxDecoration(
@@ -162,7 +157,7 @@ class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
             GestureDetector(
               onTap: () => showCategoryBottomSheet(
                 context: context,
-                onItemSelected: (value) => _updateExpenseCategory(value),
+                onCategorySelected: (value) => _updateExpenseCategory(value),
               ),
               child: _categoryCard,
             ),

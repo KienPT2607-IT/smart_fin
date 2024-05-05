@@ -16,6 +16,8 @@ dependencies:
     gap: ^3.0.1
     http: ^1.2.0
     iconly: ^1.0.1
+    image_cropper: ^6.0.0
+    image_picker: ^1.0.8
     intl: ^0.18.1
     path: ^1.8.3
     provider: ^6.1.2

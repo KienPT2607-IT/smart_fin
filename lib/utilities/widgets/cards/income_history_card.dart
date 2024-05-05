@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -7,6 +8,7 @@ import 'package:smart_fin/data/models/income_source.dart';
 import 'package:smart_fin/data/models/money_jar.dart';
 import 'package:smart_fin/data/services/providers/income_source_provider.dart';
 import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
+import 'package:smart_fin/screens/income_detail_screen.dart';
 
 class IncomeHistoryCard extends StatefulWidget {
   final Income income;
@@ -32,7 +34,7 @@ class _IncomeHistoryCardState extends State<IncomeHistoryCard> {
     super.didChangeDependencies();
     if (!_isDataFetch) {
       _source = Provider.of<IncomeSourceProvider>(context)
-          .getSource(widget.income.incomeSource);
+          .getSourceById(widget.income.incomeSource);
       _jar = Provider.of<MoneyJarProvider>(context)
           .getJarById(widget.income.moneyJar);
       _isDataFetch = true;
@@ -42,7 +44,14 @@ class _IncomeHistoryCardState extends State<IncomeHistoryCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () => Navigator.push(
+        context,
+        CupertinoPageRoute(
+          builder: (context) => IncomeDetailScreen(
+            incomeId: widget.income.id,
+          ),
+        ),
+      ),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: const BoxDecoration(
@@ -127,25 +136,6 @@ class _IncomeHistoryCardState extends State<IncomeHistoryCard> {
                 ),
               ],
             ),
-            const Gap(5),
-            (widget.income.note.isNotEmpty)
-                ? Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 5,
-                      horizontal: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 0.5),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey[50],
-                    ),
-                    child: Text(
-                      widget.income.note,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )
-                : Container(),
           ],
         ),
       ),

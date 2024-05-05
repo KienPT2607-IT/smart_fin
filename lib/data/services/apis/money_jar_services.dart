@@ -56,7 +56,7 @@ class MoneyJarService {
         );
       });
     } on Exception catch (e) {
-      showCustomSnackBar(context, e.toString());
+      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
@@ -82,7 +82,7 @@ class MoneyJarService {
         );
       });
     } on Exception catch (e) {
-      showCustomSnackBar(context, e.toString());
+      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 }

@@ -18,8 +18,8 @@ class Friend {
   factory Friend.fromJson(Map<String, dynamic> json) => Friend(
         id: json["id"],
         name: json["name"],
-        phoneNumber: json["phone_number"],
-        email: json["email"],
+        phoneNumber: json["phone_number"] ?? "",
+        email: json["email"] ?? "",
       );
 
   String toRawJson() => jsonEncode(toJson());

@@ -17,7 +17,7 @@ class CustomAvatarChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: const BoxConstraints(
-        maxWidth: 150,
+        maxWidth: 135,
       ),
       child: Chip(
         padding: const EdgeInsets.all(6),

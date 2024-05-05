@@ -1,14 +1,22 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:smart_fin/data/models/user.dart';
 
 class UserProvider extends ChangeNotifier {
-  User _user = User(
-    username: "",
-    email: "",
-    fullName: "",
-    token: "",
-    // TODO: add more newly added fields
-  );
+  late User _user;
+  UserProvider() {
+    _user = User(
+      username: "",
+      email: "",
+      fullName: "",
+      token: "",
+      phoneNumber: "",
+      gender: "Unknown",
+      profileImage: "",
+      dob: null,
+    );
+  }
 
   User get user => _user;
 
@@ -26,8 +34,36 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateInfor() {
-    // TODO: Implement when profile sreen implemented
+  void updateProfile({
+    required String fullName,
+    required String email,
+    required String phoneNumber,
+    required String gender,
+    required DateTime dob,
+  }) {
+    _user.fullName = fullName;
+    _user.email = email;
+    _user.phoneNumber = phoneNumber;
+    _user.gender = gender;
+    _user.dob = dob;
+    notifyListeners();
+  }
+
+  void removeUser() {
+    _user = User(
+      username: "",
+      email: "",
+      fullName: "",
+      token: "",
+      phoneNumber: "",
+      gender: "Unknown",
+      profileImage: "",
+      dob: null,
+    );
+  }
+
+  void updateProfileImage(String rawJson) {
+    _user.profileImage = jsonDecode(rawJson)["profile_image"];
     notifyListeners();
   }
 }

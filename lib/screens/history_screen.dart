@@ -37,16 +37,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_isDataFetched) {
-      _expHistoryCardList = Provider.of<ExpenseProvider>(context, listen: false)
+      _expHistoryCardList = Provider.of<ExpenseProvider>(context, listen: true)
           .expenseList
           .map((expense) => ExpenseHistoryCard(expense: expense))
           .toList();
-      _loanHistoryCardList = Provider.of<LoanProvider>(context, listen: false)
+      _loanHistoryCardList = Provider.of<LoanProvider>(context, listen: true)
           .loanList
           .map((loan) => LoanHistoryCard(loan: loan))
           .toList();
       _incomeHistoryCardList =
-          Provider.of<IncomeProvider>(context, listen: false)
+          Provider.of<IncomeProvider>(context, listen: true)
               .incomeList
               .map((income) => IncomeHistoryCard(income: income))
               .toList();
@@ -54,7 +54,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
   }
 
-  ListView _showHistory() {
+  Widget _showHistory() {
     switch (_selectedSegment) {
       case 0:
         return _showExpenseHistory();
@@ -67,19 +67,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
   }
 
-  ListView _showExpenseHistory() => ListView.builder(
-        itemCount: _expHistoryCardList.length,
-        itemBuilder: (context, index) => _expHistoryCardList[index],
+  Widget _showExpenseHistory() => SingleChildScrollView(
+        child: Column(
+          children: _expHistoryCardList,
+        ),
       );
 
-  ListView _showLoanHistory() => ListView.builder(
-        itemCount: _loanHistoryCardList.length,
-        itemBuilder: (context, index) => _loanHistoryCardList[index],
+  Widget _showLoanHistory() => SingleChildScrollView(
+        child: Column(
+          children: _loanHistoryCardList,
+        ),
       );
 
-  ListView _showIncomeHistory() => ListView.builder(
-        itemCount: _incomeHistoryCardList.length,
-        itemBuilder: (context, index) => _incomeHistoryCardList[index],
+  Widget _showIncomeHistory() => SingleChildScrollView(
+        child: Column(
+          children: _incomeHistoryCardList,
+        ),
       );
 
   @override
@@ -99,46 +102,39 @@ class _HistoryScreenState extends State<HistoryScreen> {
         const Gap(10),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: () => widget.onSelected(2),
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        child: const Icon(
-                          IconlyLight.graph,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const Expanded(
-                        child: Text(
-                          "Views statistics",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                      ),
-                      const Icon(
-                        IconlyLight.arrow_right_2,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
-                ),
+          child: GestureDetector(
+            onTap: () => widget.onSelected(2),
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(10),
               ),
-            ],
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    child: const Icon(
+                      IconlyLight.graph,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const Expanded(
+                    child: Text(
+                      "Views statistics",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                  const Icon(
+                    IconlyLight.arrow_right_2,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
-        const Gap(10),
-        Expanded(
-          child: _showHistory(),
-        ),
+        _showHistory(),
       ],
     );
   }

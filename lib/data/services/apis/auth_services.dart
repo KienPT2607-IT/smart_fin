@@ -1,8 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:smart_fin/data/services/providers/category_provider.dart';
+import 'package:smart_fin/data/services/providers/expense_provider.dart';
+import 'package:smart_fin/data/services/providers/friend_provider.dart';
+import 'package:smart_fin/data/services/providers/income_provider.dart';
+import 'package:smart_fin/data/services/providers/income_source_provider.dart';
+import 'package:smart_fin/data/services/providers/loan_provider.dart';
+import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
-import 'package:smart_fin/screens/init_screen.dart';
 import 'package:smart_fin/screens/login_screen.dart';
 import 'package:smart_fin/utilities/constants/constants.dart';
 import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
@@ -15,14 +22,15 @@ class AuthService {
   static final String _baseUrl = "${Constant.baseUrlPath}/users";
 
   // * register
-  void register({
+  Future<bool> register({
     required BuildContext context,
     required String username,
     required String email,
     required String password,
-  }) {
+  }) async {
+    bool result = false;
     try {
-      Future<http.Response> res = http.post(
+      var res = await http.post(
         Uri.parse("$_baseUrl/register"),
         body: jsonEncode({
           "username": username,
@@ -34,86 +42,34 @@ class AuthService {
           "Content-type": "application/json; charset=utf-8"
         },
       );
-
-      res.then((res) {
+      if (context.mounted) {
         httpResponseHandler(
           response: res,
           context: context,
           onSuccess: () {
-            showCustomSnackBar(
-              context,
-              "Account created! Login with your new account.",
-            );
-            Navigator.of(context).pushAndRemoveUntil(
-              CupertinoPageRoute(
-                builder: (context) => const LoginScreen(),
-              ),
-              (route) => false,
-            );
+            result = true;
           },
         );
-      });
+      }
+      return result;
     } catch (e) {
-      showCustomSnackBar(context, e.toString());
-    }
-  }
-
-  // * update user information
-  void updateUserInfor(
-    String fullName,
-    String phoneNumber,
-    String gender,
-    String dob, {
-    required BuildContext context,
-  }) {
-    try {
-      String token = "";
-      Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-      prefs.then((prefs) {
-        token = prefs.getString("x-auth-token")!;
-      });
-
-      Future<http.Response> res = http.put(
-        Uri.parse("$_baseUrl/update/infor"),
-        body: jsonEncode({
-          "fullName": fullName,
-          "phoneNumber": phoneNumber,
-          "gender": gender,
-          "dob": dob,
-        }),
-        headers: <String, String>{
-          "Content-type": "application/json; charset=utf-8",
-          "x-auth-token": token,
-        },
-      );
-      res.then((res) {
-        httpResponseHandler(
-          response: res,
-          context: context,
-          onSuccess: () {
-            showCustomSnackBar(context, "Information updated!");
-            Navigator.of(context).pushAndRemoveUntil(
-              CupertinoPageRoute(
-                builder: (context) => const InitScreen(),
-              ),
-              (route) => false,
-            );
-          },
-        );
-      });
-    } catch (e) {
-      showCustomSnackBar(context, e.toString());
+      if (context.mounted) {
+        showCustomSnackBar(
+            context, e.toString(), Constant.contentTypes["failure"]!);
+      }
+      return result;
     }
   }
 
   // * login
-  Future<void> login({
+  Future<bool> login({
     required BuildContext context,
     required String username,
     required String password,
   }) async {
+    bool result = false;
     try {
-      Future<http.Response> res = http.post(
+      var res = await http.post(
         Uri.parse("$_baseUrl/login"),
         body: jsonEncode({
           "username": username,
@@ -124,44 +80,171 @@ class AuthService {
         },
       );
 
-      var userProvider = Provider.of<UserProvider>(context, listen: false);
-      final NavigatorState navigator = Navigator.of(context);
-      res.then((res) {
+      if (context.mounted) {
         httpResponseHandler(
           response: res,
           context: context,
-          onSuccess: () async {
+          onSuccess: () {
+            var userProvider =
+                Provider.of<UserProvider>(context, listen: false);
             userProvider.setUser(res.body);
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString(
-              "x-auth-token",
-              jsonDecode(res.body)["token"],
-            );
-            // * Navigate to the init screen must used here otherwise the token is not set yet
-            navigator.pushAndRemoveUntil(
-              CupertinoPageRoute(
-                builder: (context) => const InitScreen(),
-              ),
-              (route) => false,
-            );
+            result = true;
           },
         );
-      });
+      }
+      return result;
     } on Exception catch (e) {
-      showCustomSnackBar(context, e.toString());
-      debugPrint(e.toString());
+      if (context.mounted) {
+        showCustomSnackBar(
+          context,
+          e.toString(),
+          Constant.contentTypes["failure"]!,
+        );
+      }
+      return result;
     }
   }
 
-  // Todo: Logout - Just generated
+  void updateProfilePicture({
+    required BuildContext context,
+    required File imageFile,
+  }) async {
+    try {
+      String token =
+          Provider.of<UserProvider>(context, listen: false).getToken();
+      var request = http.MultipartRequest(
+        "PUT",
+        Uri.parse("$_baseUrl/update/avatar"),
+      );
+      request.headers.addAll(<String, String>{
+        'Content-Type': 'multipart/form-data',
+        'x-auth-token': token,
+      });
+      request.files.add(await http.MultipartFile.fromPath(
+        'profile_image',
+        imageFile.path,
+      ));
+      var streamedResponse = await request.send();
+      var res = await http.Response.fromStream(streamedResponse);
+      if (context.mounted) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {
+            Provider.of<UserProvider>(
+              context,
+              listen: false,
+            ).updateProfileImage(res.body);
+          },
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        showCustomSnackBar(
+          context,
+          e.toString(),
+          Constant.contentTypes["failure"]!,
+        );
+      }
+    }
+  }
+
+  Future<bool> updateProfile({
+    required BuildContext context,
+    required String fullName,
+    required String email,
+    required String phoneNumber,
+    required String gender,
+    required DateTime dob,
+  }) async {
+    bool result = false;
+    try {
+      String token =
+          Provider.of<UserProvider>(context, listen: false).user.token;
+      var res = await http.put(
+        Uri.parse("$_baseUrl/update/profile"),
+        headers: {
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+        body: jsonEncode({
+          "full_name": fullName,
+          "phone_number": phoneNumber,
+          "email": email,
+          "gender": gender,
+          "dob": dob.toIso8601String(),
+        }),
+      );
+      if (context.mounted) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {
+            Provider.of<UserProvider>(context, listen: false).updateProfile(
+              fullName: fullName,
+              email: email,
+              phoneNumber: phoneNumber,
+              gender: gender,
+              dob: dob,
+            );
+            result = true;
+          },
+        );
+      }
+      return result;
+    } catch (e) {
+      if (context.mounted) {
+        showCustomSnackBar(
+          context,
+          e.toString(),
+          Constant.contentTypes["failure"]!,
+        );
+      }
+      return result;
+    }
+  }
+
   void logout(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("x-auth-token");
-    Navigator.of(context).pushAndRemoveUntil(
-      CupertinoPageRoute(
-        builder: (context) => const InitScreen(),
-      ),
-      (route) => false,
-    );
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // prefs.remove("x-auth-token");
+    Provider.of<UserProvider>(context, listen: false).removeUser();
+    Provider.of<ExpenseProvider>(context, listen: false).removeAll();
+    Provider.of<LoanProvider>(context, listen: false).removeAll();
+    Provider.of<IncomeProvider>(context, listen: false).removeAll();
+    Provider.of<CategoryProvider>(context, listen: false).removeAll();
+    Provider.of<IncomeSourceProvider>(context, listen: false).removeAll();
+    Provider.of<MoneyJarProvider>(context, listen: false).removeAll();
+    Provider.of<FriendProvider>(context, listen: false).removeAll();
+  }
+
+  void updatePassword({
+    required BuildContext context,
+    required String newPassword,
+  }) {
+    try {
+      String token =
+          Provider.of<UserProvider>(context, listen: false).user.token;
+      var res = http.put(
+        Uri.parse("$_baseUrl/update/password"),
+        headers: {
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+        body: jsonEncode({"password": newPassword}),
+      );
+      res.then((res) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {},
+        );
+      });
+    } catch (e) {
+      showCustomSnackBar(
+        context,
+        e.toString(),
+        Constant.contentTypes["failure"]!,
+      );
+    }
   }
 }

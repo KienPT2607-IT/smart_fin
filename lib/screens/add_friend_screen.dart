@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:smart_fin/controllers/friend_controller.dart';
 import 'package:smart_fin/data/services/apis/friend_services.dart';
+import 'package:smart_fin/utilities/constants/constants.dart';
+import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
 
 class AddFriendScreen extends StatefulWidget {
   const AddFriendScreen({super.key});
@@ -15,6 +18,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
   late TextEditingController _nameCtl;
   late TextEditingController _phoneNumberCtl;
   late TextEditingController _emailCtl;
+  late FriendController _friendController;
   late FriendService _friendService;
   @override
   void initState() {
@@ -23,21 +27,28 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
     _nameCtl = TextEditingController();
     _phoneNumberCtl = TextEditingController();
     _emailCtl = TextEditingController();
+    // TODO: Do the validation for friend
+    _friendController = FriendController();
     _friendService = FriendService();
   }
 
-  void _addFriend() {
-    if (!_key.currentState!.validate()) {
-      // TODO:show custom snackbar to show error or warning
-    }
-    _friendService.addFriend(
+  void _addFriend() async {
+    if (!_key.currentState!.validate()) {}
+    bool result = await _friendService.addFriend(
       context: context,
       name: _nameCtl.text,
       phoneNumber: _phoneNumberCtl.text,
       email: _emailCtl.text,
     );
-    Navigator.of(context).pop();
-    // TODO: Call friend service to add friend then pop back
+    if (mounted && result) {
+      showCustomSnackBar(
+        context,
+        "New friend added!",
+        Constant.contentTypes["success"]!,
+      );
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    }
   }
 
   @override

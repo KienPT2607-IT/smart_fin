@@ -11,17 +11,28 @@ class Constant {
   static const String phoneRegex = r'^0\d{9}$';
   static const String nameRegex = r'^[a-zA-Z ]+$';
 
+  static const Map<String, String> contentTypes = {
+    "success": "success",
+    "failure": "failure",
+    "warning": "warning",
+    "help": "help",
+  };
+
   static const String _baseSystemIconAssetPath = "assets/icons/default";
   static const Map<String, String> defaultLightIcons = {
     "tag": "$_baseSystemIconAssetPath/light/tags.svg",
     "edit": "$_baseSystemIconAssetPath/light/pen-fancy.svg",
     "repaid": "$_baseSystemIconAssetPath/light/expense.svg",
+    "dollar_jar": "$_baseSystemIconAssetPath/light/dollar-jar.svg",
+    "camera": "$_baseSystemIconAssetPath/light/camera-viewfinder.svg",
+    "sign-out": "$_baseSystemIconAssetPath/light/sign-out-alt.svg",
   };
 
   static const Map<String, String> defaultRegularIcons = {
     "tag": "$_baseSystemIconAssetPath/regular/tags.svg",
     "uncheck": "$_baseSystemIconAssetPath/regular/uncheck-circle.svg",
     "check": "$_baseSystemIconAssetPath/regular/check-circle.svg",
+    "dollar_jar": "$_baseSystemIconAssetPath/regular/dollar-jar.svg",
   };
 
   static const Map<String, String> defaultBoldIcons = {

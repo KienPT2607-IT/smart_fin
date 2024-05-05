@@ -20,6 +20,10 @@ class IncomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeAll() {
+    _incomeList = [];
+  }
+
   void addIncome(Income income) {
     _incomeList.insert(0, income);
     notifyListeners();
@@ -35,8 +39,8 @@ class IncomeProvider extends ChangeNotifier {
     }
   }
 
-  void removeIncome(String id) {
-    int index = _incomeList.indexWhere((income) => income.id == id);
+  void removeIncome(String incomeId) {
+    int index = _incomeList.indexWhere((income) => income.id == incomeId);
 
     if (index != -1) {
       _incomeList.removeAt(index);
@@ -58,5 +62,18 @@ class IncomeProvider extends ChangeNotifier {
       if (each.incomeSource == sourceId) total += each.amount;
     }
     return total;
+  }
+
+  Income getIncomeById(String incomeId) {
+    int index = _incomeList.indexWhere((each) => each.id == incomeId);
+    return _incomeList[index];
+  }
+
+  void updateIncomeNote(String incomeId, String note) {
+    int index = _incomeList.indexWhere((each) => each.id == incomeId);
+    if (index >= 0) {
+      _incomeList[index].note = note;
+      notifyListeners();
+    }
   }
 }

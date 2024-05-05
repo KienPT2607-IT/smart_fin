@@ -24,6 +24,10 @@ class MoneyJarProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeAll() {
+    _moneyJarList = [];
+  }
+
   void addJar(MoneyJar jar) {
     _moneyJarList.add(jar);
     notifyListeners();

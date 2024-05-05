@@ -14,6 +14,7 @@ import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
 import 'package:smart_fin/screens/components/note_tracker_screen/income_section.dart';
 import 'package:smart_fin/screens/components/note_tracker_screen/expense_section.dart';
 import 'package:smart_fin/screens/components/note_tracker_screen/loan_section.dart';
+import 'package:smart_fin/utilities/constants/constants.dart';
 import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
 import 'package:smart_fin/utilities/widgets/cards/income_source_card.dart';
 import 'package:smart_fin/utilities/widgets/cards/money_jar_card.dart';
@@ -40,7 +41,7 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
   late GlobalKey<FormState> _formKey;
   late TextEditingController _amountCtrl;
   late TextEditingController _noteCtrl;
-  late TextEditingController _dobCtrl;
+  late TextEditingController _dateCtrl;
   late DateTime date;
   late NoteTrackerController _noteTrackerController;
   late ExpenseNoteService _expNoteService;
@@ -54,8 +55,8 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
     _formKey = GlobalKey();
     _amountCtrl = TextEditingController();
     _noteCtrl = TextEditingController();
-    _dobCtrl = TextEditingController();
-    _dobCtrl.text = DateTime.now().toString().split(" ")[0];
+    _dateCtrl = TextEditingController();
+    _dateCtrl.text = DateTime.now().toString().split(" ")[0];
     _noteTrackerController = NoteTrackerController();
     _expNoteService = ExpenseNoteService();
     _loanNoteService = LoanNoteService();
@@ -72,7 +73,6 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
   @override
   didChangeDependencies() {
     super.didChangeDependencies();
-
     _jarCardList = Provider.of<MoneyJarProvider>(context)
         .moneyJarList
         .map((jar) => MoneyJarCard(moneyJar: jar))
@@ -85,41 +85,50 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
   }
 
   Widget _getNoteSection() {
-    if (_selectedSegment == 0) {
-      return ExpenseSection(
-        sectionType: _selectedSegment,
-        jarCardList: _jarCardList,
-        onJarSelected: (value) => setState(() {
-          _jarId = value;
-        }),
-      );
-    } else if (_selectedSegment == 1) {
-      return LoanSection(
-        sectionType: _selectedSegment,
-        friendList: _friendList,
-        moneyJarList: _jarCardList,
-        onJarSelected: (value) => setState(() {
-          _jarId = value;
-        }),
-        onFriendSelected: (String participantId, bool isCreatorLender) {
-          setState(() {
-            _participantId = participantId;
-            _isCreatorLender = isCreatorLender;
-          });
-        },
-      );
-    } else {
-      return IncomeSection(
-        sectionType: _selectedSegment,
-        moneyJarCardList: _jarCardList,
-        incomeCardList: _sourceCardList,
-        onIncomeSourceSelected: (value) => setState(() {
-          _sourceId = value;
-        }),
-        onMoneyJarSelected: (value) => setState(() {
-          _jarId = value;
-        }),
-      );
+    switch (_selectedSegment) {
+      case 0:
+        return ExpenseSection(
+          sectionType: _selectedSegment,
+          jarCardList: _jarCardList,
+          onJarSelected: (value) => setState(() {
+            _jarId = value;
+          }),
+        );
+      case 1:
+        return LoanSection(
+          sectionType: _selectedSegment,
+          friendList: _friendList,
+          moneyJarList: _jarCardList,
+          onJarSelected: (value) => setState(() {
+            _jarId = value;
+          }),
+          onFriendSelected: (String participantId, bool isCreatorLender) {
+            setState(() {
+              _participantId = participantId;
+              _isCreatorLender = isCreatorLender;
+            });
+          },
+        );
+      case 2:
+        return IncomeSection(
+          sectionType: _selectedSegment,
+          moneyJarCardList: _jarCardList,
+          incomeCardList: _sourceCardList,
+          onIncomeSourceSelected: (value) => setState(() {
+            _sourceId = value;
+          }),
+          onMoneyJarSelected: (value) => setState(() {
+            _jarId = value;
+          }),
+        );
+      default:
+        return ExpenseSection(
+          sectionType: _selectedSegment,
+          jarCardList: _jarCardList,
+          onJarSelected: (value) => setState(() {
+            _jarId = value;
+          }),
+        );
     }
   }
 
@@ -135,46 +144,64 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
     }
   }
 
-  void _saveExpenseNote() {
+  void _saveExpenseNote() async {
     if (_jarId.isNotEmpty) {
-      _expNoteService.createExpense(
+      await _expNoteService.createExpense(
         context: context,
         amount: double.parse(_amountCtrl.text.replaceAll(",", ".")),
         jarId: _jarId,
         date: date,
         note: _noteCtrl.text,
       );
-      showCustomSnackBar(context, "Expense saved!");
+      if (mounted) {
+        showCustomSnackBar(
+          context,
+          "Expense saved!",
+          Constant.contentTypes["success"]!,
+        );
+      }
       _resetForm();
     } else {
-      showCustomSnackBar(context, "No money jar selected!");
+      showCustomSnackBar(
+        context,
+        "No money jar selected!",
+        Constant.contentTypes["warning"]!,
+      );
     }
   }
 
   void _saveLoanNote() {
-    int participant =
+    int participantIndex =
         _friendList.indexWhere((friend) => friend.id == _participantId);
-    if (_jarId.isNotEmpty && participant >= 0) {
+    if (_jarId.isNotEmpty && participantIndex >= 0) {
       _loanNoteService.createLoan(
         context: context,
         participantId: _participantId,
-        participantName: _friendList[participant].name,
+        participantName: _friendList[participantIndex].name,
         amount: double.parse(_amountCtrl.text.replaceAll(",", ".")),
         note: _noteCtrl.text,
         isCreatorLender: _isCreatorLender,
         createAt: date,
         moneyJarId: _jarId,
       );
-      showCustomSnackBar(context, "Loan saved!");
+      showCustomSnackBar(
+        context,
+        "Loan saved!",
+        Constant.contentTypes["success"]!,
+      );
       _resetForm();
     } else {
-      showCustomSnackBar(context, "No lender or Money jar selected!");
+      showCustomSnackBar(
+        context,
+        "No lender or Money jar selected!",
+        Constant.contentTypes["warning"]!,
+      );
     }
   }
 
   void _saveIncomeNote() {
     if (_jarId.isNotEmpty && _sourceId.isNotEmpty) {
-      _incomeNoteService.createNote(
+      _incomeNoteService.createIncome(
         context: context,
         amount: double.parse(_amountCtrl.text.replaceAll(",", ".")),
         createAt: date,
@@ -182,9 +209,17 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
         moneyJar: _jarId,
         note: _noteCtrl.text,
       );
-      showCustomSnackBar(context, "Income saved!");
+      showCustomSnackBar(
+        context,
+        "Income saved!",
+        Constant.contentTypes["success"]!,
+      );
     } else {
-      showCustomSnackBar(context, "No Income Source or Money jar selected!");
+      showCustomSnackBar(
+        context,
+        "No Income Source or Money jar selected!",
+        Constant.contentTypes["warning"]!,
+      );
     }
   }
 
@@ -192,7 +227,7 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
     _amountCtrl.clear();
     _noteCtrl.clear();
     date = DateTime.now();
-    _dobCtrl.text = date.toString().split(" ")[0];
+    _dateCtrl.text = date.toString().split(" ")[0];
   }
 
   @override
@@ -255,7 +290,7 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
                 ),
                 const Gap(10),
                 TextFormField(
-                  controller: _dobCtrl,
+                  controller: _dateCtrl,
                   readOnly: true,
                   decoration: InputDecoration(
                     labelText: "Date",
@@ -278,7 +313,7 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
                       onDateTimeChanged: (newDate) {
                         setState(() {
                           date = newDate;
-                          _dobCtrl.text = date.toString().split(" ")[0];
+                          _dateCtrl.text = date.toString().split(" ")[0];
                         });
                       },
                     ),

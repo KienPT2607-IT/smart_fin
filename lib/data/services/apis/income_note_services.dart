@@ -13,7 +13,7 @@ import 'package:smart_fin/utilities/customs/http_response_handler.dart';
 class IncomeNoteService {
   static final _baseUrl = "${Constant.baseUrlPath}/incomes";
 
-  void createNote({
+  void createIncome({
     required BuildContext context,
     required double amount,
     required String note,
@@ -67,11 +67,12 @@ class IncomeNoteService {
         ),
       );
     } catch (e) {
-      showCustomSnackBar(context, e.toString());
+      showCustomSnackBar(
+          context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
-  void getNotes({required BuildContext context}) {
+  void getIncomes({required BuildContext context}) {
     try {
       String token =
           Provider.of<UserProvider>(context, listen: false).getToken();
@@ -94,7 +95,89 @@ class IncomeNoteService {
         ),
       );
     } catch (e) {
-      showCustomSnackBar(context, e.toString());
+      showCustomSnackBar(
+          context, e.toString(), Constant.contentTypes["failure"]!);
+    }
+  }
+
+  void updateNote({
+    required BuildContext context,
+    required String incomeId,
+    required String note,
+  }) {
+    try {
+      String token =
+          Provider.of<UserProvider>(context, listen: false).getToken();
+      var res = http.put(
+        Uri.parse("$_baseUrl/update/$incomeId/note/"),
+        body: jsonEncode({
+          "note": note,
+        }),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+      );
+      res.then((value) {
+        httpResponseHandler(
+          context: context,
+          response: value,
+          onSuccess: () {
+            var incomeProvider =
+                Provider.of<IncomeProvider>(context, listen: false);
+            incomeProvider.updateIncomeNote(incomeId, note);
+          },
+        );
+      });
+    } catch (e) {
+      showCustomSnackBar(
+          context, e.toString(), Constant.contentTypes["failure"]!);
+    }
+  }
+
+  Future<bool> deleteIncome({
+    required BuildContext context,
+    required String incomeId,
+  }) async {
+    bool result = false;
+    try {
+      String token =
+          Provider.of<UserProvider>(context, listen: false).getToken();
+      var res = await http.delete(
+        Uri.parse("$_baseUrl/delete/$incomeId"),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+      );
+
+      if (context.mounted) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {
+            var incomeProvider =
+                Provider.of<IncomeProvider>(context, listen: false);
+            var moneyJarProvider =
+                Provider.of<MoneyJarProvider>(context, listen: false);
+            Income income = incomeProvider.getIncomeById(incomeId);
+            moneyJarProvider.updateBalance(
+              jarId: income.moneyJar,
+              amount: income.amount,
+              isIncreased: false,
+            );
+            incomeProvider.removeIncome(incomeId);
+            result = true;
+          },
+        );
+      }
+      return result;
+    } catch (e) {
+      if (context.mounted) {
+        showCustomSnackBar(
+            context, e.toString(), Constant.contentTypes["failure"]!);
+      }
+      return result;
     }
   }
 }

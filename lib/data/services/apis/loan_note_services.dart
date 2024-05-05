@@ -71,7 +71,7 @@ class LoanNoteService {
             },
           ));
     } on Exception catch (e) {
-      showCustomSnackBar(context, e.toString());
+      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
@@ -99,7 +99,7 @@ class LoanNoteService {
         ),
       );
     } catch (e) {
-      showCustomSnackBar(context, e.toString());
+      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
@@ -131,7 +131,7 @@ class LoanNoteService {
         );
       });
     } catch (e) {
-      showCustomSnackBar(context, e.toString());
+      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
@@ -155,15 +155,66 @@ class LoanNoteService {
           context: context,
           response: res,
           onSuccess: () {
-            var loanProvider = Provider.of<LoanProvider>(context, listen: false);
+            var loanProvider =
+                Provider.of<LoanProvider>(context, listen: false);
+            Loan loan = loanProvider.getLoanById(loanId);
+            Provider.of<MoneyJarProvider>(context, listen: false).updateBalance(
+              jarId: loan.moneyJar,
+              amount: loan.amount,
+              isIncreased: loan.isCreatorLender,
+            );
             loanProvider.updateRepaidStatus(loanId);
           },
         );
       });
     } catch (e) {
-      showCustomSnackBar(context, e.toString());
+      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
-  void deleteNote() {}
+  Future<bool> deleteLoan({
+    required BuildContext context,
+    required String loanId,
+  }) async {
+    bool result = false;
+
+    try {
+      final String token =
+          Provider.of<UserProvider>(context, listen: false).getToken();
+      var res = await http.delete(
+        Uri.parse("$_baseUrl/delete/$loanId"),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+      );
+      if (context.mounted) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {
+            var loanProvider =
+                Provider.of<LoanProvider>(context, listen: false);
+            Loan loan = loanProvider.getLoanById(loanId);
+            if (!loan.isRepaid) {
+              Provider.of<MoneyJarProvider>(context, listen: false)
+                  .updateBalance(
+                jarId: loan.moneyJar,
+                amount: loan.amount,
+                isIncreased: loan.isCreatorLender,
+              );
+            }
+            loanProvider.removeLoan(loanId);
+            result = true;
+          },
+        );
+      }
+      return result;
+    } catch (e) {
+      if (context.mounted) {
+        showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      }
+      return result;
+    }
+  }
 }

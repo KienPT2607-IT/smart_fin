@@ -1,9 +1,12 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:smart_fin/data/services/apis/auth_services.dart';
 import 'package:smart_fin/controllers/account_controller.dart';
 import 'package:smart_fin/screens/login_screen.dart';
+import 'package:smart_fin/utilities/constants/constants.dart';
+import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -26,18 +29,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final AuthService authService = AuthService();
   final AccountController accountController = AccountController();
 
-  void registerUser() {
+  void registerUser() async {
     if (_formKey.currentState!.validate()) {
       final String username = _usernameCtrl.text;
       final String email = _emailCtrl.text;
       final String password = _passwordCtrl.text;
 
-      authService.register(
+      bool result = await authService.register(
         context: context,
         username: username,
         email: email,
         password: password,
       );
+      // TODO: Need to test again
+      if (mounted && result) {
+        showCustomSnackBar(
+          context,
+          "Account created! Login with your new credential.",
+            Constant.contentTypes["success"]!
+        );
+        Navigator.of(context).pushAndRemoveUntil(
+          CupertinoPageRoute(
+            builder: (context) => const LoginScreen(),
+          ),
+          (route) => false,
+        );
+      }
     }
   }
 

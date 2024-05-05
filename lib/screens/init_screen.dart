@@ -12,13 +12,20 @@ import 'package:smart_fin/data/services/apis/loan_note_services.dart';
 import 'package:smart_fin/data/services/apis/money_jar_services.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
 import 'package:smart_fin/screens/history_screen.dart';
+import 'package:smart_fin/utilities/constants/constants.dart';
 import 'package:smart_fin/utilities/widgets/customs/bottom_nav_destination.dart';
 import 'package:smart_fin/screens/note_tracker_screen.dart';
 import 'package:smart_fin/screens/profile_screen.dart';
 import 'package:smart_fin/screens/statistics_screen.dart';
 
 class InitScreen extends StatefulWidget {
-  const InitScreen({super.key});
+  final int startScreen;
+  final bool isFirstInit;
+  const InitScreen({
+    super.key,
+    required this.startScreen,
+    required this.isFirstInit,
+  });
 
   @override
   State<InitScreen> createState() => _InitScreenState();
@@ -41,7 +48,7 @@ class _InitScreenState extends State<InitScreen> {
   void initState() {
     super.initState();
 
-    _selectedScreen = 0;
+    _selectedScreen = widget.startScreen;
     _moneyJarService = MoneyJarService();
     _expNoteService = ExpenseNoteService();
     _friendService = FriendService();
@@ -68,14 +75,16 @@ class _InitScreenState extends State<InitScreen> {
     super.didChangeDependencies();
     if (!_isDataFetched) {
       _user = Provider.of<UserProvider>(context).user;
-      _moneyJarService.getJars(context: context);
-      _expNoteService.getExpenses(context: context);
-      _friendService.getFriends(context: context);
-      _loanNoteService.getLoans(context: context);
-      _incomeSourceService.getSources(context: context);
-      _incomeNoteService.getNotes(context: context);
-      _categoryService.getCategories(context: context);
       _isDataFetched = true;
+      if (widget.isFirstInit) {
+        _moneyJarService.getJars(context: context);
+        _expNoteService.getExpenses(context: context);
+        _friendService.getFriends(context: context);
+        _loanNoteService.getLoans(context: context);
+        _incomeSourceService.getSources(context: context);
+        _incomeNoteService.getIncomes(context: context);
+        _categoryService.getCategories(context: context);
+      }
     }
   }
 
@@ -88,8 +97,18 @@ class _InitScreenState extends State<InitScreen> {
           leading: Padding(
             padding: const EdgeInsets.only(left: 10),
             child: GestureDetector(
-              child: const CircleAvatar(
-                backgroundImage: AssetImage("assets/images/avatars/2.jpg"),
+              child: Container(
+                height: 48,
+                width: 48,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                child: _user.profileImage!.isEmpty
+                    ? const Icon(IconlyLight.profile)
+                    : Image.network(_user.profileImage!),
               ),
               onTap: () => setState(() {
                 _selectedScreen = 3;
@@ -98,13 +117,6 @@ class _InitScreenState extends State<InitScreen> {
           ),
           title: Text(_user.fullName),
           centerTitle: false,
-          actions: [
-            IconButton(
-              onPressed: () {},
-              // TODO: Turn this into setting function
-              icon: SvgPicture.asset("assets/icons/app/search.svg"),
-            ),
-          ],
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SafeArea(

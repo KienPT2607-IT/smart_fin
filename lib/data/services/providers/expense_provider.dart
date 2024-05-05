@@ -20,8 +20,15 @@ class ExpenseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeAll() {
+    _expenseList = [];
+  }
+
   void addExpense(Expense expense) {
-    _expenseList.insert(0, expense);
+    // _expenseList.insert(0, expense);
+    // notifyListeners();
+    _expenseList.add(expense);
+    _expenseList.sort((a, b) => b.createAt.compareTo(a.createAt));
     notifyListeners();
   }
 

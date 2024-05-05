@@ -256,7 +256,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  "Expense",
+                  "Borrow",
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 Text("$_totalBorrow"),

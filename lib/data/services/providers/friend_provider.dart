@@ -21,6 +21,10 @@ class FriendProvider extends ChangeNotifier {
     }
   }
 
+  void removeAll() {
+    _friendList = [];
+  }
+
   Friend getFriendById(String id) {
     int index = _friendList.indexWhere((friend) => friend.id == id);
     return (index != -1)

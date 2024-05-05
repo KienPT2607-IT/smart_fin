@@ -17,7 +17,7 @@ class TotalLoanByJarCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       decoration: const BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -46,10 +46,10 @@ class TotalLoanByJarCard extends StatelessWidget {
           Row(
             children: <Widget>[
               Text("$total"),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(IconlyLight.arrow_right_2),
-              ),
+              // IconButton(
+              //   onPressed: () {},
+              //   icon: const Icon(IconlyLight.arrow_right_2),
+              // ),
             ],
           ),
         ],

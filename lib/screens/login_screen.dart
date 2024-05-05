@@ -36,13 +36,25 @@ class _LoginScreenState extends State<LoginScreen> {
     authService = AuthService();
   }
 
-  void _loginUser() {
+  void _loginUser() async {
     if (_formKey.currentState!.validate()) {
-      authService.login(
+      bool result = await authService.login(
         context: context,
         username: _usernameCtrl.text,
         password: _passwordCtrl.text,
       );
+      if (mounted && result) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => const InitScreen(
+              startScreen: 0,
+              isFirstInit: true,
+            ),
+          ),
+          (route) => false,
+        );
+      }
     }
   }
 
