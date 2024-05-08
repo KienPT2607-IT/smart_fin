@@ -16,9 +16,9 @@ class MoneyJarProvider extends ChangeNotifier {
     List jarJsonList = jsonDecode(rawJson)["data"];
     for (var json in jarJsonList) {
       if (json["status"]) {
-        _moneyJarList.add(MoneyJar.fromJson(json));
+        _moneyJarList.insert(0, MoneyJar.fromJson(json));
       } else {
-        _moneyJarList.insert(_moneyJarList.length - 1, MoneyJar.fromJson(json));
+        _moneyJarList.add(MoneyJar.fromJson(json));
       }
     }
     notifyListeners();
@@ -29,7 +29,7 @@ class MoneyJarProvider extends ChangeNotifier {
   }
 
   void addJar(MoneyJar jar) {
-    _moneyJarList.add(jar);
+    _moneyJarList.insert(0, jar);
     notifyListeners();
   }
 
@@ -38,27 +38,46 @@ class MoneyJarProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateJar(MoneyJar updatedJar) {
-    var index = _moneyJarList.indexWhere((jar) => jar.id == updatedJar.id);
-
+  void updateJar({
+    required String id,
+    required String newName,
+    required String newIcon,
+    required int newColor,
+  }) {
+    var index = _moneyJarList.indexWhere((jar) => jar.id == id);
     if (index != -1) {
-      _moneyJarList[index] = updatedJar;
+      _moneyJarList[index].name = newName;
+      _moneyJarList[index].icon = newIcon;
+      _moneyJarList[index].color = newColor;
       notifyListeners();
     }
   }
 
   void updateBalance({
-    required String jarId,
+    required String id,
     required double amount,
     required bool isIncreased,
   }) {
-    var index = _moneyJarList.indexWhere((jar) => jar.id == jarId);
-
+    var index = _moneyJarList.indexWhere((jar) => jar.id == id);
     if (index != -1) {
       if (isIncreased) {
         _moneyJarList[index].balance += amount;
       } else {
         _moneyJarList[index].balance -= amount;
+      }
+      notifyListeners();
+    }
+  }
+
+  void changeJarStatus(String id) {
+    var index = _moneyJarList.indexWhere((jar) => jar.id == id);
+    if (index != -1) {
+      MoneyJar jar = _moneyJarList.removeAt(index);
+      jar.status = !jar.status;
+      if (jar.status) {
+        _moneyJarList.insert(0, jar);
+      } else {
+        _moneyJarList.add(jar);
       }
       notifyListeners();
     }

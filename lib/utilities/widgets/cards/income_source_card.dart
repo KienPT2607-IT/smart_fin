@@ -13,7 +13,7 @@ class IncomeSourceCard extends StatelessWidget {
       height: 75,
       width: 150,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: incomeSource.status ? Colors.white : Colors.grey[100],
         borderRadius: BorderRadius.circular(10),
         boxShadow: const [
           BoxShadow(

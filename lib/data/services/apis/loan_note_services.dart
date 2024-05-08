@@ -52,7 +52,7 @@ class LoanNoteService {
             response: res,
             onSuccess: () {
               moneyJarProvider.updateBalance(
-                jarId: moneyJarId,
+                id: moneyJarId,
                 amount: amount,
                 isIncreased: isCreatorLender ? false : true,
               );
@@ -71,7 +71,8 @@ class LoanNoteService {
             },
           ));
     } on Exception catch (e) {
-      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      showCustomSnackBar(
+          context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
@@ -99,7 +100,8 @@ class LoanNoteService {
         ),
       );
     } catch (e) {
-      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      showCustomSnackBar(
+          context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
@@ -131,7 +133,8 @@ class LoanNoteService {
         );
       });
     } catch (e) {
-      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      showCustomSnackBar(
+          context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
@@ -159,7 +162,7 @@ class LoanNoteService {
                 Provider.of<LoanProvider>(context, listen: false);
             Loan loan = loanProvider.getLoanById(loanId);
             Provider.of<MoneyJarProvider>(context, listen: false).updateBalance(
-              jarId: loan.moneyJar,
+              id: loan.moneyJar,
               amount: loan.amount,
               isIncreased: loan.isCreatorLender,
             );
@@ -168,7 +171,8 @@ class LoanNoteService {
         );
       });
     } catch (e) {
-      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      showCustomSnackBar(
+          context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
@@ -199,7 +203,7 @@ class LoanNoteService {
             if (!loan.isRepaid) {
               Provider.of<MoneyJarProvider>(context, listen: false)
                   .updateBalance(
-                jarId: loan.moneyJar,
+                id: loan.moneyJar,
                 amount: loan.amount,
                 isIncreased: loan.isCreatorLender,
               );
@@ -212,7 +216,8 @@ class LoanNoteService {
       return result;
     } catch (e) {
       if (context.mounted) {
-        showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+        showCustomSnackBar(
+            context, e.toString(), Constant.contentTypes["failure"]!);
       }
       return result;
     }

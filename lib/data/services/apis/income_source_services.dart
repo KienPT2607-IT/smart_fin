@@ -48,6 +48,7 @@ class IncomeSourceService {
               name: name,
               icon: icon,
               color: color,
+              status: true,
             ));
             result = true;
           },
@@ -87,7 +88,101 @@ class IncomeSourceService {
           ));
     } catch (e) {
       showCustomSnackBar(
-          context, e.toString(), Constant.contentTypes["failure"]!);
+        context,
+        e.toString(),
+        Constant.contentTypes["failure"]!,
+      );
+    }
+  }
+
+  Future<bool> updateSourceDetail({
+    required BuildContext context,
+    required String id,
+    required String newName,
+    required String newIcon,
+    required int newColor,
+  }) async {
+    bool result = false;
+    try {
+      final String token =
+          Provider.of<UserProvider>(context, listen: false).getToken();
+      var res = await http.put(
+        Uri.parse("$_baseUrl/update/$id/detail"),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+        body: jsonEncode({
+          "name": newName,
+          "icon": newIcon,
+          "color": newColor,
+        }),
+      );
+
+      if (context.mounted) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {
+            Provider.of<IncomeSourceProvider>(
+              context,
+              listen: false,
+            ).updateSourceDetail(
+              id: id,
+              newName: newName,
+              newIcon: newIcon,
+              newColor: newColor,
+            );
+            result = true;
+          },
+        );
+      }
+      return result;
+    } catch (e) {
+      if (context.mounted) {
+        showCustomSnackBar(
+          context,
+          e.toString(),
+          Constant.contentTypes["failure"]!,
+        );
+      }
+      return result;
+    }
+  }
+
+  void updateSourceStatus({
+    required BuildContext context,
+    required String id,
+  }) {
+    try {
+      final String token =
+          Provider.of<UserProvider>(context, listen: false).getToken();
+      var res = http.put(
+        Uri.parse("$_baseUrl/update/$id/status"),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+      );
+
+      res.then((res) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {
+            Provider.of<IncomeSourceProvider>(
+              context,
+              listen: false,
+            ).updateSourceStatus(id);
+          },
+        );
+      });
+    } catch (e) {
+      showCustomSnackBar(
+        context,
+        e.toString(),
+        Constant.contentTypes["failure"]!,
+      );
     }
   }
 }

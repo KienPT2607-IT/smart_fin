@@ -2,7 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
-import 'package:smart_fin/utilities/widgets/bottom_sheet/bottom_sheet.dart';
+import 'package:smart_fin/utilities/widgets/bottom_sheet/income_source_bottom_sheet.dart';
+import 'package:smart_fin/utilities/widgets/bottom_sheet/money_jar_bottom_sheet.dart';
 import 'package:smart_fin/utilities/widgets/cards/income_source_card.dart';
 import 'package:smart_fin/utilities/widgets/cards/money_jar_card.dart';
 
@@ -54,11 +55,9 @@ class _IncomeSectionState extends State<IncomeSection> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () => showCustomBottomSheet(
-                      context,
-                      widget.sectionType,
-                      widget.incomeCardList,
-                      (index) => setState(() {
+                    onPressed: () => showIncomeSourceBottomSheet(
+                      context: context,
+                      onIncomeSourceSelected: (index) => setState(() {
                         _selectedSourceIndex = index;
                         widget.onIncomeSourceSelected(
                           widget.incomeCardList[index].incomeSource.id,
@@ -94,11 +93,9 @@ class _IncomeSectionState extends State<IncomeSection> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () => showCustomBottomSheet(
-                      context,
-                      widget.sectionType - 2,
-                      widget.moneyJarCardList,
-                      (index) => setState(() {
+                    onPressed: () => showMoneyJarBottomSheet(
+                      context: context,
+                      onMoneyJarSelected: (index) => setState(() {
                         _selectedJarIndex = index;
                         widget.onMoneyJarSelected(
                           widget.moneyJarCardList[index].moneyJar.id,

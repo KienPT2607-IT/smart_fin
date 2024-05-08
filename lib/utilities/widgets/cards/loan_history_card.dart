@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_fin/data/models/loan.dart';
 import 'package:smart_fin/data/models/money_jar.dart';
@@ -39,16 +40,18 @@ class _LoanHistoryCardState extends State<LoanHistoryCard> {
   }
 
   String _getLoanAmount() {
-    double amount = widget.loan.amount;
+    String amount = widget.loan.amount.truncateToDouble() == widget.loan.amount
+        ? '${widget.loan.amount.truncate()}'
+        : '${widget.loan.jarBalance}';
     if (widget.loan.isCreatorLender) return "-$amount";
     return "+$amount";
   }
 
-  String _getFriendName() {
-    String name = Provider.of<FriendProvider>(context)
-        .getFriendName(widget.loan.participantId);
-    return name;
-  }
+  // String _getFriendName() {
+  //   String name = Provider.of<FriendProvider>(context)
+  //       .getFriendName(widget.loan.participantId);
+  //   return name;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +119,7 @@ class _LoanHistoryCardState extends State<LoanHistoryCard> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.5,
                           child: Text(
-                            _getFriendName(),
+                            widget.loan.participantName,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               fontWeight: FontWeight.w300,
@@ -135,19 +138,24 @@ class _LoanHistoryCardState extends State<LoanHistoryCard> {
                       _getLoanAmount(),
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                        fontSize: 16,
                         color: widget.loan.isCreatorLender
                             ? Colors.black
                             : Theme.of(context).colorScheme.secondary,
                       ),
                     ),
                     Text(
-                      "${widget.loan.jarBalance}",
+                      widget.loan.jarBalance.truncateToDouble() ==
+                              widget.loan.jarBalance
+                          ? '${widget.loan.jarBalance.truncate()}'
+                          : '${widget.loan.jarBalance}',
                       style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 14,
                       ),
                     ),
+                    const Gap(10),
+                    Text(DateFormat('dd/MM/yyyy').format(widget.loan.createAt)),
                   ],
                 ),
               ],

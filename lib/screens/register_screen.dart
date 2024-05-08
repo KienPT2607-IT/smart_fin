@@ -1,7 +1,9 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:iconly/iconly.dart';
 import 'package:smart_fin/data/services/apis/auth_services.dart';
 import 'package:smart_fin/controllers/account_controller.dart';
 import 'package:smart_fin/screens/login_screen.dart';
@@ -44,10 +46,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       // TODO: Need to test again
       if (mounted && result) {
         showCustomSnackBar(
-          context,
-          "Account created! Login with your new credential.",
-            Constant.contentTypes["success"]!
-        );
+            context,
+            "Account created! Login with your new credential.",
+            Constant.contentTypes["success"]!);
         Navigator.of(context).pushAndRemoveUntil(
           CupertinoPageRoute(
             builder: (context) => const LoginScreen(),
@@ -88,8 +89,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     controller: _usernameCtrl,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
-                      labelText: "username",
-                      prefixIcon: const Icon(Icons.person_outline),
+                      labelText: "Username",
+                      prefixIcon: const Icon(IconlyLight.profile),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -104,8 +105,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     controller: _emailCtrl,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: "email",
-                      prefixIcon: const Icon(Icons.email_outlined),
+                      labelText: "Email",
+                      prefixIcon: const Icon(IconlyLight.message),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -121,8 +122,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    labelText: "password",
-                    prefixIcon: const Icon(Icons.password_outlined),
+                    labelText: "Password",
+                    prefixIcon: const Icon(IconlyLight.password),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -135,10 +136,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           _obscurePassword = !_obscurePassword;
                         });
                       },
-                      icon: Icon(
+                      icon: SvgPicture.asset(
                         _obscurePassword
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
+                            ? Constant.appIcons["show"]!
+                            : Constant.appIcons["hide"]!,
                       ),
                     ),
                   ),
@@ -151,8 +152,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: _obscurePasswordConfirmation,
                   decoration: InputDecoration(
-                    labelText: "confirm password",
-                    prefixIcon: const Icon(Icons.password_outlined),
+                    labelText: "Confirm password",
+                    prefixIcon: const Icon(IconlyLight.password),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -166,10 +167,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               !_obscurePasswordConfirmation;
                         });
                       },
-                      icon: Icon(
-                        _obscurePasswordConfirmation
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
+                      icon: SvgPicture.asset(
+                        _obscurePassword
+                            ? Constant.appIcons["show"]!
+                            : Constant.appIcons["hide"]!,
                       ),
                     ),
                   ),

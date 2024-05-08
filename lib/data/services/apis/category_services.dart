@@ -46,18 +46,26 @@ class CategoryService {
               name: name,
               icon: icon,
               color: color,
+              status: true,
             ));
           },
         );
       });
     } on Exception catch (e) {
-      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      showCustomSnackBar(
+        context,
+        e.toString(),
+        Constant.contentTypes["failure"]!,
+      );
     }
   }
 
   void getCategories({required BuildContext context}) {
     try {
-      final String token = Provider.of<UserProvider>(context, listen: false).getToken();
+      final String token = Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).getToken();
       var res = http.get(
         Uri.parse("$_baseUrl/"),
         headers: <String, String>{
@@ -77,7 +85,105 @@ class CategoryService {
         );
       });
     } catch (e) {
-      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      showCustomSnackBar(
+        context,
+        e.toString(),
+        Constant.contentTypes["failure"]!,
+      );
+    }
+  }
+
+  Future<bool> updateCategoryDetail({
+    required BuildContext context,
+    required String id,
+    required String newName,
+    required String newIcon,
+    required int newColor,
+  }) async {
+    bool result = false;
+    try {
+      final String token = Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).getToken();
+      var res = await http.put(
+        Uri.parse("$_baseUrl/update/$id/detail"),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+        body: jsonEncode({
+          "name": newName,
+          "icon": newIcon,
+          "color": newColor,
+        }),
+      );
+      if (context.mounted) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {
+            Provider.of<CategoryProvider>(
+              context,
+              listen: false,
+            ).updateCategoryDetail(
+              id: id,
+              newName: newName,
+              newIcon: newIcon,
+              newColor: newColor,
+            );
+            result = true;
+          },
+        );
+      }
+      return result;
+    } catch (e) {
+      if (context.mounted) {
+        showCustomSnackBar(
+          context,
+          e.toString(),
+          Constant.contentTypes["failure"]!,
+        );
+      }
+      return result;
+    }
+  }
+
+  void updateCategoryStatus({
+    required BuildContext context,
+    required String id,
+  }) {
+    try {
+      final String token = Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).getToken();
+      var res = http.put(
+        Uri.parse("$_baseUrl/update/$id/status"),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+      );
+
+      res.then((res) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {
+            Provider.of<CategoryProvider>(
+              context,
+              listen: false,
+            ).updateCategoryStatus(id);
+          },
+        );
+      });
+    } catch (e) {
+      showCustomSnackBar(
+        context,
+        e.toString(),
+        Constant.contentTypes["failure"]!,
+      );
     }
   }
 }

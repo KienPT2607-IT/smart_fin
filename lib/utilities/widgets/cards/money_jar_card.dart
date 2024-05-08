@@ -14,7 +14,7 @@ class MoneyJarCard extends StatelessWidget {
       width: 150,
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: moneyJar.status ? Colors.white : Colors.grey[100],
         borderRadius: BorderRadius.circular(10),
         boxShadow: const [
           BoxShadow(
@@ -44,11 +44,12 @@ class MoneyJarCard extends StatelessWidget {
                 ),
                 const Gap(10),
                 Text(
-                  moneyJar.balance.toString(),
+                  moneyJar.balance.truncateToDouble() == moneyJar.balance
+                      ? '${moneyJar.balance.truncate()}'
+                      : '${moneyJar.balance}',
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 14,
-                    // fontWeight: FontWeight.,
                   ),
                 ),
               ],

@@ -15,20 +15,19 @@ class AddFriendScreen extends StatefulWidget {
 
 class _AddFriendScreenState extends State<AddFriendScreen> {
   late GlobalKey<FormState> _key;
-  late TextEditingController _nameCtl;
-  late TextEditingController _phoneNumberCtl;
-  late TextEditingController _emailCtl;
-  late FriendController _friendController;
+  late TextEditingController _nameCtrl;
+  late TextEditingController _phoneNumberCtrl;
+  late TextEditingController _emailCtrl;
+  late FriendController _friendCtrl;
   late FriendService _friendService;
   @override
   void initState() {
     super.initState();
     _key = GlobalKey();
-    _nameCtl = TextEditingController();
-    _phoneNumberCtl = TextEditingController();
-    _emailCtl = TextEditingController();
-    // TODO: Do the validation for friend
-    _friendController = FriendController();
+    _nameCtrl = TextEditingController();
+    _phoneNumberCtrl = TextEditingController();
+    _emailCtrl = TextEditingController();
+    _friendCtrl = FriendController();
     _friendService = FriendService();
   }
 
@@ -36,9 +35,9 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
     if (!_key.currentState!.validate()) {}
     bool result = await _friendService.addFriend(
       context: context,
-      name: _nameCtl.text,
-      phoneNumber: _phoneNumberCtl.text,
-      email: _emailCtl.text,
+      name: _nameCtrl.text,
+      phoneNumber: _phoneNumberCtrl.text,
+      email: _emailCtrl.text,
     );
     if (mounted && result) {
       showCustomSnackBar(
@@ -71,7 +70,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                   child: Column(
                     children: <Widget>[
                       TextFormField(
-                        controller: _nameCtl,
+                        controller: _nameCtrl,
                         keyboardType: TextInputType.name,
                         decoration: InputDecoration(
                           label: const Text("Name"),
@@ -80,10 +79,11 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                               child: SvgPicture.asset(
                                   "assets/icons/app/id-card.svg")),
                         ),
+                        validator: (value) => _friendCtrl.validateName(value),
                       ),
                       const Gap(10),
                       TextFormField(
-                        controller: _phoneNumberCtl,
+                        controller: _phoneNumberCtrl,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
                           label: const Text("Phone Number"),
@@ -93,10 +93,12 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                                 "assets/icons/app/phone-flip.svg"),
                           ),
                         ),
+                        validator: (value) =>
+                            _friendCtrl.validatePhoneNumber(value),
                       ),
                       const Gap(10),
                       TextFormField(
-                        controller: _emailCtl,
+                        controller: _emailCtrl,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           label: const Text("Email"),
@@ -106,6 +108,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                                 "assets/icons/app/envelopes.svg"),
                           ),
                         ),
+                        validator: (value) => _friendCtrl.validateEmail(value),
                       ),
                     ],
                   ),

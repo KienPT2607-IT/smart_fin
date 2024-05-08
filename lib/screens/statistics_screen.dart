@@ -209,7 +209,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   "Expense",
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
-                Text("$_totalExpense"),
+                Text(
+                  _totalExpense.truncateToDouble() == _totalExpense
+                      ? '${_totalExpense.truncate()}'
+                      : '$_totalExpense',
+                ),
               ],
             ),
           ),
@@ -222,7 +226,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   "Income",
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
-                Text("$_totalIncome"),
+                Text(
+                  _totalIncome.truncateToDouble() == _totalIncome
+                      ? '${_totalIncome.truncate()}'
+                      : '$_totalIncome',
+                ),
               ],
             ),
           ),
@@ -246,7 +254,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   "Lend",
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
-                Text("$_totalLend"),
+                Text(
+                  _totalLend.truncateToDouble() == _totalLend
+                      ? '${_totalLend.truncate()}'
+                      : '$_totalLend',
+                ),
               ],
             ),
           ),
@@ -259,7 +271,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   "Borrow",
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
-                Text("$_totalBorrow"),
+                Text(
+                  _totalBorrow.truncateToDouble() == _totalBorrow
+                      ? '${_totalBorrow.truncate()}'
+                      : '$_totalBorrow',
+                ),
               ],
             ),
           ),

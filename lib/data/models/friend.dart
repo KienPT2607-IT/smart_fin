@@ -5,12 +5,14 @@ class Friend {
   String name;
   String phoneNumber;
   String email;
-
+  bool status;
+  
   Friend({
     required this.id,
     required this.name,
     required this.phoneNumber,
     required this.email,
+    required this.status,
   });
 
   factory Friend.fromRawJson(String str) => Friend.fromJson(jsonDecode(str));
@@ -20,6 +22,7 @@ class Friend {
         name: json["name"],
         phoneNumber: json["phone_number"] ?? "",
         email: json["email"] ?? "",
+        status: json["status"],
       );
 
   String toRawJson() => jsonEncode(toJson());
@@ -29,7 +32,6 @@ class Friend {
         "name": name,
         "phone_number": phoneNumber,
         "email": email,
+        "status": status,
       };
-
-  // TODO: consider implement get/set check validation.
 }

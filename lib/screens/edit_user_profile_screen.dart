@@ -7,13 +7,13 @@ import 'package:smart_fin/utilities/constants/constants.dart';
 import 'package:smart_fin/utilities/customs/custom_date_picker.dart';
 import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
 
-class UpdateUserProfileScreen extends StatefulWidget {
+class EditUserProfileScreen extends StatefulWidget {
   final String fullName;
   final String email;
   final String phoneNumber;
   final DateTime dob;
   final String gender;
-  const UpdateUserProfileScreen({
+  const EditUserProfileScreen({
     super.key,
     required this.fullName,
     required this.email,
@@ -23,11 +23,10 @@ class UpdateUserProfileScreen extends StatefulWidget {
   });
 
   @override
-  State<UpdateUserProfileScreen> createState() =>
-      _UpdateUserProfileScreenState();
+  State<EditUserProfileScreen> createState() => _EditUserProfileScreenState();
 }
 
-class _UpdateUserProfileScreenState extends State<UpdateUserProfileScreen> {
+class _EditUserProfileScreenState extends State<EditUserProfileScreen> {
   late GlobalKey<FormState> _key;
   late AuthService _authService;
 
@@ -70,7 +69,7 @@ class _UpdateUserProfileScreenState extends State<UpdateUserProfileScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Update profile"),
+          title: const Text("Edit profile"),
           centerTitle: true,
         ),
         body: SafeArea(
@@ -131,6 +130,7 @@ class _UpdateUserProfileScreenState extends State<UpdateUserProfileScreen> {
                           Expanded(
                             child: DropdownMenu(
                               label: const Text("Gender"),
+                              leadingIcon: const Icon(IconlyLight.heart),
                               initialSelection: _gender,
                               onSelected: (value) {
                                 setState(() {

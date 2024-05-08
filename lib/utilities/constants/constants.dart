@@ -18,26 +18,30 @@ class Constant {
     "help": "help",
   };
 
-  static const String _baseSystemIconAssetPath = "assets/icons/default";
+  static const Map<String, String> appIcons = {
+    "show": "assets/icons/app/show.svg",
+    "hide": "assets/icons/app/hide.svg",
+  };
+
   static const Map<String, String> defaultLightIcons = {
-    "tag": "$_baseSystemIconAssetPath/light/tags.svg",
-    "edit": "$_baseSystemIconAssetPath/light/pen-fancy.svg",
-    "repaid": "$_baseSystemIconAssetPath/light/expense.svg",
-    "dollar_jar": "$_baseSystemIconAssetPath/light/dollar-jar.svg",
-    "camera": "$_baseSystemIconAssetPath/light/camera-viewfinder.svg",
-    "sign-out": "$_baseSystemIconAssetPath/light/sign-out-alt.svg",
+    "tag": "assets/icons/default/light/tags.svg",
+    "edit": "assets/icons/default/light/pen-fancy.svg",
+    "repaid": "assets/icons/default/light/expense.svg",
+    "dollar_jar": "assets/icons/default/light/dollar-jar.svg",
+    "camera": "assets/icons/default/light/camera-viewfinder.svg",
+    "sign-out": "assets/icons/default/light/sign-out-alt.svg",
   };
 
   static const Map<String, String> defaultRegularIcons = {
-    "tag": "$_baseSystemIconAssetPath/regular/tags.svg",
-    "uncheck": "$_baseSystemIconAssetPath/regular/uncheck-circle.svg",
-    "check": "$_baseSystemIconAssetPath/regular/check-circle.svg",
-    "dollar_jar": "$_baseSystemIconAssetPath/regular/dollar-jar.svg",
+    "tag": "assets/icons/default/regular/tags.svg",
+    "uncheck": "assets/icons/default/regular/uncheck-circle.svg",
+    "check": "assets/icons/default/regular/check-circle.svg",
+    "dollar_jar": "assets/icons/default/regular/dollar-jar.svg",
   };
 
   static const Map<String, String> defaultBoldIcons = {
-    "tag": "$_baseSystemIconAssetPath/bold/tags.svg",
-    "uncheck": "$_baseSystemIconAssetPath/bold/uncheck.svg",
+    "tag": "assets/icons/default/bold/tags.svg",
+    "uncheck": "assets/icons/default/bold/uncheck.svg",
   };
 
   static const List<String> categoryIcons = [

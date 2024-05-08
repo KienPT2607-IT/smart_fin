@@ -10,9 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:smart_fin/data/models/user.dart';
 import 'package:smart_fin/data/services/apis/auth_services.dart';
 import 'package:smart_fin/data/services/providers/user_provider.dart';
-import 'package:smart_fin/screens/update_user_profile_screen.dart';
+import 'package:smart_fin/screens/edit_user_profile_screen.dart';
 import 'package:smart_fin/screens/login_screen.dart';
-import 'package:smart_fin/screens/veiw_category_screen.dart';
+import 'package:smart_fin/screens/view_category_screen.dart';
 import 'package:smart_fin/screens/view_friend_screen.dart';
 import 'package:smart_fin/screens/view_income_source_screen.dart';
 import 'package:smart_fin/screens/view_money_jar_screen.dart';
@@ -97,9 +97,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: 100,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                      // border: Border.all(
+                      //   color: Theme.of(context).colorScheme.primary,
+                      // ),
                     ),
                     child: _handleUserProfilePicture(),
                   ),
@@ -170,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => UpdateUserProfileScreen(
+        builder: (context) => EditUserProfileScreen(
           fullName: _user.fullName,
           email: _user.email,
           phoneNumber: _user.phoneNumber!,
@@ -256,7 +256,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.all(24),
               child: SvgPicture.asset(Constant.defaultLightIcons["camera"]!),
             )
-          : Image.network(_user.profileImage!),
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                _user.profileImage!,
+                fit: BoxFit.cover,
+              ),
+            ),
     );
   }
 

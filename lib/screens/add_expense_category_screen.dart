@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
+import 'package:smart_fin/controllers/expense_category_controller.dart';
 import 'package:smart_fin/data/models/category.dart';
 import 'package:smart_fin/data/services/apis/category_services.dart';
 import 'package:smart_fin/utilities/constants/constants.dart';
@@ -18,55 +19,48 @@ class AddExpenseCategoryScreen extends StatefulWidget {
 
 class _AddExpenseCategoryScreenState extends State<AddExpenseCategoryScreen> {
   late GlobalKey<FormState> _formKey;
-  late TextEditingController _nameCtl;
+  late TextEditingController _nameCtrl;
   late CategoryService _categoryService;
+  late ExpenseCategoryController _categoryController;
 
-  late String icon, nameDemo;
-  late int color, currentIconIndex, currentColorIndex;
+  late String _icon, _nameDemo;
+  late int _color, _currentIconIndex, _currentColorIndex;
 
   @override
   void initState() {
     super.initState();
 
     _formKey = GlobalKey();
-    _nameCtl = TextEditingController();
+    _nameCtrl = TextEditingController();
     _categoryService = CategoryService();
+    _categoryController = ExpenseCategoryController();
 
-    icon = Constant.categoryIcons[0];
-    color = Constant.colors[0];
+    _icon = Constant.categoryIcons[0];
+    _color = Constant.colors[0];
 
-    nameDemo = _nameCtl.text;
-    currentIconIndex = 0;
-    currentColorIndex = 0;
+    _nameDemo = _nameCtrl.text;
+    _currentIconIndex = 0;
+    _currentColorIndex = 0;
   }
 
   void _processCreateCategory() {
     if (_formKey.currentState!.validate()) {
       _categoryService.createNewCategory(
         context: context,
-        name: _nameCtl.text,
-        icon: icon,
-        color: color,
+        name: _nameCtrl.text,
+        icon: _icon,
+        color: _color,
       );
       if (mounted) {
-        showCustomSnackBar(context, "New category created!", Constant.contentTypes["success"]!);
+        showCustomSnackBar(
+          context,
+          "New category created!",
+          Constant.contentTypes["success"]!,
+        );
         Navigator.pop(context);
         Navigator.pop(context);
       }
     }
-  }
-
-  String? _validateCategoryName(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return "Please enter a category name";
-    }
-    if (!RegExp(Constant.nameRegex).hasMatch(value)) {
-      return "Jar name must contain only letters and spaces";
-    }
-    if (value.length < 3) {
-      return "Jar name must have at least than 3 characters";
-    }
-    return null;
   }
 
   @override
@@ -89,23 +83,25 @@ class _AddExpenseCategoryScreenState extends State<AddExpenseCategoryScreen> {
                   CategoryCard(
                     Category(
                       id: "",
-                      name: nameDemo,
-                      icon: icon,
-                      color: color,
+                      name: _nameDemo,
+                      icon: _icon,
+                      color: _color,
+                      status: true,
                     ),
                   ),
                   const Gap(10),
                   TextFormField(
-                    controller: _nameCtl,
+                    controller: _nameCtrl,
                     keyboardType: TextInputType.name,
                     decoration: const InputDecoration(
                       labelText: "Name",
                       prefixIcon: Icon(IconlyLight.paper),
                     ),
                     onChanged: (value) => setState(() {
-                      nameDemo = value;
+                      _nameDemo = value;
                     }),
-                    validator: (value) => _validateCategoryName(value),
+                    validator: (value) =>
+                        _categoryController.validateName(value),
                   ),
                   const Gap(10),
                   Container(
@@ -127,15 +123,15 @@ class _AddExpenseCategoryScreenState extends State<AddExpenseCategoryScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           border: Border.all(
-                            color: currentIconIndex == index
-                                ? Color(color)
+                            color: _currentIconIndex == index
+                                ? Color(_color)
                                 : Colors.transparent,
                           ),
                         ),
                         child: GestureDetector(
                           onTap: () => setState(() {
-                            currentIconIndex = index;
-                            icon = Constant.categoryIcons[index];
+                            _currentIconIndex = index;
+                            _icon = Constant.categoryIcons[index];
                           }),
                           child: IconButton(
                             onPressed: null,
@@ -167,18 +163,30 @@ class _AddExpenseCategoryScreenState extends State<AddExpenseCategoryScreen> {
                       ),
                       itemBuilder: (context, index) => GestureDetector(
                         onTap: () => setState(() {
-                          currentColorIndex = index;
-                          color = Constant.colors[index];
+                          _currentColorIndex = index;
+                          _color = Constant.colors[index];
                         }),
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: Color(Constant.colors[index]),
-                            border: Border.all(
-                              color: currentColorIndex == index
-                                  ? Colors.white
-                                  : Colors.transparent,
-                              width: 4,
+                            border: Border(
+                              bottom: BorderSide(
+                                color: _currentColorIndex == index
+                                    ? Color(Constant.colors[index])
+                                    : Colors.transparent,
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: Color(Constant.colors[index]),
+                              border: Border.all(
+                                color: _currentColorIndex == index
+                                    ? Colors.white
+                                    : Colors.transparent,
+                                width: 2,
+                              ),
                             ),
                           ),
                         ),

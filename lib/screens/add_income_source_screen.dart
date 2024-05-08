@@ -22,8 +22,8 @@ class _AddIncomeSourceScreenState extends State<AddIncomeSourceScreen> {
 
   late IncomeSourceController _incomeSourceCtrl;
   late IncomeSourceService _incomeSourceService;
-  late String selectedIcon;
-  late int selectedColor, currentIconIndex, currentColorIndex;
+  late String _selectedIcon;
+  late int _selectedColor, _currentIconIndex, currentColorIndex;
 
   @override
   void initState() {
@@ -34,10 +34,10 @@ class _AddIncomeSourceScreenState extends State<AddIncomeSourceScreen> {
     _incomeSourceCtrl = IncomeSourceController();
     _incomeSourceService = IncomeSourceService();
 
-    selectedIcon = Constant.categoryIcons[0];
-    selectedColor = Constant.colors[0];
+    _selectedIcon = Constant.categoryIcons[0];
+    _selectedColor = Constant.colors[0];
 
-    currentIconIndex = 0;
+    _currentIconIndex = 0;
     currentColorIndex = 0;
   }
 
@@ -46,7 +46,7 @@ class _AddIncomeSourceScreenState extends State<AddIncomeSourceScreen> {
       bool result = await _incomeSourceService.createNewSource(
         context: context,
         name: _sourceNameCtrl.text,
-        icon: Constant.categoryIcons[currentIconIndex],
+        icon: Constant.categoryIcons[_currentIconIndex],
         color: Constant.colors[currentColorIndex],
       );
       if (mounted && result) {
@@ -86,8 +86,9 @@ class _AddIncomeSourceScreenState extends State<AddIncomeSourceScreen> {
                       incomeSource: IncomeSource(
                         id: "",
                         name: _sourceNameCtrl.text,
-                        icon: selectedIcon,
-                        color: selectedColor,
+                        icon: _selectedIcon,
+                        color: _selectedColor,
+                        status: true,
                       ),
                     ),
                   ),
@@ -99,7 +100,6 @@ class _AddIncomeSourceScreenState extends State<AddIncomeSourceScreen> {
                       labelText: "Name",
                       prefixIcon: Icon(IconlyLight.paper),
                     ),
-                    onChanged: (value) => setState(() {}),
                     validator: (value) =>
                         _incomeSourceCtrl.validateSourceName(value),
                   ),
@@ -123,15 +123,15 @@ class _AddIncomeSourceScreenState extends State<AddIncomeSourceScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           border: Border.all(
-                            color: currentIconIndex == index
-                                ? Color(selectedColor)
+                            color: _currentIconIndex == index
+                                ? Color(_selectedColor)
                                 : Colors.transparent,
                           ),
                         ),
                         child: GestureDetector(
                           onTap: () => setState(() {
-                            currentIconIndex = index;
-                            selectedIcon = Constant.categoryIcons[index];
+                            _currentIconIndex = index;
+                            _selectedIcon = Constant.categoryIcons[index];
                           }),
                           child: IconButton(
                             onPressed: null,
@@ -163,7 +163,7 @@ class _AddIncomeSourceScreenState extends State<AddIncomeSourceScreen> {
                       itemBuilder: (context, index) => GestureDetector(
                         onTap: () => setState(() {
                           currentColorIndex = index;
-                          selectedColor = Constant.colors[index];
+                          _selectedColor = Constant.colors[index];
                         }),
                         child: Container(
                           decoration: BoxDecoration(

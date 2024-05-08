@@ -16,7 +16,11 @@ class IncomeSourceProvider extends ChangeNotifier {
   void setSources(String sourcesRawJson) {
     List sourceJsonList = jsonDecode(sourcesRawJson)["data"];
     for (var json in sourceJsonList) {
-      _incomeSourceList.add(IncomeSource.fromJson(json));
+      if (json["status"]) {
+        _incomeSourceList.insert(0, IncomeSource.fromJson(json));
+      } else {
+        _incomeSourceList.add(IncomeSource.fromJson(json));
+      }
     }
     notifyListeners();
   }
@@ -26,16 +30,37 @@ class IncomeSourceProvider extends ChangeNotifier {
   }
 
   void addSource(IncomeSource source) {
-    _incomeSourceList.add(source);
+    _incomeSourceList.insert(0, source);
     notifyListeners();
   }
 
-  void updateSource(IncomeSource incomeSource) {
-    notifyListeners();
+  void updateSourceDetail({
+    required String id,
+    required String newName,
+    required String newIcon,
+    required int newColor,
+  }) {
+    int index = _incomeSourceList.indexWhere((element) => element.id == id);
+    if (index != -1) {
+      _incomeSourceList[index].name = newName;
+      _incomeSourceList[index].icon = newIcon;
+      _incomeSourceList[index].color = newColor;
+      notifyListeners();
+    }
   }
 
-  void removeSource() {
-    notifyListeners();
+  void updateSourceStatus(String id) {
+    int index = _incomeSourceList.indexWhere((element) => element.id == id);
+    if (index != -1) {
+      IncomeSource source = _incomeSourceList.removeAt(index);
+      source.status = !source.status;
+      if (source.status) {
+        _incomeSourceList.insert(0, source);
+      } else {
+        _incomeSourceList.add(source);
+      }
+      notifyListeners();
+    }
   }
 
   String getSourceNameById(String sourceId) {

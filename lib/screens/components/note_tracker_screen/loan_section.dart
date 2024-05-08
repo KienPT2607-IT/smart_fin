@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
 import 'package:smart_fin/data/models/friend.dart';
+import 'package:smart_fin/utilities/widgets/bottom_sheet/friend_bottom_sheet.dart';
+import 'package:smart_fin/utilities/widgets/bottom_sheet/money_jar_bottom_sheet.dart';
 import 'package:smart_fin/utilities/widgets/cards/friend_infor_card.dart';
 import 'package:smart_fin/utilities/widgets/customs/custom_avatar_chip.dart';
-import 'package:smart_fin/utilities/widgets/bottom_sheet/bottom_sheet.dart';
 import 'package:smart_fin/utilities/widgets/cards/money_jar_card.dart';
 
 class LoanSection extends StatefulWidget {
@@ -107,11 +108,9 @@ class _LoanSectionState extends State<LoanSection> {
               children: [
                 IconButton(
                   onPressed: () {
-                    showCustomBottomSheet(
-                      context,
-                      widget.sectionType,
-                      friendInforList,
-                      (index) {
+                    showFriendBottomSheet(
+                      context: context,
+                      onFriendSelected: (index) {
                         widget.onFriendSelected(
                           "_",
                           false,
@@ -128,11 +127,9 @@ class _LoanSectionState extends State<LoanSection> {
                 ),
                 IconButton(
                   onPressed: () {
-                    showCustomBottomSheet(
-                      context,
-                      widget.sectionType - 1,
-                      widget.moneyJarList,
-                      (index) {
+                    showMoneyJarBottomSheet(
+                      context: context,
+                      onMoneyJarSelected: (index) {
                         setState(() {
                           _selectedJar = index;
                         });

@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
+import 'package:iconly/iconly.dart';
 import 'package:smart_fin/data/services/apis/auth_services.dart';
 import 'package:smart_fin/controllers/account_controller.dart';
 import 'package:smart_fin/data/services/apis/money_jar_services.dart';
 import 'package:smart_fin/screens/init_screen.dart';
 import 'package:smart_fin/screens/register_screen.dart';
+import 'package:smart_fin/utilities/constants/constants.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -63,32 +67,30 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
+        onTap: () => FocusScope.of(context).unfocus(),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(30),
             child: Column(
               children: <Widget>[
-                const SizedBox(height: 150),
+                const Gap(150),
                 Text(
                   "Welcome back",
                   style: Theme.of(context).textTheme.headlineLarge,
                 ),
-                const SizedBox(height: 10),
+                const Gap(10),
                 Text(
                   "Login to your account",
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                const SizedBox(height: 60),
+                const Gap(60),
                 TextFormField(
                   controller: _usernameCtrl,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
-                    labelText: "username",
-                    prefixIcon: const Icon(Icons.person_outline),
+                    labelText: "Username",
+                    prefixIcon: const Icon(IconlyLight.profile),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -99,15 +101,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   validator: (value) =>
                       accountController.validateUsername(value),
                 ),
-                const SizedBox(height: 10),
+                const Gap(10),
                 TextFormField(
                   controller: _passwordCtrl,
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: _obscurePassword,
                   focusNode: _passwordFocusNode,
                   decoration: InputDecoration(
-                    labelText: "password",
-                    prefixIcon: const Icon(Icons.password_outlined),
+                    labelText: "Password",
+                    prefixIcon: const Icon(IconlyLight.password),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -120,17 +122,37 @@ class _LoginScreenState extends State<LoginScreen> {
                           _obscurePassword = !_obscurePassword;
                         });
                       },
-                      icon: Icon(
+                      icon: SvgPicture.asset(
                         _obscurePassword
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
+                            ? Constant.appIcons["show"]!
+                            : Constant.appIcons["hide"]!,
                       ),
                     ),
                   ),
                   validator: (value) =>
                       accountController.validatePassword(value),
                 ),
-                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => const RegisterScreen(),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                      child: const Text(
+                        "Forgot password",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+                const Gap(10),
                 Column(
                   children: <Widget>[
                     ElevatedButton(

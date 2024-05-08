@@ -3,65 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
-import 'package:smart_fin/screens/add_expense_category_screen.dart';
-import 'package:smart_fin/screens/add_friend_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:smart_fin/data/services/providers/income_source_provider.dart';
 import 'package:smart_fin/screens/add_income_source_screen.dart';
 import 'package:smart_fin/screens/add_money_jar_screen.dart';
+import 'package:smart_fin/utilities/widgets/cards/income_source_card.dart';
 
-String _getBottomSheetTitle(int sectionType) {
-  switch (sectionType) {
-    case 0:
-      return "Money Jars";
-    case 1:
-      return "Friends";
-    case 2:
-      return "Income Sources";
-    case 3:
-      return "Categories";
-    default:
-      return "";
-  }
-}
-
-void _getInputScreen(BuildContext context, int sectionType) {
-  switch (sectionType) {
-    case 0:
-      Navigator.of(context).push(
-        CupertinoPageRoute(
-          builder: (context) => const AddMoneyJarScreen(),
-        ),
-      );
-      break;
-    case 1:
-      Navigator.of(context).push(
-        CupertinoPageRoute(
-          builder: (context) => const AddFriendScreen(),
-        ),
-      );
-      break;
-    case 2:
-      Navigator.push(
-        context,
-        CupertinoPageRoute(
-          builder: (context) => const AddIncomeSourceScreen(),
-        ),
-      );
-      break;
-    case 3:
-      Navigator.push(
-        context,
-        CupertinoPageRoute(
-          builder: (context) => const AddExpenseCategoryScreen(),
-        ),
-      );
-      break;
-    default:
-      break;
-  }
-}
-
-void showCustomBottomSheet(BuildContext context, int sectionType, List cards,
-    Function onItemSelected) {
+void showIncomeSourceBottomSheet({
+  required BuildContext context,
+  required Function(int) onIncomeSourceSelected,
+}) {
+  const String title = "Income Sources";
+  var sourceCardList = Provider.of<IncomeSourceProvider>(context, listen: false)
+      .incomeSourceList
+      .map((e) => IncomeSourceCard(incomeSource: e))
+      .toList();
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -76,7 +32,7 @@ void showCustomBottomSheet(BuildContext context, int sectionType, List cards,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
+        children: [
           Container(
             height: 5,
             width: 50,
@@ -93,15 +49,15 @@ void showCustomBottomSheet(BuildContext context, int sectionType, List cards,
                 onPressed: () => Navigator.pop(context),
                 icon: const Icon(IconlyLight.close_square),
               ),
-              Text(
-                _getBottomSheetTitle(sectionType),
-                style: const TextStyle(
+              const Text(
+                title,
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               IconButton(
-                onPressed: () => _getInputScreen(context, sectionType),
+                onPressed: () => _getInputScreen(context),
                 icon: SvgPicture.asset("assets/icons/app/add.svg"),
               ),
             ],
@@ -114,17 +70,19 @@ void showCustomBottomSheet(BuildContext context, int sectionType, List cards,
           const Gap(10),
           Expanded(
             child: ListView.separated(
-              itemCount: cards.length,
+              itemCount: sourceCardList.length,
               separatorBuilder: (context, index) => const Gap(10),
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    onItemSelected(index);
-                    Navigator.of(context).pop();
+                    if (sourceCardList[index].incomeSource.status) {
+                      onIncomeSourceSelected(index);
+                      Navigator.of(context).pop();
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: cards[index],
+                    child: sourceCardList[index],
                   ),
                 );
               },
@@ -135,3 +93,10 @@ void showCustomBottomSheet(BuildContext context, int sectionType, List cards,
     ),
   );
 }
+
+void _getInputScreen(BuildContext context) => Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => const AddIncomeSourceScreen(),
+      ),
+    );

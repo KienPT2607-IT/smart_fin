@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_fin/data/models/expense.dart';
 import 'package:smart_fin/data/models/money_jar.dart';
@@ -13,6 +14,7 @@ import 'package:smart_fin/utilities/widgets/bottom_sheet/category_bottom_sheet.d
 import 'package:smart_fin/utilities/widgets/cards/category_card.dart';
 
 class ExpenseHistoryCard extends StatefulWidget {
+// TODO: get only id of expense for code optimization
   final Expense expense;
   const ExpenseHistoryCard({super.key, required this.expense});
 
@@ -105,6 +107,7 @@ class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
                     ),
                     const Gap(10),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.5,
@@ -118,7 +121,7 @@ class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
                           ),
                         ),
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.5,
+                          width: MediaQuery.of(context).size.width * 0.4,
                           child: Text(
                             widget.expense.note,
                             overflow: TextOverflow.ellipsis,
@@ -136,14 +139,20 @@ class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Text(
-                      "-${widget.expense.amount}",
+                      widget.expense.amount.truncateToDouble() ==
+                              widget.expense.amount
+                          ? '${widget.expense.amount.truncate()}'
+                          : '${widget.expense.amount}',
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                        fontSize: 16,
                       ),
                     ),
                     Text(
-                      "${widget.expense.jarBalance}",
+                      widget.expense.jarBalance.truncateToDouble() ==
+                              widget.expense.jarBalance
+                          ? '${widget.expense.jarBalance.truncate()}'
+                          : '${widget.expense.jarBalance}',
                       style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 14,
@@ -154,12 +163,19 @@ class _ExpenseHistoryCardState extends State<ExpenseHistoryCard> {
               ],
             ),
             const Gap(5),
-            GestureDetector(
-              onTap: () => showCategoryBottomSheet(
-                context: context,
-                onCategorySelected: (value) => _updateExpenseCategory(value),
-              ),
-              child: _categoryCard,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () => showCategoryBottomSheet(
+                    context: context,
+                    onCategorySelected: (value) =>
+                        _updateExpenseCategory(value),
+                  ),
+                  child: _categoryCard,
+                ),
+                Text(DateFormat('dd/MM/yyyy').format(widget.expense.createAt)),
+              ],
             ),
           ],
         ),

@@ -77,7 +77,7 @@ class _InitScreenState extends State<InitScreen> {
       _user = Provider.of<UserProvider>(context).user;
       _isDataFetched = true;
       if (widget.isFirstInit) {
-        _moneyJarService.getJars(context: context);
+        _moneyJarService.getAllJars(context: context);
         _expNoteService.getExpenses(context: context);
         _friendService.getFriends(context: context);
         _loanNoteService.getLoans(context: context);
@@ -97,18 +97,19 @@ class _InitScreenState extends State<InitScreen> {
           leading: Padding(
             padding: const EdgeInsets.only(left: 10),
             child: GestureDetector(
-              child: Container(
-                height: 48,
-                width: 48,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
+              child: CircleAvatar(
+                radius: 24, // Half of the desired diameter
+                backgroundColor: Colors.amberAccent,
                 child: _user.profileImage!.isEmpty
-                    ? const Icon(IconlyLight.profile)
-                    : Image.network(_user.profileImage!),
+                    ? const Icon(IconlyLight.profile, size: 48)
+                    : ClipOval(
+                        child: Image.network(
+                          _user.profileImage!,
+                          fit: BoxFit.cover,
+                          width: 48,
+                          height: 48,
+                        ),
+                      ),
               ),
               onTap: () => setState(() {
                 _selectedScreen = 3;

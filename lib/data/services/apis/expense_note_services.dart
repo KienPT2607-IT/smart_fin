@@ -48,7 +48,7 @@ class ExpenseNoteService {
             var expProvider =
                 Provider.of<ExpenseProvider>(context, listen: false);
             jarProvider.updateBalance(
-              jarId: jarId,
+              id: jarId,
               amount: amount,
               isIncreased: false,
             );
@@ -66,7 +66,8 @@ class ExpenseNoteService {
       }
     } catch (e) {
       if (context.mounted) {
-        showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+        showCustomSnackBar(
+            context, e.toString(), Constant.contentTypes["failure"]!);
       }
     }
   }
@@ -97,7 +98,8 @@ class ExpenseNoteService {
       }
     } catch (e) {
       if (context.mounted) {
-        showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+        showCustomSnackBar(
+            context, e.toString(), Constant.contentTypes["failure"]!);
       }
     }
   }
@@ -132,7 +134,8 @@ class ExpenseNoteService {
         );
       });
     } catch (e) {
-      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      showCustomSnackBar(
+          context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
@@ -166,7 +169,8 @@ class ExpenseNoteService {
         );
       });
     } catch (e) {
-      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      showCustomSnackBar(
+          context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
@@ -196,7 +200,7 @@ class ExpenseNoteService {
             Expense expense = expenseProvider.getExpenseById(expenseId);
 
             moneyJarProvider.updateBalance(
-              jarId: expense.moneyJar,
+              id: expense.moneyJar,
               amount: expense.amount,
               isIncreased: true,
             );
@@ -206,7 +210,8 @@ class ExpenseNoteService {
       }
     } catch (e) {
       if (context.mounted) {
-        showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+        showCustomSnackBar(
+            context, e.toString(), Constant.contentTypes["failure"]!);
       }
     }
   }

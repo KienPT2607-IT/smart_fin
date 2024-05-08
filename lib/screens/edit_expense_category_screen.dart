@@ -2,60 +2,53 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
-import 'package:smart_fin/controllers/money_jar_controller.dart';
-import 'package:smart_fin/data/models/money_jar.dart';
-import 'package:smart_fin/data/services/apis/money_jar_services.dart';
+import 'package:provider/provider.dart';
+import 'package:smart_fin/controllers/expense_category_controller.dart';
+import 'package:smart_fin/data/models/category.dart';
+import 'package:smart_fin/data/services/apis/category_services.dart';
+import 'package:smart_fin/data/services/providers/category_provider.dart';
 import 'package:smart_fin/utilities/constants/constants.dart';
-import 'package:smart_fin/utilities/widgets/cards/money_jar_card.dart';
+import 'package:smart_fin/utilities/customs/custom_snack_bar.dart';
+import 'package:smart_fin/utilities/widgets/cards/category_card.dart';
 
-class AddMoneyJarScreen extends StatefulWidget {
-  const AddMoneyJarScreen({super.key});
+class EditExpenseCategoryScreen extends StatefulWidget {
+  final String id;
+  const EditExpenseCategoryScreen({super.key, required this.id});
 
   @override
-  State<AddMoneyJarScreen> createState() => _AddMoneyJarScreenState();
+  State<EditExpenseCategoryScreen> createState() =>
+      _EditExpenseCategoryScreenState();
 }
 
-class _AddMoneyJarScreenState extends State<AddMoneyJarScreen> {
+class _EditExpenseCategoryScreenState extends State<EditExpenseCategoryScreen> {
+  late Category _category;
+  late CategoryService _categoryService;
   late GlobalKey<FormState> _formKey;
-  late TextEditingController _jarNameCtrl, _balanceCtrl;
+  late ExpenseCategoryController _categoryController;
 
-  late MoneyJarController _moneyJarCtrl;
-  late MoneyJarService _moneyJarService;
-  late String _selectedIcon, jarNameDemo;
-  late double balance;
-  late int color, _currentIconIndex, _currentColorIndex;
+  late int _currentIconIndex, _currentColorIndex;
+  late String _categoryName;
 
   @override
   void initState() {
     super.initState();
-
+    _categoryService = CategoryService();
     _formKey = GlobalKey();
-    _jarNameCtrl = TextEditingController();
-    _balanceCtrl = TextEditingController();
-    _moneyJarCtrl = MoneyJarController();
-    _moneyJarService = MoneyJarService();
-
-    _selectedIcon = Constant.categoryIcons[0];
-    color = Constant.colors[0];
-
-    _currentIconIndex = 0;
-    _currentColorIndex = 0;
-    jarNameDemo = "Jar name";
-    balance = 0;
+    _categoryController = ExpenseCategoryController();
   }
 
-  void _processCreateMoneyJar() {
-    if (_formKey.currentState!.validate()) {
-      _moneyJarService.createNewJar(
-        context: context,
-        name: _jarNameCtrl.text,
-        balance: balance,
-        icon: _selectedIcon,
-        color: color,
-      );
-      Navigator.pop(context);
-      Navigator.pop(context);
-    }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _category = Provider.of<CategoryProvider>(
+      context,
+      listen: false,
+    ).getCategoryById(widget.id);
+    _categoryName = _category.name;
+    _currentColorIndex =
+        Constant.colors.indexWhere((each) => each == _category.color);
+    _currentIconIndex =
+        Constant.categoryIcons.indexWhere((each) => each == _category.icon);
   }
 
   @override
@@ -64,63 +57,40 @@ class _AddMoneyJarScreenState extends State<AddMoneyJarScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Add money jar"),
+          title: const Text("Edit expense category"),
           centerTitle: true,
         ),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Form(
               key: _formKey,
               child: Column(
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: MoneyJarCard(
-                      moneyJar: MoneyJar(
-                        id: "",
-                        name: jarNameDemo,
-                        balance: balance,
-                        icon: _selectedIcon,
-                        color: color,
-                        status: true,
-                      ),
+                children: [
+                  CategoryCard(
+                    Category(
+                      id: "",
+                      name: _categoryName,
+                      icon: Constant.categoryIcons[_currentIconIndex],
+                      color: Constant.colors[_currentColorIndex],
+                      status: true,
                     ),
                   ),
                   const Gap(10),
                   TextFormField(
-                    controller: _jarNameCtrl,
-                    keyboardType: TextInputType.text,
+                    initialValue: _categoryName,
+                    keyboardType: TextInputType.name,
                     decoration: const InputDecoration(
-                      labelText: "Jar Name",
+                      labelText: "Name",
                       prefixIcon: Icon(IconlyLight.paper),
                     ),
-                    onChanged: (value) => setState(() {
-                      jarNameDemo = value;
-                    }),
-                    validator: (value) => _moneyJarCtrl.validateJarName(value),
-                  ),
-                  const Gap(10),
-                  TextFormField(
-                    controller: _balanceCtrl,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    decoration: const InputDecoration(
-                      labelText: "Current balance",
-                      prefixIcon: Icon(IconlyLight.wallet),
-                    ),
-                    onChanged: (value) => setState(() {
-                      if (",".allMatches(value).length <= 1) {
-                        balance = (value.isEmpty)
-                            ? 0
-                            : double.parse(value.replaceAll(",", "."));
-                      }
-                    }),
-                    validator: (value) => _moneyJarCtrl.validateBalance(value),
+                    onChanged: (value) {
+                      setState(() {
+                        _categoryName = value;
+                      });
+                    },
+                    validator: (value) =>
+                        _categoryController.validateName(value),
                   ),
                   const Gap(10),
                   Container(
@@ -143,19 +113,19 @@ class _AddMoneyJarScreenState extends State<AddMoneyJarScreen> {
                           borderRadius: BorderRadius.circular(50),
                           border: Border.all(
                             color: _currentIconIndex == index
-                                ? Color(color)
+                                ? Color(Constant.colors[_currentColorIndex])
                                 : Colors.transparent,
                           ),
                         ),
                         child: GestureDetector(
                           onTap: () => setState(() {
                             _currentIconIndex = index;
-                            _selectedIcon = Constant.categoryIcons[index];
                           }),
                           child: IconButton(
                             onPressed: null,
-                            icon:
-                                SvgPicture.asset(Constant.categoryIcons[index]),
+                            icon: SvgPicture.asset(
+                              Constant.categoryIcons[index],
+                            ),
                           ),
                         ),
                       ),
@@ -182,7 +152,6 @@ class _AddMoneyJarScreenState extends State<AddMoneyJarScreen> {
                       itemBuilder: (context, index) => GestureDetector(
                         onTap: () => setState(() {
                           _currentColorIndex = index;
-                          color = Constant.colors[index];
                         }),
                         child: Container(
                           decoration: BoxDecoration(
@@ -213,8 +182,8 @@ class _AddMoneyJarScreenState extends State<AddMoneyJarScreen> {
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () => _processCreateMoneyJar(),
-                    child: const Text("Add"),
+                    onPressed: () => _processEditCategory(),
+                    child: const Text("Edit"),
                   ),
                 ],
               ),
@@ -223,5 +192,27 @@ class _AddMoneyJarScreenState extends State<AddMoneyJarScreen> {
         ),
       ),
     );
+  }
+
+  void _processEditCategory() async {
+    if (_formKey.currentState!.validate()) {
+      bool result = await _categoryService.updateCategoryDetail(
+        context: context,
+        id: widget.id,
+        newName: _categoryName,
+        newIcon: Constant.categoryIcons[_currentIconIndex],
+        newColor: Constant.colors[_currentColorIndex],
+      );
+      if (mounted) {
+        if (!result) {
+          showCustomSnackBar(
+            context,
+            "Failed to update!",
+            Constant.contentTypes["failure"]!,
+          );
+        }
+        Navigator.pop(context);
+      }
+    }
   }
 }

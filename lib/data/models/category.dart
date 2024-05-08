@@ -5,12 +5,13 @@ class Category {
   String name;
   String icon;
   int color;
-
+  bool status;
   Category({
     required this.id,
     required this.name,
     required this.icon,
     required this.color,
+    required this.status,
   });
 
   factory Category.fromRawJson(String str) =>
@@ -21,6 +22,7 @@ class Category {
         name: json["name"],
         icon: json["icon"],
         color: json["color"],
+        status: json["status"],
       );
 
   String toRawJson() => jsonEncode(toJson());
@@ -28,7 +30,8 @@ class Category {
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
-        'icon': icon,
-        'color': color,
+        "icon": icon,
+        "color": color,
+        "status": status,
       };
 }

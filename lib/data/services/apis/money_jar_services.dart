@@ -56,11 +56,12 @@ class MoneyJarService {
         );
       });
     } on Exception catch (e) {
-      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      showCustomSnackBar(
+          context, e.toString(), Constant.contentTypes["failure"]!);
     }
   }
 
-  void getJars({required BuildContext context}) {
+  void getAllJars({required BuildContext context}) {
     try {
       final String token =
           Provider.of<UserProvider>(context, listen: false).getToken();
@@ -82,7 +83,103 @@ class MoneyJarService {
         );
       });
     } on Exception catch (e) {
-      showCustomSnackBar(context, e.toString(), Constant.contentTypes["failure"]!);
+      showCustomSnackBar(
+        context,
+        e.toString(),
+        Constant.contentTypes["failure"]!,
+      );
+    }
+  }
+
+  Future<bool> updateJarDetail({
+    required BuildContext context,
+    required String id,
+    required String newName,
+    required String newIcon,
+    required int newColor,
+  }) async {
+    bool result = false;
+    try {
+      final String token =
+          Provider.of<UserProvider>(context, listen: false).getToken();
+      var res = await http.put(
+        Uri.parse("$_baseUrl/update/$id/detail"),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+        body: jsonEncode({
+          "name": newName,
+          "icon": newIcon,
+          "color": newColor,
+        }),
+      );
+
+      if (context.mounted) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {
+            Provider.of<MoneyJarProvider>(context, listen: false).updateJar(
+              id: id,
+              newName: newName,
+              newIcon: newIcon,
+              newColor: newColor,
+            );
+            result = true;
+          },
+        );
+      }
+      return result;
+    } catch (e) {
+      if (context.mounted) {
+        showCustomSnackBar(
+          context,
+          e.toString(),
+          Constant.contentTypes["failure"]!,
+        );
+      }
+      return result;
+    }
+  }
+
+  Future<bool> updateMoneyJarStatus({
+    required BuildContext context,
+    required String id,
+  }) async {
+    bool result = false;
+    try {
+      final String token =
+          Provider.of<UserProvider>(context, listen: false).getToken();
+      var res = await http.put(
+        Uri.parse("$_baseUrl/update/$id/status"),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+      );
+
+      if (context.mounted) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {
+            Provider.of<MoneyJarProvider>(context, listen: false)
+                .changeJarStatus(id);
+            result = true;
+          },
+        );
+      }
+      return result;
+    } catch (e) {
+      if (context.mounted) {
+        showCustomSnackBar(
+          context,
+          e.toString(),
+          Constant.contentTypes["failure"]!,
+        );
+      }
+      return result;
     }
   }
 }

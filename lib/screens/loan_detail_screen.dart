@@ -26,7 +26,7 @@ class LoanDetailScreen extends StatefulWidget {
 
 class _LoanDetailScreenState extends State<LoanDetailScreen> {
   late Loan _loan;
-  late Friend _friend;
+  late Friend? _friend;
   late MoneyJar _moneyJar;
   late bool _isDataFetched;
 
@@ -342,11 +342,14 @@ class _LoanDetailScreenState extends State<LoanDetailScreen> {
     if (isLender) {
       return _customJarCard(_moneyJar.name, _moneyJar.color, _moneyJar.icon);
     }
+    if (_friend == null) {
+      return Text(_loan.participantName);
+    } 
     return Column(
       children: [
-        Text(_friend.name),
-        (_friend.phoneNumber.isEmpty) ? Container() : Text(_friend.phoneNumber),
-        (_friend.email.isEmpty) ? Container() : Text(_friend.email),
+        Text(_friend!.name),
+        (_friend!.phoneNumber.isEmpty) ? Container() : Text(_friend!.phoneNumber),
+        (_friend!.email.isEmpty) ? Container() : Text(_friend!.email),
       ],
     );
   }

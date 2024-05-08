@@ -4,19 +4,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_fin/data/services/providers/category_provider.dart';
-import 'package:smart_fin/screens/add_expense_category_screen.dart';
-import 'package:smart_fin/utilities/widgets/cards/category_card.dart';
-import 'package:smart_fin/utilities/widgets/cards/category_card_model.dart';
+import 'package:smart_fin/data/services/providers/friend_provider.dart';
+import 'package:smart_fin/screens/add_friend_screen.dart';
+import 'package:smart_fin/utilities/widgets/cards/friend_infor_card.dart';
 
-void showCategoryBottomSheet({
+void showFriendBottomSheet({
   required BuildContext context,
-  required Function(CategoryCard) onCategorySelected,
+  required Function(int) onFriendSelected,
 }) {
   const String title = "Categories";
-  var categoryCardList = Provider.of<CategoryProvider>(context, listen: false)
-      .categoryList
-      .map((each) => CategoryModelCard(category: each))
+  var friendInforList = Provider.of<FriendProvider>(context, listen: false)
+      .friendList
+      .map((each) => FriendInforCard(friend: each))
       .toList();
   showModalBottomSheet(
     context: context,
@@ -70,21 +69,17 @@ void showCategoryBottomSheet({
           const Gap(10),
           Expanded(
             child: ListView.separated(
-              itemCount: categoryCardList.length,
+              itemCount: friendInforList.length,
               separatorBuilder: (context, index) => const Gap(10),
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    if (categoryCardList[index].category.status) {
-                      onCategorySelected(
-                        CategoryCard(categoryCardList[index].category),
-                      );
-                      Navigator.of(context).pop();
-                    }
+                    onFriendSelected(index);
+                    Navigator.of(context).pop();
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: categoryCardList[index],
+                    child: friendInforList[index],
                   ),
                 );
               },
@@ -99,6 +94,6 @@ void showCategoryBottomSheet({
 void _getInputScreen(BuildContext context) => Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => const AddExpenseCategoryScreen(),
+        builder: (context) => const AddFriendScreen(),
       ),
     );

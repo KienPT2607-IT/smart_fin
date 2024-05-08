@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_fin/data/models/income.dart';
 import 'package:smart_fin/data/models/income_source.dart';
@@ -118,20 +119,29 @@ class _IncomeHistoryCardState extends State<IncomeHistoryCard> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Text(
-                      "+${widget.income.amount}",
+                      widget.income.amount.truncateToDouble() ==
+                              widget.income.amount
+                          ? '+${widget.income.amount.truncate()}'
+                          : '+${widget.income.amount}',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                        fontSize: 16,
                         color: Theme.of(context).colorScheme.secondary,
                       ),
                     ),
                     Text(
-                      "${widget.income.jarBalance}",
+                      widget.income.jarBalance.truncateToDouble() ==
+                              widget.income.jarBalance
+                          ? '${widget.income.jarBalance.truncate()}'
+                          : '${widget.income.jarBalance}',
                       style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 14,
                       ),
                     ),
+                    const Gap(10),
+                    Text(DateFormat('dd/MM/yyyy')
+                        .format(widget.income.createAt)),
                   ],
                 ),
               ],

@@ -15,7 +15,6 @@ class FriendProvider extends ChangeNotifier {
   void setFriends(String rawJson) {
     List jsonList = jsonDecode(rawJson)["data"];
     for (var json in jsonList) {
-      // TODO: implement add with alphabetical order
       _friendList.add(Friend.fromJson(json));
       notifyListeners();
     }
@@ -25,16 +24,11 @@ class FriendProvider extends ChangeNotifier {
     _friendList = [];
   }
 
-  Friend getFriendById(String id) {
+  Friend? getFriendById(String id) {
     int index = _friendList.indexWhere((friend) => friend.id == id);
     return (index != -1)
         ? _friendList[index]
-        : Friend(
-            id: "",
-            name: "",
-            phoneNumber: "",
-            email: "",
-          );
+        : null;
   }
 
   String getFriendName(String id) {
@@ -57,10 +51,8 @@ class FriendProvider extends ChangeNotifier {
     }
   }
 
-  void unfriend(Friend removedFriend) {
-    int index =
-        _friendList.indexWhere((element) => element.id == removedFriend.id);
-
+  void removeFriend(String id) {
+    int index = _friendList.indexWhere((element) => element.id == id);
     if (index != -1) {
       _friendList.removeAt(index);
       notifyListeners();

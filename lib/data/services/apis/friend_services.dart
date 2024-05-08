@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_fin/data/models/friend.dart';
 import 'package:smart_fin/data/services/providers/friend_provider.dart';
@@ -47,6 +48,7 @@ class FriendService {
               name: name,
               phoneNumber: phoneNumber,
               email: email,
+              status: true,
             ));
             result = true;
           },
@@ -68,25 +70,128 @@ class FriendService {
   void getFriends({
     required BuildContext context,
   }) {
-    String token = Provider.of<UserProvider>(context, listen: false).getToken();
-    var res = http.get(
-      Uri.parse("$_baseUrl/"),
-      headers: {
-        "Content-type": "application/json; charset=utf-8",
-        "x-auth-token": token,
-      },
-    );
-    var friendProvider = Provider.of<FriendProvider>(context, listen: false);
-    res.then((res) => httpResponseHandler(
+    try {
+      String token =
+          Provider.of<UserProvider>(context, listen: false).getToken();
+      var res = http.get(
+        Uri.parse("$_baseUrl/"),
+        headers: {
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+      );
+      res.then((res) {
+        httpResponseHandler(
           context: context,
           response: res,
           onSuccess: () {
-            friendProvider.setFriends(res.body);
+            Provider.of<FriendProvider>(context, listen: false)
+                .setFriends(res.body);
           },
-        ));
+        );
+      });
+    } on Exception catch (e) {
+      showCustomSnackBar(
+        context,
+        e.toString(),
+        Constant.contentTypes["failure"]!,
+      );
+    }
   }
 
-  void updateFriend() {}
+  Future<bool> updateFriend({
+    required BuildContext context,
+    required String id,
+    required String newName,
+    required String newPhoneNumber,
+    required String newEmail,
+  }) async {
+    bool result = false;
+    try {
+      String token =
+          Provider.of<UserProvider>(context, listen: false).getToken();
+      var res = await http.put(
+        Uri.parse("$_baseUrl/update/$id/detail"),
+        headers: {
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+        body: jsonEncode({
+          "name": newName,
+          "phone_number": newPhoneNumber,
+          "email": newEmail,
+        }),
+      );
 
-  void removeFriend() {}
+      if (context.mounted) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {
+            Provider.of<FriendProvider>(
+              context,
+              listen: false,
+            ).updateFriend(Friend(
+              id: id,
+              name: newName,
+              phoneNumber: newPhoneNumber,
+              email: newEmail,
+              status: true,
+            ));
+            result = true;
+          },
+        );
+      }
+      return result;
+    } catch (e) {
+      if (context.mounted) {
+        showCustomSnackBar(
+          context,
+          e.toString(),
+          Constant.contentTypes["failure"]!,
+        );
+      }
+      return result;
+    }
+  }
+
+  Future<bool> removeFriend({
+    required BuildContext context,
+    required String id,
+  }) async {
+    bool result = false;
+    try {
+      String token =
+          Provider.of<UserProvider>(context, listen: false).getToken();
+      var res = await http.delete(
+        Uri.parse("$_baseUrl/delete/$id"),
+        headers: {
+          "Content-type": "application/json; charset=utf-8",
+          "x-auth-token": token,
+        },
+      );
+
+      if (context.mounted) {
+        httpResponseHandler(
+          context: context,
+          response: res,
+          onSuccess: () {
+            Provider.of<FriendProvider>(context, listen: false)
+                .removeFriend(id);
+            result = true;
+          },
+        );
+      }
+      return result;
+    } catch (e) {
+      if (context.mounted) {
+        showCustomSnackBar(
+          context,
+          e.toString(),
+          Constant.contentTypes["failure"]!,
+        );
+      }
+      return result;
+    }
+  }
 }

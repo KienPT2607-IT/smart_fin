@@ -1,22 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_fin/data/services/providers/category_provider.dart';
-import 'package:smart_fin/screens/add_expense_category_screen.dart';
-import 'package:smart_fin/utilities/widgets/cards/category_card.dart';
-import 'package:smart_fin/utilities/widgets/cards/category_card_model.dart';
+import 'package:smart_fin/data/services/providers/money_jar_provider.dart';
+import 'package:smart_fin/screens/add_money_jar_screen.dart';
+import 'package:smart_fin/utilities/widgets/cards/money_jar_card.dart';
 
-void showCategoryBottomSheet({
+void showMoneyJarBottomSheet({
   required BuildContext context,
-  required Function(CategoryCard) onCategorySelected,
+  required Function(int) onMoneyJarSelected,
 }) {
-  const String title = "Categories";
-  var categoryCardList = Provider.of<CategoryProvider>(context, listen: false)
-      .categoryList
-      .map((each) => CategoryModelCard(category: each))
+  const String title = "Money Jars";
+  var jarCardList = Provider.of<MoneyJarProvider>(context, listen: false)
+      .moneyJarList
+      .map((each) => MoneyJarCard(moneyJar: each))
       .toList();
   showModalBottomSheet(
     context: context,
@@ -32,7 +31,7 @@ void showCategoryBottomSheet({
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
+        children: [
           Container(
             height: 5,
             width: 50,
@@ -70,21 +69,19 @@ void showCategoryBottomSheet({
           const Gap(10),
           Expanded(
             child: ListView.separated(
-              itemCount: categoryCardList.length,
+              itemCount: jarCardList.length,
               separatorBuilder: (context, index) => const Gap(10),
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    if (categoryCardList[index].category.status) {
-                      onCategorySelected(
-                        CategoryCard(categoryCardList[index].category),
-                      );
+                    if (jarCardList[index].moneyJar.status) {
+                      onMoneyJarSelected(index);
                       Navigator.of(context).pop();
                     }
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: categoryCardList[index],
+                    child: jarCardList[index],
                   ),
                 );
               },
@@ -99,6 +96,6 @@ void showCategoryBottomSheet({
 void _getInputScreen(BuildContext context) => Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => const AddExpenseCategoryScreen(),
+        builder: (context) => const AddMoneyJarScreen(),
       ),
     );

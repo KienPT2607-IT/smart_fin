@@ -49,7 +49,7 @@ class IncomeNoteService {
             var jarProvider =
                 Provider.of<MoneyJarProvider>(context, listen: false);
             jarProvider.updateBalance(
-              jarId: moneyJar,
+              id: moneyJar,
               amount: amount,
               isIncreased: true,
             );
@@ -162,7 +162,7 @@ class IncomeNoteService {
                 Provider.of<MoneyJarProvider>(context, listen: false);
             Income income = incomeProvider.getIncomeById(incomeId);
             moneyJarProvider.updateBalance(
-              jarId: income.moneyJar,
+              id: income.moneyJar,
               amount: income.amount,
               isIncreased: false,
             );

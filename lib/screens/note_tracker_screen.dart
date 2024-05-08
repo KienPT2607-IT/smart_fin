@@ -278,9 +278,7 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
                 const Gap(10),
                 TextFormField(
                   controller: _amountCtrl,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
+                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     labelText: "Amount",
                     prefixIcon: Icon(IconlyLight.wallet),
@@ -302,7 +300,6 @@ class _NoteTrackerScreenState extends State<NoteTrackerScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  //TODO: Turn into a helper method
                   onTap: () => showDatePickerDialog(
                     context,
                     CupertinoDatePicker(

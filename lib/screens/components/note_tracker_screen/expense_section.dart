@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:iconly/iconly.dart';
-import 'package:smart_fin/utilities/widgets/bottom_sheet/bottom_sheet.dart';
+import 'package:smart_fin/utilities/widgets/bottom_sheet/money_jar_bottom_sheet.dart';
 import 'package:smart_fin/utilities/widgets/cards/money_jar_card.dart';
 
 class ExpenseSection extends StatefulWidget {
@@ -45,11 +45,9 @@ class _ExpenseSectionState extends State<ExpenseSection> {
             ),
             IconButton(
               onPressed: () {
-                showCustomBottomSheet(
-                  context,
-                  widget.sectionType,
-                  widget.jarCardList,
-                  (index) {
+                showMoneyJarBottomSheet(
+                  context: context,
+                  onMoneyJarSelected: (index) {
                     setState(() {
                       _selectedJar = index;
                     });
